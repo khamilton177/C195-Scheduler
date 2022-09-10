@@ -1,0 +1,20 @@
+sept. 10, 2022 4:13:44 PM controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+sept. 10, 2022 4:13:50 PM controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+sept. 10, 2022 4:14:35 PM controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+sept. 10, 2022 4:18:51 PM controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+sept. 10, 2022 4:18:58 PM controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
