@@ -9,17 +9,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
-    // Class members
-//    public Label CurrentUserIdLbl;
-
-    // Scene Builder Form Items
     @javafx.fxml.FXML
     private TabPane ApptTabPane;
     @javafx.fxml.FXML
@@ -50,11 +44,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
         try{
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("view/login-form.fxml"));
+            loader.setLocation(getClass().getResource("../view/login-form.fxml"));
             scene = loader.load();
 
             // Cast window to stage
-            stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            stage = (Stage)((Hyperlink)actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(scene));
             stage.show();
         }

@@ -4,7 +4,7 @@ import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class DBConnection {
+public abstract class DBConnection {
 
     //These variables are separated for future use to plugin new connection parameters
     private static final String dbDriver = "jdbc";

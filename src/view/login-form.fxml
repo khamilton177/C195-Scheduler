@@ -17,7 +17,7 @@
                 </Label>
                 <ImageView fx:id="BrandImageView" fitHeight="400.0" fitWidth="225.0" layoutX="7.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../../resources/images/head.png" />
+                        <Image url="@../resources/images/head.png" />
                     </image>
                 </ImageView>
             </children>
@@ -28,7 +28,7 @@
             <children>
                 <ImageView fx:id="LoginIconImageView" fitHeight="150.0" fitWidth="225.0" layoutX="112.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../../resources/images/lock.png" />
+                        <Image url="@../resources/images/lock.png" />
                     </image>
                 </ImageView>
                 <VBox layoutX="18.0" layoutY="119.0" prefHeight="200.0" prefWidth="274.0">

@@ -4,53 +4,57 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.User;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static DAO.DBConnection.useConnection;
 
 public class UserDaoImpl {
-    private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
+
+    private static User getCst_rsData(ResultSet rs) throws SQLException {
+        User rsDataUser;
+        int user_id=rs.getInt("User_ID");
+        String user_name=rs.getString("User_Name");
+        String password=rs.getString("Password");
+        rsDataUser = new User(user_id, user_name, password);
+        return rsDataUser;
+    }
 
     public static User userLogin(String userAuth) throws SQLException, Exception {
-        //   DBConnection.useConnection();
         String sqlStmt = userAuth;
-        DML.makeDML(sqlStmt);
+        DML.doDML(sqlStmt);
         ResultSet rs = DML.getResult();
         if (rs.next()) {
             User userResult;
-            int userid=rs.getInt("User_ID");
-            String userName=rs.getString("User_Name");
+            int user_id=rs.getInt("User_ID");
+            String user_name=rs.getString("User_Name");
             String password=rs.getString("Password");
-            userResult= new User(userid, userName, password);
+            userResult= new User(user_id, user_name, password);
             return userResult;
         }
-        //DBConnection.closeConnection();
         return null;
     }
 
-    public static User getUser(String userName) throws SQLException, Exception{
-        //    DBConnection.useConnection();
-        String sqlStatement="select * FROM users WHERE User_Name  = '" + userName+ "'";
-        //  String sqlStatement="select FROM address";
-        DML.makeDML(sqlStatement);
+    public static User getUserId(String username) throws SQLException, Exception{
+        String sqlStatement="SELECT * FROM users WHERE User_Name  = '" + username+ "'";
+        DML.doDML(sqlStatement);
         User userResult;
         ResultSet rs=DML.getResult();
         while(rs.next()){
-            int userid=rs.getInt("User_ID");
-            String userNameG=rs.getString("User_Name");
+            int user_id=rs.getInt("User_ID");
+            String user_name=rs.getString("User_Name");
             String password=rs.getString("Password");
-            userResult= new User(userid, userName, password);
+            userResult= new User(user_id, user_name, password);
             return userResult;
         }
-        //   DBConnection.closeConnection();
         return null;
     }
 
     public static ObservableList<User> getAllUsers() throws SQLException, Exception{
         ObservableList<User> allUsers= FXCollections.observableArrayList();
-        //  DBConnection.useConnection();
-        String sqlStatement="select * from users";
-        DML.makeDML(sqlStatement);
+        String sqlStatement="SELECT * FROM users";
+        DML.doDML(sqlStatement);
         ResultSet rs=DML.getResult();
         while(rs.next()){
             int userid=rs.getInt("User_ID");
@@ -59,7 +63,6 @@ public class UserDaoImpl {
             User userResult= new User(userid, userNameG, password);
             allUsers.add(userResult);
         }
-        //   DBConnection.closeConnection();
         return allUsers;
     }
 }

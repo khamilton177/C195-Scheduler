@@ -1,5 +1,6 @@
 package controller;
 
+import DAO.CustomerDaoImpl;
 import DAO.UserDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +13,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import model.Customer;
 import model.User;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Objects;
@@ -268,7 +271,25 @@ public class LoginFormCtrl implements Initializable {
         setZoneId();
         //loginLogger();
 
+        try {
+            Customer seeCust1;
+            seeCust1 = CustomerDaoImpl.getCustomer(3);
+            System.out.println("Customer Name :" + seeCust1.getCustomerName());
 
+            Customer seeCust2;
+            seeCust2 = CustomerDaoImpl.getCustomer(6);
+            System.out.println("Customer Name :" + seeCust2.getCustomerName());
+
+        //    CustomerDaoImpl.deleteCst(5);
+
+         //  CustomerDaoImpl.insertCst("John Smith", "Third Street", "22222", "555-666-5555", 61);
+            CustomerDaoImpl.updateCst("Mary Allen", "5th Street", "88888", "718-666-5555",103, 6);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("From getCustomer :" + e.getMessage());
+        }
 
         // Get the locale information and direct application to use the foreign messages for the Login Form.
         uselocaleErrMsg = setLoginLanguage();

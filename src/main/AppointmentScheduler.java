@@ -1,5 +1,6 @@
 package main;
 
+import DAO.CustomerDaoImpl;
 import DAO.DBConnection;
 import controller.LoginFormCtrl;
 import javafx.application.Application;
@@ -43,7 +44,7 @@ public class AppointmentScheduler extends Application {
 
         try{
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../view/login-form.fxml")));
-            stage.setTitle("AppointmentScheduler");
+            stage.setTitle("C195-Scheduler");
             stage.setScene(new Scene(root));
             stage.show();
         }
