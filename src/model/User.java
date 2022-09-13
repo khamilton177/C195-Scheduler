@@ -61,4 +61,12 @@ public class User {
         this.Password = Password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "User_ID=" + User_ID +
+                ", User_Name='" + User_Name + '\'' +
+                ", Password='" + Password + '\'' +
+                '}';
+    }
 }

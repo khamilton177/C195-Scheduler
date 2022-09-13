@@ -1,23 +1,24 @@
 package main;
 
-import DAO.CustomerDaoImpl;
-import DAO.DBConnection;
+import dao.CustomerDAO;
+import dao.CustomerDaoImpl;
+import dao.DBConnection;
 import controller.LoginFormCtrl;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import model.Customer;
 
-import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class AppointmentScheduler extends Application {
     /**
@@ -54,10 +55,11 @@ public class AppointmentScheduler extends Application {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Logger actLog = Logger.getLogger("login_activity.txt");
         DBConnection.establishConnection();
         LoginFormCtrl.loginLogger();
+
         launch(args);
         DBConnection.closeConnection();
     }

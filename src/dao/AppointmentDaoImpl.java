@@ -1,4 +1,4 @@
-package DAO;
+package dao;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import static DAO.DBConnection.useConnection;
+import static dao.DBConnection.useConnection;
 
 public abstract class AppointmentDaoImpl {
     private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
@@ -155,7 +155,6 @@ public abstract class AppointmentDaoImpl {
 
         // Extract the ResultSet to a class object.
         while (rs.next()) {
-            System.out.println("Building List");
             Appointment rsData = getAppt_rsData(rs);
             allAppointments.add(rsData);
         }

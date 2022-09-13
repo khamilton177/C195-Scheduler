@@ -1,14 +1,11 @@
-package DAO;
+package dao;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.User;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static DAO.DBConnection.useConnection;
 
 public class UserDaoImpl {
 

@@ -1,7 +1,7 @@
 package model;
 
 public class Customer {
-    private final int Customer_ID;
+    private int Customer_ID;
     private String Customer_Name;
     private String Address;
     private String Postal_Code;
@@ -87,5 +87,16 @@ public class Customer {
         return Division_ID;
     }
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "Customer_ID=" + Customer_ID +
+                ", Customer_Name='" + Customer_Name + '\'' +
+                ", Address='" + Address + '\'' +
+                ", Postal_Code='" + Postal_Code + '\'' +
+                ", Phone='" + Phone + '\'' +
+                ", Division_ID=" + Division_ID +
+                '}';
+    }
 }
 
