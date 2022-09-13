@@ -11,10 +11,9 @@ import static dao.DBConnection.useConnection;
 import static dao.SchedulerUtilities.getCstData;
 
 import java.sql.PreparedStatement;
-import java.util.List;
 
 public class CustomerDaoImpl implements CustomerDAO {
-
+    private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
     private static PreparedStatement prepStmt;
     private int rowsAffected = 0; // Setting to 0. SELECT statements don't return a value so this is a nominal value.
 
@@ -23,6 +22,7 @@ public class CustomerDaoImpl implements CustomerDAO {
         Customer customer = null;
         String sqlStmt="SELECT * FROM customers" +
                 " WHERE Customer_ID = ?";
+
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, customer_id);
@@ -63,17 +63,12 @@ public class CustomerDaoImpl implements CustomerDAO {
         ResultSet rs = DML.getResult();
 
         // Extract the ResultSet to a class object.
-        System.out.println("Building List");
+        System.out.println("Building Customer List");
         while (rs.next()) {
             Customer customer = getCstData(rs);
             allCustomers.add(customer);
         }
         return allCustomers;
-    }
-
-    @Override
-    public int save(Customer customer) throws SQLException {
-        return 0;
     }
 
     @Override
@@ -142,5 +137,10 @@ public class CustomerDaoImpl implements CustomerDAO {
             e.printStackTrace();
         }
         return rowsAffected;
+    }
+
+    @Override
+    public int save(Customer customer) throws SQLException {
+        return 0;
     }
 }

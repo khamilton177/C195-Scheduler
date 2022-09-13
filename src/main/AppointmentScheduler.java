@@ -1,8 +1,6 @@
 package main;
 
-import dao.CustomerDAO;
-import dao.CustomerDaoImpl;
-import dao.DBConnection;
+import dao.*;
 import controller.LoginFormCtrl;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -11,9 +9,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import model.Appointment;
 import model.Customer;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;

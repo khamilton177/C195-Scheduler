@@ -10,113 +10,20 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import static dao.DBConnection.useConnection;
+import static dao.SchedulerUtilities.getApptData;
 
-public abstract class AppointmentDaoImpl {
+public class AppointmentDaoImpl implements AppointmentDAO {
     private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
     private static PreparedStatement prepStmt;
+    private int rowsAffected = 0; // Setting to 0. SELECT statements don't return a value so this is a nominal value.
 
-    /**
-     * Build a class object from the returned ResultSet
-     *
-     * @param rs The return ResultSet from a doDMLv2 call.
-     * @return Appointment with populated data.
-     * @throws SQLException Log will have SQL statement error.
-     */
-    private static Appointment getAppt_rsData(ResultSet rs) throws SQLException {
-        Appointment rsDataAppt;
-        int appointment_id = (rs.getInt("Appointment_ID"));
-        String title = rs.getString("Title");
-        String description = rs.getString("Description");
-        String location = rs.getString("Location");
-        String type = rs.getString("Type");
-        Timestamp start = rs.getTimestamp("Start");
-        Timestamp end = rs.getTimestamp("End");
-        int customer_id = rs.getInt("Customer_ID");
-        int user_id = rs.getInt("User_ID");
-        int contact_id = rs.getInt("Contact_ID");
-        rsDataAppt = new Appointment(appointment_id, title, description, location, type, start, end, customer_id, user_id, contact_id);
-        return rsDataAppt;
-    }
 
-    public static void insertAppt(String title, String description, String location, String type, Timestamp start, Timestamp end, int customer_id, int user_id, int contact_id) throws SQLException {
-        String sqlStmt = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID)" +
-                " VAlUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        // Build the preparedStatement.
-        try {
-            prepStmt = useConnection().prepareStatement(sqlStmt);
-            prepStmt.setString(1, title);
-            prepStmt.setString(2, description);
-            prepStmt.setString(3, location);
-            prepStmt.setString(4, type);
-            prepStmt.setTimestamp(5, start);
-            prepStmt.setTimestamp(6, end);
-            prepStmt.setInt(7, customer_id);
-            prepStmt.setInt(8, user_id);
-            prepStmt.setInt(9, contact_id);
-
-            // Pass the preparedStatement to be executed with plain string for validation and log.
-            DML.doDMLv2(prepStmt, sqlStmt);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-
-        }
-        // return null;
-    }
-
-    public static void updateAppt(String title, String description, String location, String type, Timestamp start, Timestamp end, int customer_id, int user_id, int contact_id, int appointment_id) throws SQLException {
-        String sqlStmt = "UPDATE appointments SET" +
-                " Title = ?," +
-                " Description = ?," +
-                " Location = ?," +
-                " Type = ?," +
-                " Start = ?'" +
-                " End = ?'" +
-                " Customer_ID = ?," +
-                " User_ID = ?'" +
-                " Contact_ID = ?)" +
-                " WHERE Appointment_ID = ?)";
-
-        // Build the preparedStatement.
-        try {
-            prepStmt = useConnection().prepareStatement(sqlStmt);
-            prepStmt.setString(1, title);
-            prepStmt.setString(2, description);
-            prepStmt.setString(3, location);
-            prepStmt.setString(4, type);
-            prepStmt.setTimestamp(5, start);
-            prepStmt.setTimestamp(6, end);
-            prepStmt.setInt(7, customer_id);
-            prepStmt.setInt(8, user_id);
-            prepStmt.setInt(9, contact_id);
-            prepStmt.setInt(10, appointment_id);
-
-            // Pass the preparedStatement to be executed with plain string for validation and log.
-            DML.doDMLv2(prepStmt, sqlStmt);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        DML.doDMLv2(prepStmt, sqlStmt);
-
-        // return prepStmt.toString();
-    }
-
-    public static void deleteAppt(int appointment_id) throws SQLException {
-        String sqlStmt = "DELETE FROM appointments" +
-                " WHERE Appointment_ID = ?";
-        try {
-            prepStmt = useConnection().prepareStatement(sqlStmt);
-            prepStmt.setInt(1, appointment_id);
-            DML.doDMLv2(prepStmt, sqlStmt);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Appointment getAppointment(int appointment_id) throws SQLException, Exception{
+    @Override
+    public Appointment extract(int appointment_id) throws SQLException {
+        Appointment appointment = null;
         String sqlStmt="SELECT * FROM appointments" +
                 " WHERE Appointment_ID = ?";
+
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, appointment_id);
@@ -134,7 +41,7 @@ public abstract class AppointmentDaoImpl {
             // If Appointment data found, extract the ResultSet to a Appointment object and return.
             if (rs.next()) {
                 System.out.println("made it here 4");
-                return getAppt_rsData(rs);
+                appointment = getApptData(rs);
             }
         }
         catch(SQLException e)  {
@@ -142,22 +49,110 @@ public abstract class AppointmentDaoImpl {
         }
         // No Appointment data found return null object
         System.out.println("made it here 5");
-        return null;
+        return appointment;
     }
 
-    public static ObservableList<Appointment> getAllAppointments() throws SQLException, Exception {
+    @Override
+    public ObservableList<Appointment> extractAll() throws SQLException {
         ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
+
         String sqlStmt = "SELECT * FROM appointments";
+        prepStmt = useConnection().prepareStatement(sqlStmt);
         DML.doDMLv2(prepStmt, sqlStmt);
 
         // Get the ResultSet of the executed query.
         ResultSet rs = DML.getResult();
 
         // Extract the ResultSet to a class object.
+        System.out.println("Building Appointments List");
         while (rs.next()) {
-            Appointment rsData = getAppt_rsData(rs);
-            allAppointments.add(rsData);
+            Appointment appointment = getApptData(rs);
+            allAppointments.add(appointment);
         }
         return allAppointments;
+    }
+
+    @Override
+    public int insert(Appointment appointment) throws SQLException {
+        String sqlStmt = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID)" +
+                " VAlUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        // Build the preparedStatement.
+        try {
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setString(1, appointment.getTitle());
+            prepStmt.setString(2, appointment.getDescription());
+            prepStmt.setString(3, appointment.getLocation());
+            prepStmt.setString(4, appointment.getType());
+            prepStmt.setTimestamp(5, appointment.getStart());
+            prepStmt.setTimestamp(6, appointment.getEnd());
+            prepStmt.setInt(7, appointment.getCustomerID());
+            prepStmt.setInt(8, appointment.getUserID());
+            prepStmt.setInt(9, appointment.getContactID());
+
+            // Pass the preparedStatement to be executed with plain string for validation and log.
+            rowsAffected = DML.doDMLv2(prepStmt, sqlStmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        return rowsAffected;
+    }
+
+    @Override
+    public int update(Appointment appointment) throws SQLException {
+        String sqlStmt = "UPDATE appointments SET" +
+                " Title = ?," +
+                " Description = ?," +
+                " Location = ?," +
+                " Type = ?," +
+                " Start = ?," +
+                " End = ?," +
+                " Customer_ID = ?," +
+                " User_ID = ?," +
+                " Contact_ID = ?" +
+                " WHERE Appointment_ID = ?";
+
+        // Build the preparedStatement.
+        try {
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setString(1, appointment.getTitle());
+            prepStmt.setString(2, appointment.getDescription());
+            prepStmt.setString(3, appointment.getLocation());
+            prepStmt.setString(4, appointment.getType());
+            prepStmt.setTimestamp(5, appointment.getStart());
+            prepStmt.setTimestamp(6, appointment.getEnd());
+            prepStmt.setInt(7, appointment.getCustomerID());
+            prepStmt.setInt(8, appointment.getUserID());
+            prepStmt.setInt(9, appointment.getContactID());
+            prepStmt.setInt(10, appointment.getAppointmentID());
+
+            // Pass the preparedStatement to be executed with plain string for validation and log.
+            rowsAffected = DML.doDMLv2(prepStmt, sqlStmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowsAffected;
+    }
+
+    @Override
+    public int delete(Appointment appointment) {
+        String sqlStmt = "DELETE FROM appointments" +
+                " WHERE Appointment_ID = ?";
+        try {
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setInt(1, appointment.getAppointmentID());
+            rowsAffected = DML.doDMLv2(prepStmt, sqlStmt);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowsAffected;
+    }
+
+    @Override
+    public int save(Appointment appointment) throws SQLException {
+        return 0;
     }
 }

@@ -7,7 +7,7 @@ public class Appointment {
     /**
      * The Appointment ID
      */
-    private int Appointment_ID;
+    private final int Appointment_ID;
     private String Title;
     private String Description;
     private String Location;
@@ -31,7 +31,7 @@ public class Appointment {
         Contact_ID = contact_id;
     }
 
-    public int getAppointment_ID() {
+    public int getAppointmentID() {
         return Appointment_ID;
     }
 
@@ -83,27 +83,27 @@ public class Appointment {
         End = end;
     }
 
-    public int getCustomer_ID() {
+    public int getCustomerID() {
         return Customer_ID;
     }
 
-    public void setCustomer_ID(int customer_ID) {
+    public void setCustomerID(int customer_ID) {
         Customer_ID = customer_ID;
     }
 
-    public int getUser_ID() {
+    public int getUserID() {
         return User_ID;
     }
 
-    public void setUser_ID(int user_ID) {
+    public void setUserID(int user_ID) {
         User_ID = user_ID;
     }
 
-    public int getContact_ID() {
+    public int getContactID() {
         return Contact_ID;
     }
 
-    public void setContact_ID(int contact_ID) {
+    public void setContactID(int contact_ID) {
         Contact_ID = contact_ID;
     }
 
