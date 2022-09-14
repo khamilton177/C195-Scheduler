@@ -20,8 +20,8 @@ public class UserDaoImpl {
 
     public static User userLogin(String userAuth) throws SQLException, Exception {
         String sqlStmt = userAuth;
-        DML.doDML(sqlStmt);
-        ResultSet rs = DML.getResult();
+        DMLUtils.doDML(sqlStmt);
+        ResultSet rs = DMLUtils.getResult();
         if (rs.next()) {
             User userResult;
             int user_id=rs.getInt("User_ID");
@@ -35,9 +35,9 @@ public class UserDaoImpl {
 
     public static User getUserId(String username) throws SQLException, Exception{
         String sqlStatement="SELECT * FROM users WHERE User_Name  = '" + username+ "'";
-        DML.doDML(sqlStatement);
+        DMLUtils.doDML(sqlStatement);
         User userResult;
-        ResultSet rs=DML.getResult();
+        ResultSet rs= DMLUtils.getResult();
         while(rs.next()){
             int user_id=rs.getInt("User_ID");
             String user_name=rs.getString("User_Name");
@@ -51,8 +51,8 @@ public class UserDaoImpl {
     public static ObservableList<User> getAllUsers() throws SQLException, Exception{
         ObservableList<User> allUsers= FXCollections.observableArrayList();
         String sqlStatement="SELECT * FROM users";
-        DML.doDML(sqlStatement);
-        ResultSet rs=DML.getResult();
+        DMLUtils.doDML(sqlStatement);
+        ResultSet rs= DMLUtils.getResult();
         while(rs.next()){
             int userid=rs.getInt("User_ID");
             String userNameG=rs.getString("User_Name");

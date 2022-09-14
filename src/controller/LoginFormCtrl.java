@@ -32,7 +32,7 @@ import java.util.logging.SimpleFormatter;
 import static main.AppointmentScheduler.actLog;
 //import static main.AppointmentScheduler.loginLogger;
 
-public class LoginFormCtrl implements Initializable {
+public class LoginFormCtrl extends SchedulerCtrl implements Initializable {
 
     /**
      * Obtains current user's information from users table.

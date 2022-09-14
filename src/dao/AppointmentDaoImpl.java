@@ -7,13 +7,12 @@ import model.Appointment;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import static dao.DBConnection.useConnection;
-import static dao.SchedulerUtilities.getApptData;
+import static dao.DMLUtils.getApptData;
 
 public class AppointmentDaoImpl implements AppointmentDAO {
-    private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
+    private static String returnGenKeys = ".RETURN_GENERATED_KEYS";
     private static PreparedStatement prepStmt;
     private int rowsAffected = 0; // Setting to 0. SELECT statements don't return a value so this is a nominal value.
 
@@ -31,12 +30,12 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             // Pass the preparedStatement to be executed.
 
             // Pass the preparedStatement to be executed.
-            DML.doDMLv2(prepStmt, sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
             System.out.println("made it here 2");
 
             // Get the ResultSet of the executed query.
             System.out.println("made it here 3");
-            ResultSet rs = DML.getResult();
+            ResultSet rs = DMLUtils.getResult();
 
             // If Appointment data found, extract the ResultSet to a Appointment object and return.
             if (rs.next()) {
@@ -58,10 +57,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
 
         String sqlStmt = "SELECT * FROM appointments";
         prepStmt = useConnection().prepareStatement(sqlStmt);
-        DML.doDMLv2(prepStmt, sqlStmt);
+        DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
         // Get the ResultSet of the executed query.
-        ResultSet rs = DML.getResult();
+        ResultSet rs = DMLUtils.getResult();
 
         // Extract the ResultSet to a class object.
         System.out.println("Building Appointments List");
@@ -91,7 +90,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             prepStmt.setInt(9, appointment.getContactID());
 
             // Pass the preparedStatement to be executed with plain string for validation and log.
-            rowsAffected = DML.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -129,7 +128,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             prepStmt.setInt(10, appointment.getAppointmentID());
 
             // Pass the preparedStatement to be executed with plain string for validation and log.
-            rowsAffected = DML.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -143,7 +142,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         try {
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, appointment.getAppointmentID());
-            rowsAffected = DML.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
         }
         catch (SQLException e) {
             e.printStackTrace();

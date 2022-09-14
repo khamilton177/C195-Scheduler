@@ -11,13 +11,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="759.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ApptAddModifyFormCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="759.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ApptAddModifyFormCtrl">
    <children>
-      <VBox prefHeight="567.0" prefWidth="600.0">
+      <VBox prefHeight="759.0" prefWidth="900.0">
          <children>
-            <SplitPane dividerPositions="0.3851851851851852" orientation="VERTICAL" prefHeight="573.0" prefWidth="600.0">
+            <SplitPane dividerPositions="0.3851851851851852" orientation="VERTICAL" prefHeight="760.0" prefWidth="900.0">
               <items>
-                  <Pane prefHeight="115.0" prefWidth="788.0">
+                  <Pane prefHeight="115.0" prefWidth="898.0">
                      <children>
                         <TextField layoutX="101.0" layoutY="59.0" />
                         <TextField layoutX="265.0" layoutY="59.0" />
@@ -28,19 +28,27 @@
                   </Pane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30.0" prefWidth="598.0">
                      <children>
-                        <ButtonBar prefHeight="7.0" prefWidth="598.0">
+                        <ButtonBar prefHeight="25.0" prefWidth="890.0">
                           <buttons>
                             <Button mnemonicParsing="false" text="Button" />
                               <Button layoutX="535.0" layoutY="26.0" mnemonicParsing="false" text="Button" />
                               <Button layoutX="535.0" layoutY="26.0" mnemonicParsing="false" text="Button" />
                           </buttons>
                         </ButtonBar>
-                        <ScrollPane layoutY="47.0" prefHeight="96.0" prefWidth="598.0">
+                        <ScrollPane layoutY="47.0" prefHeight="421.0" prefWidth="898.0">
                            <content>
-                              <TableView prefHeight="492.0" prefWidth="600.0">
+                              <TableView fx:id="ApptTblView" prefHeight="413.0" prefWidth="888.0">
                                 <columns>
-                                  <TableColumn prefWidth="75.0" text="C1" />
-                                  <TableColumn prefWidth="75.0" text="C2" />
+                                  <TableColumn fx:id="ApptIdCol" editable="false" prefWidth="75.0" text="Appointment_ID" />
+                                  <TableColumn fx:id="ApptTitleCol" prefWidth="75.0" text="Title" />
+                                    <TableColumn fx:id="ApptDescCol" prefWidth="75.0" text="Description" />
+                                    <TableColumn fx:id="ApptLocCol" prefWidth="75.0" text="Location" />
+                                    <TableColumn fx:id="ApptTypeCol" prefWidth="75.0" text="Type" />
+                                    <TableColumn fx:id="ApptStartCol" prefWidth="75.0" text="Start" />
+                                    <TableColumn fx:id="ApptEndCol" prefWidth="75.0" text="End" />
+                                    <TableColumn fx:id="ApptCstIDCol" prefWidth="75.0" text="Customer_ID" />
+                                    <TableColumn fx:id="ApptUserIDCol" prefWidth="75.0" text="User_ID" />
+                                    <TableColumn fx:id="ApptCntIDCol" prefWidth="75.0" text="Contact_ID" />
                                 </columns>
                               </TableView>
                            </content>

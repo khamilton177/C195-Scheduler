@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface SchedulerDAO<T>{
+public interface SchedulerDAO<T> {
 
     T extract(int id) throws SQLException;
 

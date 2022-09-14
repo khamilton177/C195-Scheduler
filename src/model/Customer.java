@@ -1,7 +1,7 @@
 package model;
 
 public class Customer {
-    private int Customer_ID;
+    private final int Customer_ID;
     private String Customer_Name;
     private String Address;
     private String Postal_Code;
@@ -17,74 +17,48 @@ public class Customer {
         Division_ID = division_id;
     }
 
-    /**
-     * @return the Customer_ID
-     */
     public int getCustomerId() {
         return Customer_ID;
     }
 
-    /**
-     * @return the Customer_Name
-     */
     public String getCustomerName() {
         return Customer_Name;
     }
 
-    /**
-     * @param Customer_Name the Customer_Name to set
-     */
-    public void setCustomerName(String Customer_Name) {
-        this.Customer_Name = Customer_Name;
+    public void setCustomerName(String customer_name) {
+        Customer_Name = customer_name;
     }
 
-    /**
-     * @return Address
-     */
-    public String getCustomerAddress() {
+    public String getAddress() {
         return Address;
     }
 
-    /**
-     * @param Address the Customer_Name to set
-     */
-    public void setAddress(String Address) {
-        this.Address = Address;
+    public void setAddress(String address) {
+        Address = address;
     }
 
-    /**
-     * @return the Postal_Code
-     */
-    public String getPostal_Code() {
+    public String getPostalCode() {
         return Postal_Code;
     }
 
-    /**
-     * @param Postal_Code the Postal_Code to set
-     */
-    public void setPostal_Code(String Postal_Code) {
-        this.Postal_Code = Postal_Code;
+    public void setPostalCode(String postal_code) {
+        Postal_Code = postal_code;
     }
 
-    /**
-     * @return the Phone
-     */
     public String getPhone() {
         return Phone;
     }
 
-    /**
-     * @param Phone the Phone to set
-     */
-    public void setPhone(String Phone) {
-        this.Phone = Phone;
+    public void setPhone(String phone) {
+        Phone = phone;
     }
 
-    /**
-     * @return the Division_ID
-     */
-    public int getDivision_ID() {
+    public int getDivisionID() {
         return Division_ID;
+    }
+
+    public void setDivisionId(int division_id) {
+        Division_ID = division_id;
     }
 
     @Override
