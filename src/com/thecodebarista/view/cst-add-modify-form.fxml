@@ -42,12 +42,12 @@
                            <content>
                               <TableView fx:id="CstTblView" prefHeight="418.0" prefWidth="600.0">
                                 <columns>
-                                  <TableColumn fx:id="CstIdCol" editable="false" prefWidth="75.0" text="Customer_ID" />
-                                  <TableColumn fx:id="CstNameCol" prefWidth="75.0" text="Customer_Name" />
-                                    <TableColumn fx:id="CstAddressCol" prefWidth="75.0" text="Address" />
-                                    <TableColumn fx:id="CstPostalCodeCol" prefWidth="75.0" text="Postal_Code" />
-                                    <TableColumn fx:id="CstPhoneCol" prefWidth="75.0" text="Phone" />
-                                    <TableColumn fx:id="CstDivisionIdCol" prefWidth="75.0" text="Division_ID" />
+                                  <TableColumn fx:id="customer_ID_Col" editable="false" prefWidth="75.0" text="Customer_ID" />
+                                  <TableColumn fx:id="customer_Name_Col" prefWidth="75.0" text="Customer_Name" />
+                                    <TableColumn fx:id="address_Col" prefWidth="75.0" text="Address" />
+                                    <TableColumn fx:id="postal_Code_Col" prefWidth="75.0" text="Postal_Code" />
+                                    <TableColumn fx:id="phone_Col" prefWidth="75.0" text="Phone" />
+                                    <TableColumn fx:id="division_ID_Col" prefWidth="75.0" text="Division_ID" />
                                 </columns>
                               </TableView>
                            </content>

@@ -103,7 +103,6 @@ public class DMLUtils {
         int user_ID = rs.getInt("User_ID");
         int contact_ID = rs.getInt("Contact_ID");
         return new Appointment(appointment_ID, title, description, location, type, start, end, customer_ID, user_ID, contact_ID);
-        // return new Appointment(appointment_id, title, description, location, type, start, end, customer_id, user_id, contact_id);
     }
 
     public static Country getCoData(ResultSet rs) throws SQLException {

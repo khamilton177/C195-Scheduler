@@ -1,16 +1,12 @@
 package com.thecodebarista.controller;
 
-import com.mysql.cj.conf.StringProperty;
 import com.thecodebarista.dao.AppointmentDAO;
 import com.thecodebarista.dao.AppointmentDaoImpl;
 import com.thecodebarista.model.Appointment;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
@@ -22,76 +18,87 @@ public class ApptAddModifyFormCtrl extends MainMenuCtrl implements Initializable
     @javafx.fxml.FXML
     private TableView<Appointment> ApptTblView;
     @javafx.fxml.FXML
-    private TableColumn<Appointment, ?> ApptIdCol;
+    private TableColumn<Appointment, ?> appointment_ID_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptTitleCol;
+    private TableColumn<?, ?> title_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptDescCol;
+    private TableColumn<?, ?> description_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptLocCol;
+    private TableColumn<?, ?> location_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptTypeCol;
+    private TableColumn<?, ?> type_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptStartCol;
+    private TableColumn<?, ?> start_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptEndCol;
+    private TableColumn<?, ?> end_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptCstIDCol;
+    private TableColumn<?, ?> customer_ID_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptUserIDCol;
+    private TableColumn<?, ?> user_ID_Col;
     @javafx.fxml.FXML
-    private TableColumn<?, ?> ApptCntIDCol;
+    private TableColumn<?, ?> contact_ID_Col;
+    @javafx.fxml.FXML
+    private TextField location_TxtFld;
+    @javafx.fxml.FXML
+    private ComboBox EndTime;
+    @javafx.fxml.FXML
+    private ListView customer_ID_ListView;
+    @javafx.fxml.FXML
+    private ListView contact_ID_ListView;
+    @javafx.fxml.FXML
+    private Button ApptModifyBtn;
+    @javafx.fxml.FXML
+    private TextField title_TxtFld;
+    @javafx.fxml.FXML
+    private DatePicker ApptStart_DatePick;
+    @javafx.fxml.FXML
+    private ListView user_ID_ListView;
+    @javafx.fxml.FXML
+    private TextField appointment_ID_TxtFld;
+    @javafx.fxml.FXML
+    private TextField type_TxtFld;
+    @javafx.fxml.FXML
+    private ComboBox StartTime;
+    @javafx.fxml.FXML
+    private Button ApptAddBtn;
+    @javafx.fxml.FXML
+    private TextField description_TxtFld;
+    @javafx.fxml.FXML
+    private DatePicker ApptEnd_DatePick;
+    @javafx.fxml.FXML
+    private Button ApptDeleteBtn;
 
     /**
      * Display the Appt ObservableList data in the TableView.
      */
-    public void displayTblViewData() throws SQLException {
+    public void displayApptTblViewData() throws SQLException {
         ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
         AppointmentDAO apptdao = new AppointmentDaoImpl();
-        allAppointments.addAll(apptdao.extractAll());
 
-        ApptIdCol.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
-        ApptTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
-        ApptDescCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        ApptLocCol.setCellValueFactory(new PropertyValueFactory<>("location"));
-        ApptTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        ApptStartCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
-        ApptEndCol.setCellValueFactory(new PropertyValueFactory<>("End"));
-        ApptCstIDCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        ApptUserIDCol.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
-        ApptCntIDCol.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
+        appointment_ID_Col.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
+        title_Col.setCellValueFactory(new PropertyValueFactory<>("title"));
+        description_Col.setCellValueFactory(new PropertyValueFactory<>("description"));
+        location_Col.setCellValueFactory(new PropertyValueFactory<>("location"));
+        type_Col.setCellValueFactory(new PropertyValueFactory<>("type"));
+        start_Col.setCellValueFactory(new PropertyValueFactory<>("Start"));
+        end_Col.setCellValueFactory(new PropertyValueFactory<>("End"));
+        customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
+        user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
+        contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
 
         allAppointments.addAll(apptdao.extractAll());
 
         ApptTblView.setItems(allAppointments);
-
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
-        AppointmentDAO apptdao = new AppointmentDaoImpl();
-
-        ApptIdCol.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
-        ApptTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
-        ApptDescCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        ApptLocCol.setCellValueFactory(new PropertyValueFactory<>("location"));
-        ApptTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        ApptStartCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
-        ApptEndCol.setCellValueFactory(new PropertyValueFactory<>("End"));
-        ApptCstIDCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        ApptUserIDCol.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
-        ApptCntIDCol.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
 
         try {
-  //          ObservableList<Appointment> allAppointments = apptdao.extractAll();
-
-            allAppointments.addAll(apptdao.extractAll());
-
+            displayApptTblViewData();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ApptTblView.setItems(allAppointments);
 
     }
 }

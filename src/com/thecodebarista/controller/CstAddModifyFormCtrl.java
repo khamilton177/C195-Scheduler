@@ -1,6 +1,7 @@
 package com.thecodebarista.controller;
 
 import com.thecodebarista.dao.CustomerDAO;
+import com.thecodebarista.dao.CustomerDaoImpl;
 import com.thecodebarista.model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,17 +18,17 @@ public class CstAddModifyFormCtrl extends MainMenuCtrl implements Initializable 
     @javafx.fxml.FXML
     protected TableView<Customer> CstTblView;
     @javafx.fxml.FXML
-    protected TableColumn<?, ?> CstIdCol;
+    protected TableColumn<?, ?> customer_ID_Col;
     @javafx.fxml.FXML
-    protected TableColumn<?, ?> CstNameCol;
+    protected TableColumn<?, ?> customer_Name_Col;
     @javafx.fxml.FXML
-    protected TableColumn<?, ?> CstPhoneCol;
+    protected TableColumn<?, ?> phone_Col;
     @javafx.fxml.FXML
-    protected TableColumn<?, ?> CstDivisionIdCol;
+    protected TableColumn<?, ?> division_ID_Col;
     @javafx.fxml.FXML
-    protected TableColumn<?, ?> CstPostalCodeCol;
+    protected TableColumn<?, ?> postal_Code_Col;
     @javafx.fxml.FXML
-    protected TableColumn<?, ?> CstAddressCol;
+    protected TableColumn<?, ?> address_Col;
 
     /**
      * Displays the Customer ObservableList data in the TableView.
@@ -36,19 +37,18 @@ public class CstAddModifyFormCtrl extends MainMenuCtrl implements Initializable 
 //
     public void displayCstTblViewData() throws SQLException {
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-        //   ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
-
-        CustomerDAO cstdao = new com.thecodebarista.dao.CustomerDaoImpl();
-        allCustomers.addAll(cstdao.extractAll());
-        CstTblView.setItems(allCustomers);
+        CustomerDAO cstdao = new CustomerDaoImpl();
 
         // Set the cell to the property value for the specified column name in string
-        CstIdCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        CstNameCol.setCellValueFactory(new PropertyValueFactory<>("customer_Name"));
-        CstPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        CstDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
-        CstPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postal_Code"));
-        CstAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
+        customer_Name_Col.setCellValueFactory(new PropertyValueFactory<>("customer_Name"));
+        phone_Col.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        division_ID_Col.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
+        postal_Code_Col.setCellValueFactory(new PropertyValueFactory<>("postal_Code"));
+        address_Col.setCellValueFactory(new PropertyValueFactory<>("address"));
+
+        allCustomers.addAll(cstdao.extractAll());
+        CstTblView.setItems(allCustomers);
     }
 
     @Override

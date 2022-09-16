@@ -10,7 +10,7 @@ public interface SchedulerDAO<T> {
     T extract(int id) throws SQLException;
 
     ObservableList<T> extractAll() throws SQLException;
-//    List<T> extractAll() throws SQLException;
+//    List<T> getAll() throws SQLException;
 
     int insert(T t) throws SQLException;
 

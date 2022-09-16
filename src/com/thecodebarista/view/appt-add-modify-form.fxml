@@ -15,59 +15,63 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="759.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.ApptAddModifyFormCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="759.0" prefWidth="959.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.ApptAddModifyFormCtrl">
    <children>
-      <VBox prefHeight="759.0" prefWidth="900.0">
+      <VBox prefHeight="759.0" prefWidth="959.0">
          <children>
             <SplitPane dividerPositions="0.3851851851851852" orientation="VERTICAL" prefHeight="760.0" prefWidth="900.0">
               <items>
                   <Pane prefHeight="115.0" prefWidth="898.0">
                      <children>
-                        <Label layoutX="101.0" layoutY="6.0" text="Label" />
-                        <TextField fx:id="appointment_ID_TxtFld" editable="false" layoutX="101.0" layoutY="22.0" />
-                        <Label layoutX="265.0" layoutY="6.0" text="Label" />
-                        <TextField fx:id="title_TxtFld" layoutX="265.0" layoutY="22.0" />
-                        <Label layoutX="101.0" layoutY="56.0" text="Label" />
-                        <TextField fx:id="description_TxtFld" layoutX="101.0" layoutY="72.0" />
-                        <Label layoutX="265.0" layoutY="56.0" text="Label" />
-                        <TextField fx:id="location_TxtFld" layoutX="265.0" layoutY="72.0" />
-                        <Label layoutX="430.0" layoutY="56.0" text="Label" />
-                        <TextField fx:id="type_TxtFld" layoutX="430.0" layoutY="72.0" />
-                        <Label layoutX="101.0" layoutY="108.0" text="Label" />
-                        <DatePicker fx:id="ApptDatePicker" layoutX="101.0" layoutY="123.0" prefHeight="36.0" prefWidth="174.0" />
-                        <Label layoutX="314.0" layoutY="108.0" text="Label" />
-                        <ComboBox layoutX="314.0" layoutY="123.0" prefWidth="150.0" />
-                        <Label layoutX="101.0" layoutY="178.0" text="Label" />
+                        <Label layoutX="101.0" layoutY="6.0" text="Appointment ID#" />
+                        <TextField fx:id="appointment_ID_TxtFld" editable="false" layoutX="101.0" layoutY="22.0" prefHeight="25.0" prefWidth="99.0" />
+                        <Label layoutX="213.0" layoutY="6.0" text="Title" />
+                        <TextField fx:id="title_TxtFld" layoutX="213.0" layoutY="22.0" prefHeight="25.0" prefWidth="200.0" />
+                        <Label layoutX="423.0" layoutY="6.0" text="Description" />
+                        <TextField fx:id="description_TxtFld" layoutX="423.0" layoutY="22.0" prefHeight="25.0" prefWidth="345.0" />
+                        <Label layoutX="101.0" layoutY="61.0" text="Location" />
+                        <TextField fx:id="location_TxtFld" layoutX="101.0" layoutY="77.0" prefHeight="25.0" prefWidth="312.0" />
+                        <Label layoutX="423.0" layoutY="57.0" text="Type" />
+                        <TextField fx:id="type_TxtFld" layoutX="424.0" layoutY="77.0" prefHeight="25.0" prefWidth="345.0" />
+                        <Label layoutX="101.0" layoutY="108.0" text="Start Date" />
+                        <DatePicker fx:id="ApptStart_DatePick" layoutX="101.0" layoutY="123.0" prefHeight="36.0" prefWidth="174.0" />
+                        <Label layoutX="302.0" layoutY="108.0" text="Start Time" />
+                        <ComboBox fx:id="StartTime" layoutX="302.0" layoutY="123.0" prefWidth="150.0" />
+                        <Label layoutX="487.0" layoutY="108.0" text="End Date" />
+                        <DatePicker fx:id="ApptEnd_DatePick" layoutX="483.0" layoutY="123.0" prefHeight="36.0" prefWidth="174.0" />
+                        <Label layoutX="684.0" layoutY="108.0" text="End Time" />
+                        <ComboBox fx:id="EndTime" layoutX="684.0" layoutY="123.0" prefWidth="150.0" />
+                        <Label layoutX="101.0" layoutY="178.0" text="Customer ID#" />
                         <ListView fx:id="customer_ID_ListView" layoutX="101.0" layoutY="195.0" prefHeight="89.0" prefWidth="200.0" />
-                        <Label layoutX="314.0" layoutY="178.0" text="Label" />
-                        <ListView fx:id="user_ID_ListView" layoutX="314.0" layoutY="195.0" prefHeight="89.0" prefWidth="200.0" />
-                        <Label layoutX="542.0" layoutY="178.0" text="Label" />
-                        <ListView fx:id="contact_ID_ListView" layoutX="542.0" layoutY="195.0" prefHeight="89.0" prefWidth="200.0" />
+                        <Label layoutX="314.0" layoutY="178.0" text="Contact ID#" />
+                        <ListView fx:id="contact_ID_ListView" layoutX="314.0" layoutY="195.0" prefHeight="89.0" prefWidth="200.0" />
+                        <Label layoutX="542.0" layoutY="178.0" text="User ID#" />
+                        <ListView fx:id="user_ID_ListView" layoutX="542.0" layoutY="195.0" prefHeight="89.0" prefWidth="200.0" />
                      </children>
                   </Pane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30.0" prefWidth="598.0">
                      <children>
-                        <ButtonBar prefHeight="25.0" prefWidth="890.0">
+                        <ButtonBar prefHeight="25.0" prefWidth="942.0">
                           <buttons>
                             <Button fx:id="ApptAddBtn" mnemonicParsing="false" text="Add" />
                               <Button fx:id="ApptModifyBtn" layoutX="535.0" layoutY="26.0" mnemonicParsing="false" text="Modify" />
                               <Button fx:id="ApptDeleteBtn" layoutX="535.0" layoutY="26.0" mnemonicParsing="false" text="Delete" />
                           </buttons>
                         </ButtonBar>
-                        <ScrollPane layoutY="47.0" prefHeight="421.0" prefWidth="898.0">
+                        <ScrollPane layoutY="47.0" prefHeight="421.0" prefWidth="959.0">
                            <content>
-                              <TableView fx:id="ApptTblView" prefHeight="413.0" prefWidth="888.0">
+                              <TableView fx:id="ApptTblView" prefHeight="413.0" prefWidth="944.0">
                                 <columns>
-                                  <TableColumn fx:id="ApptIdCol" editable="false" prefWidth="75.0" text="Appointment_ID" />
-                                  <TableColumn fx:id="ApptTitleCol" prefWidth="75.0" text="Title" />
-                                    <TableColumn fx:id="ApptDescCol" prefWidth="75.0" text="Description" />
-                                    <TableColumn fx:id="ApptLocCol" prefWidth="75.0" text="Location" />
-                                    <TableColumn fx:id="ApptTypeCol" prefWidth="75.0" text="Type" />
-                                    <TableColumn fx:id="ApptStartCol" prefWidth="75.0" text="Start" />
-                                    <TableColumn fx:id="ApptEndCol" prefWidth="75.0" text="End" />
-                                    <TableColumn fx:id="ApptCstIDCol" prefWidth="75.0" text="Customer_ID" />
-                                    <TableColumn fx:id="ApptUserIDCol" prefWidth="75.0" text="User_ID" />
-                                    <TableColumn fx:id="ApptCntIDCol" prefWidth="75.0" text="Contact_ID" />
+                                  <TableColumn fx:id="appointment_ID_Col" editable="false" prefWidth="75.0" text="Appointment_ID" />
+                                  <TableColumn fx:id="title_Col" prefWidth="75.0" text="Title" />
+                                    <TableColumn fx:id="description_Col" prefWidth="75.0" text="Description" />
+                                    <TableColumn fx:id="location_Col" prefWidth="75.0" text="Location" />
+                                    <TableColumn fx:id="contact_ID_Col" minWidth="9.0" prefWidth="75.0" text="Contact" />
+                                    <TableColumn fx:id="type_Col" prefWidth="75.0" text="Type" />
+                                    <TableColumn fx:id="start_Col" prefWidth="150.0" text="Start Date and Time" />
+                                    <TableColumn fx:id="end_Col" minWidth="0.0" prefWidth="123.0" text="End Date and Time" />
+                                    <TableColumn fx:id="customer_ID_Col" minWidth="0.0" prefWidth="97.0" text="Customer_ID" />
+                                    <TableColumn fx:id="user_ID_Col" prefWidth="67.0" text="User_ID" />
                                 </columns>
                               </TableView>
                            </content>

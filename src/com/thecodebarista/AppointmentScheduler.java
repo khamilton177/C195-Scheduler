@@ -4,6 +4,7 @@ import com.thecodebarista.dao.*;
 import com.thecodebarista.controller.*;
 import com.thecodebarista.model.Appointment;
 import com.thecodebarista.model.Country;
+import com.thecodebarista.model.Customer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -59,7 +60,12 @@ public class AppointmentScheduler extends Application {
         DBConnection.establishConnection();
         LoginFormCtrl.loginLogger();
 
- //       List<Appointment> appointments =  ArrayList<>();
+        CustomerDAO cstdaoG = new CustomerDaoImpl();
+        Customer customer = cstdaoG.extract(2);
+        System.out.println(customer);
+
+/*
+        //       List<Appointment> appointments =  ArrayList<>();
         AppointmentDAO apptdao = new AppointmentDaoImpl();
         List<Appointment> appointments =  apptdao.extractAll();
      //   appointments.addAll();
@@ -67,7 +73,7 @@ public class AppointmentScheduler extends Application {
         for ( Appointment appointment : apptdao.extractAll()) {
             System.out.println(appointments);
         }
-
+*/
         launch(args);
         DBConnection.closeConnection();
     }

@@ -19,14 +19,14 @@ public class CustomerDaoImpl implements CustomerDAO {
     private int rowsAffected = 0; // Setting to 0. SELECT statements don't return a value so this is a nominal value.
 
     @Override
-    public Customer extract(int customer_id) throws SQLException {
+    public Customer extract(int id) throws SQLException {
         Customer customer = null;
         String sqlStmt="SELECT * FROM customers" +
                 " WHERE Customer_ID = ?";
 
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            prepStmt.setInt(1, customer_id);
+            prepStmt.setInt(1, id);
             System.out.println("made it here 1");
 
             // Pass the preparedStatement to be executed.

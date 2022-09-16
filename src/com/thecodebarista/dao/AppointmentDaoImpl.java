@@ -8,6 +8,9 @@ import com.thecodebarista.model.Appointment;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,4 +169,11 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     public int save(Appointment appointment) throws SQLException {
         return 0;
     }
+
+    @Override
+    public LocalDateTime getLDT(LocalDate ldt, LocalTime lt) {
+        LocalDateTime lDteT = LocalDateTime.of(ldt, lt);
+        return lDteT;
+    };
+
 }

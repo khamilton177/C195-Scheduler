@@ -1,11 +1,15 @@
 package com.thecodebarista.dao;
 
+import com.thecodebarista.TimeMachine;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class UserDaoImpl {
 
@@ -53,4 +57,12 @@ public class UserDaoImpl {
         }
         return allUsers;
     }
+
+    /*
+    @Override
+    public LocalDateTime getLDT(LocalDate ldt, LocalTime lt) {
+        LocalDateTime lDteT = LocalDateTime.of(ldt, lt);
+        return lDteT;
+    };
+*/
 }
