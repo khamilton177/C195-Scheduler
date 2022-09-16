@@ -254,3 +254,7 @@ Sep 15, 2022 8:00:56 PM com.thecodebarista.controller.LoginFormCtrl onActionLogi
 INFO: Valid Login: true
 Reason: Login Successful!
 
+Sep 16, 2022 11:05:06 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
