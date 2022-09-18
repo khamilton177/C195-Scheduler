@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="573.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.ApptAddUpdateFormCtrl">
+   <children>
+      <Pane prefHeight="82.0" prefWidth="800.0">
+         <children>
+            <Label fx:id="apptAlertBoxLbl" layoutX="16.0" layoutY="23.0" prefHeight="49.0" prefWidth="600.0" />
+         </children></Pane>
+      <Pane layoutY="88.0" prefHeight="488.0" prefWidth="800.0">
+         <children>
+            <Label layoutX="45.0" layoutY="14.0" text="Appointment ID#" />
+            <TextField fx:id="appointment_ID_TxtFld" editable="false" layoutX="45.0" layoutY="30.0" prefHeight="25.0" prefWidth="99.0" />
+            <Label layoutX="157.0" layoutY="14.0" text="Title" />
+            <TextField fx:id="title_TxtFld" layoutX="157.0" layoutY="30.0" prefHeight="25.0" prefWidth="200.0" />
+            <Label layoutX="367.0" layoutY="14.0" text="Description" />
+            <TextField fx:id="description_TxtFld" layoutX="367.0" layoutY="30.0" prefHeight="25.0" prefWidth="345.0" />
+            <Label layoutX="45.0" layoutY="69.0" text="Location" />
+            <TextField fx:id="location_TxtFld" layoutX="45.0" layoutY="85.0" prefHeight="25.0" prefWidth="312.0" />
+            <Label layoutX="367.0" layoutY="65.0" text="Type" />
+            <TextField fx:id="type_TxtFld" layoutX="368.0" layoutY="85.0" prefHeight="25.0" prefWidth="345.0" />
+            <Label layoutX="45.0" layoutY="116.0" text="Start Date" />
+            <DatePicker fx:id="ApptStart_DatePick" layoutX="45.0" layoutY="131.0" prefHeight="36.0" prefWidth="174.0" />
+            <Label layoutX="246.0" layoutY="116.0" text="Start Time" />
+            <ComboBox fx:id="StartTime" layoutX="246.0" layoutY="131.0" prefWidth="150.0" />
+            <Label layoutX="420.0" layoutY="116.0" text="Duration" />
+            <Label layoutX="598.0" layoutY="116.0" text="End Time" />
+            <ComboBox fx:id="DurationCB" layoutX="420.0" layoutY="131.0" onAction="#onDurationUpdate" prefWidth="150.0" />
+            <Label layoutX="45.0" layoutY="186.0" text="Customer ID#" />
+            <ListView fx:id="customer_ID_ListView" layoutX="45.0" layoutY="203.0" prefHeight="89.0" prefWidth="200.0" />
+            <Label layoutX="258.0" layoutY="186.0" text="Contact ID#" />
+            <ListView fx:id="contact_ID_ListView" layoutX="258.0" layoutY="203.0" prefHeight="89.0" prefWidth="200.0" />
+            <Label layoutX="486.0" layoutY="186.0" text="User ID#" />
+            <ListView fx:id="user_ID_ListView" layoutX="486.0" layoutY="203.0" prefHeight="89.0" prefWidth="200.0" />
+            <TextField fx:id="EndTime" editable="false" layoutX="598.0" layoutY="131.0" />
+         </children>
+      </Pane>
+      <ButtonBar layoutY="472.0" prefHeight="89.0" prefWidth="790.0">
+        <buttons>
+          <Button fx:id="ApptSaveBtn" mnemonicParsing="false" onAction="#onActionSaveAppt" text="Save" />
+            <Button fx:id="ApptCancelBtn" layoutX="894.0" layoutY="42.0" mnemonicParsing="false" onAction="#onActionCancel" text="Cancel" />
+        </buttons>
+      </ButtonBar>
+   </children>
+</AnchorPane>

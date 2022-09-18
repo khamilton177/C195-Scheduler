@@ -11,36 +11,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ResourceBundle;
 
-public class ApptAddModifyFormCtrl extends MainMenuCtrl implements Initializable {
+public class ApptTableWeeklyCtrl extends MainMenuCtrl implements Initializable {
 
-    @javafx.fxml.FXML
-    private TableView<Appointment> ApptTblView;
-    @javafx.fxml.FXML
-    private TableColumn<Appointment, ?> appointment_ID_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> title_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> description_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> location_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> type_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> start_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> end_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> customer_ID_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> user_ID_Col;
-    @javafx.fxml.FXML
-    private TableColumn<?, ?> contact_ID_Col;
     @javafx.fxml.FXML
     private TextField location_TxtFld;
     @javafx.fxml.FXML
-    private ComboBox EndTime;
+    private ComboBox<Timestamp> EndTime;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, Integer> user_ID_Col;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, Timestamp> end_Col;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, String> title_Col;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, Integer> customer_ID_Col;
     @javafx.fxml.FXML
     private ListView customer_ID_ListView;
     @javafx.fxml.FXML
@@ -52,27 +39,40 @@ public class ApptAddModifyFormCtrl extends MainMenuCtrl implements Initializable
     @javafx.fxml.FXML
     private DatePicker ApptStart_DatePick;
     @javafx.fxml.FXML
+    private TableColumn<Appointment, Integer> appointment_ID_Col;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, String> description_Col;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, Timestamp> start_Col;
+    @javafx.fxml.FXML
     private ListView user_ID_ListView;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, String> location_Col;
     @javafx.fxml.FXML
     private TextField appointment_ID_TxtFld;
     @javafx.fxml.FXML
     private TextField type_TxtFld;
     @javafx.fxml.FXML
-    private ComboBox StartTime;
+    private ComboBox<Timestamp> StartTime;
     @javafx.fxml.FXML
     private Button ApptAddBtn;
     @javafx.fxml.FXML
+    private TableColumn<Appointment, String> type_Col;
+    @javafx.fxml.FXML
     private TextField description_TxtFld;
+    @javafx.fxml.FXML
+    private TableColumn<Appointment, String> contact_ID_Col;
     @javafx.fxml.FXML
     private DatePicker ApptEnd_DatePick;
     @javafx.fxml.FXML
     private Button ApptDeleteBtn;
 
+
     /**
      * Display the Appt ObservableList data in the TableView.
      */
     public void displayApptTblViewData() throws SQLException {
-        ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
+        ObservableList<Appointment> allAppsWeekly = FXCollections.observableArrayList();
         AppointmentDAO apptdao = new AppointmentDaoImpl();
 
         appointment_ID_Col.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
@@ -86,19 +86,17 @@ public class ApptAddModifyFormCtrl extends MainMenuCtrl implements Initializable
         user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
         contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
 
-        allAppointments.addAll(apptdao.extractAll());
+        allAppsWeekly.addAll(apptdao.extractAll());
 
-        ApptTblView.setItems(allAppointments);
+        ApptTblView.setItems(allAppsWeekly);
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
+    public void initialize(URL url, ResourceBundle rb) {
         try {
             displayApptTblViewData();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 }

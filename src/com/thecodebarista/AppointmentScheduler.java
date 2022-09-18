@@ -44,7 +44,8 @@ public class AppointmentScheduler extends Application {
         Logger actLog = Logger.getLogger("/login_activity.txt");
 
         try{
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("view/login-form.fxml")));
+            Parent root = FXMLLoader.load(getClass().getResource("view/login-form.fxml"));
+//            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("view/login-form.fxml")));
             stage.setTitle("C195-Scheduler");
             stage.setScene(new Scene(root));
             stage.show();
@@ -60,20 +61,6 @@ public class AppointmentScheduler extends Application {
         DBConnection.establishConnection();
         LoginFormCtrl.loginLogger();
 
-        CustomerDAO cstdaoG = new CustomerDaoImpl();
-        Customer customer = cstdaoG.extract(2);
-        System.out.println(customer);
-
-/*
-        //       List<Appointment> appointments =  ArrayList<>();
-        AppointmentDAO apptdao = new AppointmentDaoImpl();
-        List<Appointment> appointments =  apptdao.extractAll();
-     //   appointments.addAll();
-
-        for ( Appointment appointment : apptdao.extractAll()) {
-            System.out.println(appointments);
-        }
-*/
         launch(args);
         DBConnection.closeConnection();
     }

@@ -42,10 +42,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "User_ID=" + User_ID +
-                ", User_Name='" + User_Name + '\'' +
-                ", Password='" + Password + '\'' +
-                '}';
+        return "[" + User_ID +
+                "] " + User_Name;
     }
 }

@@ -35,13 +35,11 @@ public class Contact {
         Email = email;
     }
 
+    // Customized toString for Listview Selections
     @Override
     public String toString() {
-        return "Contact{" +
-                "Contact_ID=" + Contact_ID +
-                ", Contact_Name='" + Contact_Name + '\'' +
-                ", Email='" + Email + '\'' +
-                '}';
+        return "[Contact_ID]" + Contact_ID +
+                " " + Contact_Name;
     }
 
 }

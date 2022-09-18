@@ -54,7 +54,7 @@ public class CustomerDaoImpl implements CustomerDAO {
     @Override
     public ObservableList<Customer> extractAll() throws SQLException{
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-      //  List<Customer> allCustomers = new ArrayList<>();
+ //       List<Customer> allCustomers = new ArrayList<>();
         String sqlStmt = "SELECT * FROM customers";
         prepStmt = useConnection().prepareStatement(sqlStmt);
         DMLUtils.doDMLv2(prepStmt, sqlStmt);

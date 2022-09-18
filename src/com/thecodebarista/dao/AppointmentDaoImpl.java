@@ -16,7 +16,6 @@ import java.util.List;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getApptData;
-//import static com.thecodebarista.dao.DMLUtils.getApptDatav2;
 
 public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     private static String returnGenKeys = ".RETURN_GENERATED_KEYS";
@@ -168,6 +167,33 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     @Override
     public int save(Appointment appointment) throws SQLException {
         return 0;
+    }
+
+    @Override
+    public ObservableList<Appointment> adhocQuery(String wc) throws SQLException{
+        ObservableList<Appointment> wcAppointments = FXCollections.observableArrayList();
+
+        try{
+            String sqlStmt = wc;
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Return Adhoc query results");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                wcAppointments.add(appointment);
+            }
+            return wcAppointments;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return wcAppointments;
     }
 
     @Override

@@ -12,25 +12,6 @@ public class DMLUtils {
     public static int rowsAffected;
     public static String returnGenKeys = ".RETURN_GENERATED_KEYS";
 
-    public static void doDML(String sqlStmt) {
-        query = sqlStmt;
-
-        try{
-            // determine query execution
-            if(query.toLowerCase().startsWith("select")){
-                prepStmt= useConnection().prepareStatement(sqlStmt);
-                rsData=prepStmt.executeQuery();
-            }
-            else {
-                prepStmt= useConnection().prepareStatement(sqlStmt);
-                prepStmt.executeUpdate();
-            }
-        }
-        catch(SQLException e){
-            System.out.println("Error: "+e.getMessage());
-        }
-    }
-
     public static int doDMLv2(PreparedStatement prepStmt, String sqlStmt) {
         boolean isSelect = sqlStmt.toLowerCase().startsWith("select");
         System.out.println("Processing: " + prepStmt.toString());

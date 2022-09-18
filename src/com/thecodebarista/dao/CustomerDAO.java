@@ -12,7 +12,7 @@ public interface CustomerDAO extends SchedulerDAO<Customer> {
      * Get a list of all Customers.
      * @return allCustomers  - List of all Customers.
      */
-    @Override
-    ObservableList<Customer> extractAll() throws SQLException;
+ //   @Override
+//    ObservableList<Customer> extractAll() throws SQLException;
 
 }

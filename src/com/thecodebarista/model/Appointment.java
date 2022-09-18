@@ -17,11 +17,6 @@ public class Appointment {
     private int User_ID;
     private int Contact_ID;
 
- /*   public Appointment(){
-
-    };
-*/
-
     public Appointment(int appointment_ID, String title, String description, String location, String type, Timestamp start, Timestamp end, int customer_ID, int user_ID, int contact_ID) {
         Appointment_ID = appointment_ID;
         Title = title;

@@ -50,9 +50,7 @@ public class LoginFormCtrl implements Initializable {
      * Boolean to instruct application to use the foreign language error messages
      */
     public static boolean uselocaleErrMsg;
-    // public Label ZoneIdLbl;
-
-    public static Label static_ZoneIdLabel;
+    public static String static_ZoneId;
 
     @javafx.fxml.FXML
     private Label LoginMsgTxt;
@@ -205,6 +203,9 @@ public class LoginFormCtrl implements Initializable {
      */
     @javafx.fxml.FXML
     public void onActionExit(ActionEvent event) {
+        System.out.println("Cancel Button Source: " + event.getSource().toString());
+        System.out.println("Cancel Button ID: " + ((Button)event.getSource()).getId());
+
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         stage.close();
     }
@@ -235,7 +236,7 @@ public class LoginFormCtrl implements Initializable {
                         actLog.info(setLoginErrMsg("Success"));
 
                         FXMLLoader loader = new FXMLLoader();
-                        loader.setLocation(getClass().getResource("../view/main-menu.fxml"));
+                        loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                         scene = loader.load();
                         MainMenuCtrl formController = loader.getController();
                         formController.setCurrentUserId(getCurrentUserid);
@@ -267,8 +268,7 @@ public class LoginFormCtrl implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // Set the Login Form label with the ZoneID information.
         setZoneId();
-        //loginLogger();
-
+        static_ZoneId = ZoneIdLbl.getText();
 
         // Get the locale information and direct application to use the foreign messages for the Login Form.
         uselocaleErrMsg = setLoginLanguage();

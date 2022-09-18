@@ -258,3 +258,295 @@ Sep 16, 2022 11:05:06 AM com.thecodebarista.controller.LoginFormCtrl onActionLog
 INFO: Valid Login: true
 Reason: Login Successful!
 
+Sep 16, 2022 11:57:26 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 16, 2022 12:06:16 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 16, 2022 1:36:56 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+Sep 16, 2022 1:37:01 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 16, 2022 1:39:21 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 16, 2022 1:57:34 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+Sep 16, 2022 1:57:38 PM com.thecodebarista.controller.LoginFormCtrl login
+WARNING: Valid Login: false
+Reason: The username field is empty.
+
+Sep 16, 2022 1:57:44 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 16, 2022 2:07:35 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 4:20:44 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 4:23:00 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 4:27:40 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 4:30:06 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 8:57:27 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:05:16 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:06:00 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:06:54 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:07:48 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:08:37 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:11:51 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:13:02 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:13:58 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:14:28 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:15:01 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:34:42 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:44:59 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:46:07 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:48:16 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:53:17 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 9:56:40 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:10:51 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:18:28 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:20:31 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:23:09 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:34:15 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:46:13 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:52:56 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:56:12 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:56:45 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:57:26 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 10:58:00 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:09:03 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:12:09 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:14:04 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:22:37 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:23:32 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:24:13 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:31:28 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:34:37 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:49:00 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:49:57 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:51:28 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:53:07 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 17, 2022 11:57:36 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:00:47 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:05:02 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:05:34 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:06:06 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:23:18 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:23:56 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:24:37 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+Sep 18, 2022 12:24:41 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:25:12 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:25:50 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:26:57 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:36:34 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:39:31 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 12:43:39 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 1:07:05 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 1:14:53 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 1:16:27 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 1:22:28 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 18, 2022 1:28:02 AM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+

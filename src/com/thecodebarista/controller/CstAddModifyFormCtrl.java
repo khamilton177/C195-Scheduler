@@ -1,13 +1,17 @@
 package com.thecodebarista.controller;
 
+import com.thecodebarista.dao.CountryDaoImpl;
 import com.thecodebarista.dao.CustomerDAO;
 import com.thecodebarista.dao.CustomerDaoImpl;
+import com.thecodebarista.dao.FirstLevelDivisionDAOImpl;
+import com.thecodebarista.model.Country;
 import com.thecodebarista.model.Customer;
+import com.thecodebarista.model.FirstLevelDivision;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
@@ -15,49 +19,64 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class CstAddModifyFormCtrl extends MainMenuCtrl implements Initializable {
-    @javafx.fxml.FXML
-    protected TableView<Customer> CstTblView;
-    @javafx.fxml.FXML
-    protected TableColumn<?, ?> customer_ID_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<?, ?> customer_Name_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<?, ?> phone_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<?, ?> division_ID_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<?, ?> postal_Code_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<?, ?> address_Col;
 
-    /**
-     * Displays the Customer ObservableList data in the TableView.
-     */
 
-//
-    public void displayCstTblViewData() throws SQLException {
-        ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-        CustomerDAO cstdao = new CustomerDaoImpl();
 
-        // Set the cell to the property value for the specified column name in string
-        customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        customer_Name_Col.setCellValueFactory(new PropertyValueFactory<>("customer_Name"));
-        phone_Col.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        division_ID_Col.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
-        postal_Code_Col.setCellValueFactory(new PropertyValueFactory<>("postal_Code"));
-        address_Col.setCellValueFactory(new PropertyValueFactory<>("address"));
+    @javafx.fxml.FXML
+    private Label cstAlertBoxLbl;
 
-        allCustomers.addAll(cstdao.extractAll());
-        CstTblView.setItems(allCustomers);
+    @javafx.fxml.FXML
+    private TextField customer_ID_TxtFld;
+
+    @javafx.fxml.FXML
+    private TextField phone_TxtFld;
+
+    @javafx.fxml.FXML
+    private TextField customer_Name_TxtFld;
+
+    @javafx.fxml.FXML
+    private TextField address_TxtFld;
+
+    @javafx.fxml.FXML
+    private TextField postal_Code_TxtFld;
+
+    @javafx.fxml.FXML
+    private ComboBox<Country> country_ID_CBox;
+
+    @javafx.fxml.FXML
+    private ComboBox<FirstLevelDivision> division_ID_CBox;
+
+    @javafx.fxml.FXML
+    private Button CstSaveBtn;
+
+    @javafx.fxml.FXML
+    private Button CstCancelBtn;
+
+    @javafx.fxml.FXML
+    public void onActionSaveCst(ActionEvent actionEvent) {
+    }
+
+    @javafx.fxml.FXML
+    public void OnActionCancel(ActionEvent actionEvent) {
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        try {
-            displayCstTblViewData();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        CountryDaoImpl coCB = new CountryDaoImpl();
+        FirstLevelDivisionDAOImpl divCB = new FirstLevelDivisionDAOImpl();
+
+//        country_ID_CBox.
+//                division_ID_CBox.
+//                static_ZoneId
+
+//        colName.setCellValueFactory(cellData -> {
+ //           return cellData.getValue().getName();
+    //    try {
+            // displayCstTblViewData();
+      //  } catch (SQLException e) {
+           //  e.printStackTrace();
+    //    }
     }
+
 }
