@@ -51,6 +51,7 @@ public class LoginFormCtrl implements Initializable {
      */
     public static boolean uselocaleErrMsg;
     public static String static_ZoneId;
+    String ZoneIdRegion;
 
     @javafx.fxml.FXML
     private Label LoginMsgTxt;
@@ -62,8 +63,7 @@ public class LoginFormCtrl implements Initializable {
     private Button LoginBtn;
     @javafx.fxml.FXML
     private ImageView LoginIconImageView;
-    @javafx.fxml.FXML
-    private Label RegionIdLbl;
+
     @javafx.fxml.FXML
     private TextField UserNameTxtFld;
     @javafx.fxml.FXML
@@ -269,6 +269,8 @@ public class LoginFormCtrl implements Initializable {
         // Set the Login Form label with the ZoneID information.
         setZoneId();
         static_ZoneId = ZoneIdLbl.getText();
+        ZoneIdRegion = ZoneIdLbl.getText().split("/")[0];
+        System.out.println("Region: " + ZoneIdRegion);
 
         // Get the locale information and direct application to use the foreign messages for the Login Form.
         uselocaleErrMsg = setLoginLanguage();

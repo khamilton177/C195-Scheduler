@@ -54,7 +54,7 @@ public class CustomerDaoImpl implements CustomerDAO {
     @Override
     public ObservableList<Customer> extractAll() throws SQLException{
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
- //       List<Customer> allCustomers = new ArrayList<>();
+        //       List<Customer> allCustomers = new ArrayList<>();
         String sqlStmt = "SELECT * FROM customers";
         prepStmt = useConnection().prepareStatement(sqlStmt);
         DMLUtils.doDMLv2(prepStmt, sqlStmt);
@@ -73,13 +73,12 @@ public class CustomerDaoImpl implements CustomerDAO {
 
     @Override
     public int insert(Customer customer) throws SQLException {
-        String sqlStmt = "INSERT INTO customers (Customer_ID, Customer_Name, Address, Postal_Code, Phone, Division_ID)" +
+        String sqlStmt = "INSERT INTO customers ( Customer_Name, Address, Postal_Code, Phone, Division_ID)" +
                 " VAlUES(?, ?, ?, ?, ?, ?)";
 
         // Build the preparedStatement.
         try {
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            prepStmt.setInt(1, customer.getCustomer_ID());
             prepStmt.setString(2, customer.getCustomer_Name());
             prepStmt.setString(3, customer.getAddress());
             prepStmt.setString(4, customer.getPostal_Code());
@@ -143,4 +142,26 @@ public class CustomerDaoImpl implements CustomerDAO {
     public int save(Customer customer) throws SQLException {
         return 0;
     }
+
+    /**
+     * Lookup a Customer by Customer_ID field.
+     * @param id  Customer ID of Customer to search.
+     * @return  Customer row  (null if not found).
+     */
+    @Override
+    public Customer getCstLVIndex(int id) {
+        ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
+
+        int index = -1;
+
+        for (Customer customer : allCustomers){
+            index++;
+
+            if (customer.getCustomer_ID() == id)
+                return allCustomers.get(index);
+        }
+
+        return null;
+    }
+
 }

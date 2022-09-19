@@ -90,7 +90,6 @@
                         </HBox>
                     </children>
                 </VBox>
-                <Label fx:id="RegionIdLbl" layoutX="14.0" layoutY="369.0" prefHeight="17.0" prefWidth="141.0" />
                 <Label fx:id="ZoneIdLbl" alignment="CENTER_RIGHT" layoutX="180.0" layoutY="369.0" prefHeight="17.0" prefWidth="131.0" textAlignment="JUSTIFY" />
             </children>
         </AnchorPane>

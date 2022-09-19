@@ -27,11 +27,16 @@ import javafx.stage.Stage;
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     public static Label static_AddUpdateLabel;
     Appointment selectedAppt;
+    Customer SelectedCst;
     Alert alert;
     Optional<ButtonType> confirm;
 
     @javafx.fxml.FXML
     protected TableView<Appointment> ApptTblView;
+    @javafx.fxml.FXML
+    protected TableView<Appointment> ApptTblViewMonthly;
+    @javafx.fxml.FXML
+    protected TableView<Appointment> ApptTblViewWeekly;
     @javafx.fxml.FXML
     protected DatePicker ApptEnd_SF;
     @javafx.fxml.FXML
@@ -219,8 +224,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
         ApptTblView.setItems(allApptAppointments);
     }
+
     /**
-     * Loads the ApptAddUpdateFormCtrl and calls it's method to send the selected row data in the Appointment table view to the appt-add-update-form view.
+     * Loads the ApptAddUpdateFormCtrl and calls its method to send the selected row data in the Appointment table view to the appt-add-update-form view.
      * @param actionEvent Update form button, ApptUpdateBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
      * <BR>Present alert error dialog when no selection made.
@@ -237,6 +243,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
             // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            stage.setTitle("New Appointment");
             stage.setScene(new Scene(scene));
             stage.show();
         }
@@ -247,6 +254,37 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
      //   catch (SQLException e) {
     //        e.printStackTrace();
     //    }
+    }
+
+    /**
+     * Loads the CstAddUpdateFormCtrl and calls its method to send the selected row data in the Customer table view to the cst-add-update-form view.
+     * @param actionEvent Update form button, CstUpdateBtn, clicked.
+     * @throws IOException java.io.IOException - captures name exception: NullPointerException.
+     * <BR>Present alert error dialog when no selection made.
+     */
+    @javafx.fxml.FXML
+    private void onActionCstNew(ActionEvent actionEvent) throws IOException {
+        String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("New Customer Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Objects.requireNonNull(getClass().getResource("/com/thecodebarista/view/cst-add-update-form.fxml")));
+            scene = loader.load();
+
+            // Cast window to stage
+            stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            stage.setTitle("New Customer");
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+        }
+        //   catch (SQLException e) {
+        //        e.printStackTrace();
+        //    }
     }
 
     /**
@@ -264,12 +302,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/com/thecodebarista/view/appt-add-update-form.fxml"));
             scene = loader.load();
-
             ApptAddUpdateFormCtrl modelCtrl = loader.getController();
-
             selectedAppt = ApptTblView.getSelectionModel().getSelectedItem();
             modelCtrl.sendApptModifyData(selectedAppt);
-            modelCtrl.displayApptTblViewData();
 
             // Cast window to stage
             stage = (Stage)((Button)event.getSource()).getScene().getWindow();
@@ -296,7 +331,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
         try{
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../view/login-form.fxml"));
+            loader.setLocation(getClass().getResource("/com/thecodebarista//view/login-form.fxml"));
             scene = loader.load();
 
             // Cast window to stage
@@ -314,7 +349,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         try {
-            //displayApptTblViewData();
+            displayApptTblViewData();
             displayCstTblViewData();
         } catch (SQLException e) {
             e.printStackTrace();

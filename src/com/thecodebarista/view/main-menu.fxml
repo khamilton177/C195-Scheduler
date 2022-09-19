@@ -125,6 +125,32 @@
                               <AnchorPane prefHeight="895.0" prefWidth="6.0" />
                               <TabPane layoutX="204.0" layoutY="40.0" prefHeight="753.0" prefWidth="893.0" tabClosingPolicy="UNAVAILABLE">
                                  <tabs>
+                                    <Tab text="Appointments">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <ScrollPane layoutX="1.0" prefHeight="720.0" prefWidth="893.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <content>
+                                                      <TableView fx:id="ApptTblView" prefHeight="720.0" prefWidth="884.0">
+                                                        <columns>
+                                                            <TableColumn fx:id="appointment_ID_Col" editable="false" prefWidth="125.0" text="Appointment_ID" />
+                                                            <TableColumn fx:id="title_Col" prefWidth="100.0" text="Title" />
+                                                            <TableColumn fx:id="description_Col" minWidth="0.0" prefWidth="136.0" text="Description" />
+                                                            <TableColumn fx:id="location_Col" minWidth="7.0" prefWidth="99.0" text="Location" />
+                                                            <TableColumn fx:id="contact_ID_Col" minWidth="9.0" prefWidth="88.0" text="Contact" />
+                                                            <TableColumn fx:id="type_Col" prefWidth="82.0" text="Type" />
+                                                            <TableColumn fx:id="start_Col" prefWidth="137.0" text="Start Date and Time" />
+                                                            <TableColumn fx:id="end_Col" minWidth="0.0" prefWidth="146.0" text="End Date and Time" />
+                                                            <TableColumn fx:id="customer_ID_Col" minWidth="0.0" prefWidth="93.0" text="Customer_ID" />
+                                                            <TableColumn fx:id="user_ID_Col" prefWidth="92.0" text="User_ID" />
+                                                        </columns>
+                                                      </TableView>
+                                                   </content>
+                                                </ScrollPane>
+                                             </children>
+                                          </AnchorPane>
+                                      </content>
+                                    </Tab>
                                     <Tab text="Appointments by Month">
                                        <content>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -177,7 +203,7 @@
                                  <children>
                                     <ButtonBar prefHeight="43.0" prefWidth="1058.0">
                                        <buttons>
-                                          <Button fx:id="CstAddBtn" mnemonicParsing="false" text="New" />
+                                          <Button fx:id="CstAddBtn" mnemonicParsing="false" onAction="#onActionCstNew" text="New" />
                                           <Button fx:id="CstModifyBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" text="Update" />
                                           <Button fx:id="CstDeleteBtn" layoutX="993.0" layoutY="19.0" mnemonicParsing="false" text="Delete" />
                                        </buttons>
@@ -230,12 +256,12 @@
                                        <children>
                                           <TableView fx:id="CstTblView" layoutX="-5.0" layoutY="-1.0" prefHeight="735.0" prefWidth="888.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="-5.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="-1.0">
                                              <columns>
-                                                <TableColumn fx:id="CstIdCol" editable="false" prefWidth="75.0" text="Customer_ID" />
-                                                <TableColumn fx:id="CstNameCol" prefWidth="75.0" text="Customer_Name" />
-                                                <TableColumn fx:id="CstAddressCol" prefWidth="75.0" text="Address" />
-                                                <TableColumn fx:id="CstPostalCodeCol" prefWidth="75.0" text="Postal_Code" />
-                                                <TableColumn fx:id="CstPhoneCol" prefWidth="75.0" text="Phone" />
-                                                <TableColumn fx:id="CstDivisionIdCol" prefWidth="75.0" text="Division_ID" />
+                                                <TableColumn fx:id="CstIdCol" editable="false" prefWidth="150.0" text="Customer_ID" />
+                                                <TableColumn fx:id="CstNameCol" minWidth="0.0" prefWidth="154.0" text="Customer_Name" />
+                                                <TableColumn fx:id="CstAddressCol" prefWidth="132.0" text="Address" />
+                                                <TableColumn fx:id="CstPostalCodeCol" minWidth="0.0" prefWidth="96.0" text="Postal_Code" />
+                                                <TableColumn fx:id="CstPhoneCol" prefWidth="118.0" text="Phone" />
+                                                <TableColumn fx:id="CstDivisionIdCol" prefWidth="163.0" text="Division_ID" />
                                              </columns>
                                           </TableView>
                                        </children>

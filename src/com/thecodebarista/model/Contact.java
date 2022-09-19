@@ -38,8 +38,8 @@ public class Contact {
     // Customized toString for Listview Selections
     @Override
     public String toString() {
-        return "[Contact_ID]" + Contact_ID +
-                " " + Contact_Name;
+        return "[" + Contact_ID +
+                "] " + Contact_Name;
     }
 
 }

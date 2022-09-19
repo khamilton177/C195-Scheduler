@@ -84,7 +84,7 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="799.0" prefWidth="888.0">
                                  <children>
-                                    <TableView fx:id="ApptTblView" prefHeight="800.0" prefWidth="1089.0">
+                                    <TableView fx:id="ApptTblViewWeekly" prefHeight="800.0" prefWidth="1089.0">
                                        <columns>
                                           <TableColumn fx:id="appointment_ID_Col" editable="false" prefWidth="75.0" text="Appointment_ID" />
                                           <TableColumn fx:id="title_Col" prefWidth="75.0" text="Title" />

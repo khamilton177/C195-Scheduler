@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.SQLException;
+import java.time.LocalTime;
 
 
 public final class SchedulerUtilities {
@@ -20,6 +21,9 @@ public final class SchedulerUtilities {
      * The alert built by the onAction event triggered.
      */
     Alert alert;
+    LocalTime ESTOfficeHrsStart = LocalTime.of(8, 0);
+    LocalTime ESTOfficeHrsEnd = LocalTime.of(22, 0);
+
 
 
 
