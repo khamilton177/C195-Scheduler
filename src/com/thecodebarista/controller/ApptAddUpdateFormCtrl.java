@@ -35,6 +35,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     Customer selectedCstLVItem;
     Contact selectedCntLVItem;
     User selectedUserLVItem;
+    int selectedCstId;
+    int selectedCstIndex;
 
     @javafx.fxml.FXML
     private Label apptAlertBoxLbl;
@@ -63,12 +65,106 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     @javafx.fxml.FXML
     private ListView<User> user_ID_ListView;
     @javafx.fxml.FXML
+    private TextField customer_ID_TxtFld;
+    @javafx.fxml.FXML
+    private TextField contact_ID_TxtFld;
+    @javafx.fxml.FXML
+    private TextField user_ID_TxtFld;
+    @javafx.fxml.FXML
     private Button ApptSaveBtn;
     @javafx.fxml.FXML
     private Button ApptCancelBtn;
 
+    private int getCstByIndex(int id) {
+        int index = -1;
+
+        for (Customer customer : customer_ID_ListView.getItems()){
+            index++;
+
+            if (customer.getCustomer_ID() == id)
+                return index;
+        }
+        return -1;
+    }
+
+    private int getCntByIndex(int id) {
+        int index = -1;
+
+        for (Contact contact : contact_ID_ListView.getItems()){
+            index++;
+
+            if (contact.getContact_ID() == id)
+                return index;
+        }
+        return -1;
+    }
+
+    private int getUserByIndex(int id) {
+        int index = -1;
+
+        for (User user : user_ID_ListView.getItems()){
+            index++;
+
+            if (user.getUser_ID() == id)
+                return index;
+        }
+        return -1;
+    }
+
+
+    protected void sendApptModifyData(Appointment selectedAppt) throws SQLException {
+        AppointmentDAO aptdaoSelected = new AppointmentDaoImpl();
+        selectedAppt = aptdaoSelected.extract(selectedAppt.getAppointment_ID());
+
+        appointment_ID_TxtFld.setText(String.valueOf(selectedAppt.getAppointment_ID()));
+        title_TxtFld.setText(String.valueOf(selectedAppt.getTitle()));
+        description_TxtFld.setText(String.valueOf(selectedAppt.getDescription()));
+        location_TxtFld.setText(String.valueOf(selectedAppt.getLocation()));
+        type_TxtFld.setText(String.valueOf(selectedAppt.getType()));
+
+        // LocaleDateTime from DB timestamp conversion
+        LocalDateTime persistStartLDT = selectedAppt.getStart().toLocalDateTime();
+        LocalDateTime persistEndLDT = selectedAppt.getEnd().toLocalDateTime();
+
+        Integer minEnd = (Integer)persistEndLDT.toLocalTime().getMinute();
+        Integer minStart = (Integer)persistStartLDT.toLocalTime().getMinute();
+
+        ApptStart_DatePick.setValue(selectedAppt.getStart().toLocalDateTime().toLocalDate());
+        StartTime.setValue(selectedAppt.getStart().toLocalDateTime().toLocalTime());
+        DurationCB.setValue(minEnd-minStart);
+        EndTime.setText(persistStartLDT.plusMinutes(DurationCB.getValue()).toLocalTime().toString());
+        customer_ID_TxtFld.setText(String.valueOf(selectedAppt.getCustomer_ID()));
+        contact_ID_TxtFld.setText(String.valueOf(selectedAppt.getContact_ID()));
+        user_ID_TxtFld.setText(String.valueOf(selectedAppt.getUser_ID()));
+
+        selectedCstId = Integer.parseInt(user_ID_TxtFld.getText());
+        selectedCstIndex = getCstByIndex(selectedCstId);
+        int selectedCntId = Integer.parseInt(contact_ID_TxtFld.getText());
+        int selectedCntIndex = getCntByIndex(selectedCntId);
+        int selectedUserId = Integer.parseInt(user_ID_TxtFld.getText());
+        int selectedUserIndex = getUserByIndex(selectedUserId);
+
+        customer_ID_ListView.getSelectionModel().select(selectedCstIndex);
+        contact_ID_ListView.getSelectionModel().select(selectedCntIndex);
+        user_ID_ListView.getSelectionModel().select(selectedUserIndex);
+    }
+
+    private void buildDurations() {
+        durations.addAll(15, 30, 45);
+        DurationCB.setItems(durations);
+    }
+
+    public void onDurationUpdate(ActionEvent event) {
+    }
+
+
     @javafx.fxml.FXML
     public void onActionSaveAppt(ActionEvent actionEvent) {
+
+
+        for (Customer cst : customer_ID_ListView.getItems()){
+
+        }
     }
 
     @javafx.fxml.FXML
@@ -89,45 +185,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         }
     }
 
-    private void buildDurations() {
-        durations.addAll(15, 30, 45);
-        DurationCB.setItems(durations);
-    }
-
-    protected void sendApptModifyData(Appointment selectedAppt) throws SQLException {
-        AppointmentDAO aptdaoSelected = new AppointmentDaoImpl();
-        selectedAppt = aptdaoSelected.extract(selectedAppt.getAppointment_ID());
-
-        appointment_ID_TxtFld.setText(String.valueOf(selectedAppt.getAppointment_ID()));
-        title_TxtFld.setText(String.valueOf(selectedAppt.getTitle()));
-        description_TxtFld.setText(String.valueOf(selectedAppt.getDescription()));
-        location_TxtFld.setText(String.valueOf(selectedAppt.getLocation()));
-        type_TxtFld.setText(String.valueOf(selectedAppt.getType()));
-
-        // LocaleDateTime from DB timestamp conversion
-        LocalDateTime persistStartLDT = selectedAppt.getStart().toLocalDateTime();
-        LocalDateTime persistEndLDT = selectedAppt.getEnd().toLocalDateTime();
-
-        Integer minEnd = (Integer)persistEndLDT.toLocalTime().getMinute();
-        Integer minStart =  (Integer)persistStartLDT.toLocalTime().getMinute();
-
-        ApptStart_DatePick.setValue(selectedAppt.getStart().toLocalDateTime().toLocalDate());
-        StartTime.setValue(selectedAppt.getStart().toLocalDateTime().toLocalTime());
-        DurationCB.setValue(minEnd-minStart);
-        EndTime.setText(persistStartLDT.plusMinutes(DurationCB.getValue()).toLocalTime().toString());
-
-
-
-        //searchedCustomer = getCstLVIndex(selectedAppt.getCustomer_ID())
-        //customer_ID_ListView.getSelectionModel().select();
-     //   customer_ID_ListView.setCellFactory(selectedAppt.getCustomer_ID());
-    //    customer_ID_ListView.setCellValueFactory(new PropertyValueFactory<>(String.valueOf(selectedAppt.getCustomer_ID()));
-
-        //contact_ID_ListView.setCellFactory(selectedAppt.getContact_ID());
-        //user_ID_ListView.cellFactoryProperty(selectedAppt.getUser_ID());
-
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -138,21 +195,35 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
         try {
             // Code will populate the listviews then assign change listeners to detect and track the selected item.
-
-
             customer_ID_ListView.setItems(cstLVItems.extractAll());
-            customer_ID_ListView.getSelectionModel().selectedItemProperty().addListener((observableValue, customer, t1) -> selectedCstLVItem = customer_ID_ListView.getSelectionModel().getSelectedItem());
-            contact_ID_ListView.setItems(cntLVItems.extractAll());
-            contact_ID_ListView.getSelectionModel().selectedItemProperty().addListener((observableValue, contact, t1) -> selectedCntLVItem = contact_ID_ListView.getSelectionModel().getSelectedItem());
-            user_ID_ListView.setItems(userLVItems.extractAll());
-            user_ID_ListView.getSelectionModel().selectedItemProperty().addListener((observableValue, user, t1) -> selectedUserLVItem = user_ID_ListView.getSelectionModel().getSelectedItem());
+            customer_ID_ListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Customer>() {
+                @Override
+                public void changed(ObservableValue<? extends Customer> observableValue, Customer customer, Customer t1) {
+                    selectedCstLVItem = customer_ID_ListView.getSelectionModel().getSelectedItem();
+                    selectedCstId = selectedCstLVItem.getCustomer_ID();
+                    System.out.println("Selected Customer ID " + selectedCstId);
+                    //user_ID_TxtFld.setText(String.valueOf(selectedCstId));
+                }
+            });
 
-        } catch (SQLException e) {
+            contact_ID_ListView.setItems(cntLVItems.extractAll());
+            contact_ID_ListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Contact>() {
+                @Override
+                   public void changed(ObservableValue<? extends Contact> observableValue, Contact contact, Contact t1) {
+                    selectedCntLVItem = contact_ID_ListView.getSelectionModel().getSelectedItem();
+                }
+           });
+
+            user_ID_ListView.setItems(userLVItems.extractAll());
+            user_ID_ListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
+                @Override
+                public void changed(ObservableValue<? extends User> observableValue, User user, User t1) {
+                    selectedUserLVItem = user_ID_ListView.getSelectionModel().getSelectedItem();
+                }
+            });
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
-
-    }
-
-    public void onDurationUpdate(ActionEvent event) {
     }
 }

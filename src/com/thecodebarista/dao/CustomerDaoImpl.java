@@ -143,25 +143,5 @@ public class CustomerDaoImpl implements CustomerDAO {
         return 0;
     }
 
-    /**
-     * Lookup a Customer by Customer_ID field.
-     * @param id  Customer ID of Customer to search.
-     * @return  Customer row  (null if not found).
-     */
-    @Override
-    public Customer getCstLVIndex(int id) {
-        ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-
-        int index = -1;
-
-        for (Customer customer : allCustomers){
-            index++;
-
-            if (customer.getCustomer_ID() == id)
-                return allCustomers.get(index);
-        }
-
-        return null;
-    }
 
 }

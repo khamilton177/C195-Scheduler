@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface CustomerDAO extends SchedulerDAO<Customer> {
 
-    Customer getCstLVIndex(int id);
 
 }
