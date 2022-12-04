@@ -196,10 +196,56 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
         return wcAppointments;
     }
 
-    @Override
-    public LocalDateTime getLDT(LocalDate ldt, LocalTime lt) {
-        LocalDateTime lDteT = LocalDateTime.of(ldt, lt);
-        return lDteT;
-    };
+    public ObservableList<Appointment> getCustomerAppts(int id) throws SQLException{
+        ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
+        String sqlStmt = "SELECT appointment_id FROM appointments" +
+                " WHERE Customer_ID = ?";
+        prepStmt = useConnection().prepareStatement(sqlStmt);
+        DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
+        // Get the ResultSet of the executed query.
+        ResultSet rs = DMLUtils.getResult();
+
+        // Extract the ResultSet to a class object.
+        System.out.println("Building Associated Appointments List");
+        while (rs.next()) {
+            Appointment appointment = getApptData(rs);
+            cstAppointments.add(appointment);
+        }
+        return cstAppointments;
+    }
+
+    @Override
+    public Appointment getByType(String name) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public Appointment getByMonth(String name) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public Appointment getByWeek(String name) throws SQLException {
+        return null;
+    }
+
+    public int deleteCstAppointment(Appointment appointment) {
+        String sqlStmt = "DELETE FROM appointments" +
+                " WHERE Appointment_ID = ?";
+        try {
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setInt(1, appointment.getAppointment_ID());
+            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowsAffected;
+    }
+
+    @Override
+    public LocalDateTime makeLDT() {
+        return null;
+    }
 }

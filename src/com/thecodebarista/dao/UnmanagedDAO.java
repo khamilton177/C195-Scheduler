@@ -15,6 +15,6 @@ public interface UnmanagedDAO<T> {
     T extract(int id) throws SQLException;
 
     ObservableList<T> extractAll() throws SQLException;
-    // List<T> extractAll() throws SQLException;
 
+    T getByName(String name) throws SQLException;
 }

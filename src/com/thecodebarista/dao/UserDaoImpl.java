@@ -86,6 +86,7 @@ public class UserDaoImpl implements UnmanagedDAO{
             ResultSet rs = DMLUtils.getResult();
 
             // Extract the ResultSet to a class object.
+            System.out.println("Building User List");
             while (rs.next()) {
                 User user = getUserData(rs);
                 allUsers.add(user);
@@ -99,4 +100,33 @@ public class UserDaoImpl implements UnmanagedDAO{
         return allUsers;
     }
 
+
+    @Override
+    public User getByName(String name) throws SQLException{
+        User user = null;
+        String sqlStmt="SELECT * FROM users" +
+                " WHERE User_Name = '?'";
+
+        try{
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setString(1, name);
+
+            // Pass the preparedStatement to be executed.
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // If User data found, extract the ResultSet to a User object and return.
+            if (rs.next()) {
+                System.out.println("made it here 4");
+                user = getUserData(rs);
+            }
+        }
+        catch(SQLException e)  {
+            e.printStackTrace();
+        }
+        // No User data found return null object
+        return user;
+    }
 }

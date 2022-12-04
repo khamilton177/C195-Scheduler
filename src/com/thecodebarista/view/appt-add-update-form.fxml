@@ -7,7 +7,12 @@
    <children>
       <Pane prefHeight="82.0" prefWidth="800.0">
          <children>
-            <Label fx:id="apptAlertBoxLbl" layoutX="16.0" layoutY="23.0" prefHeight="49.0" prefWidth="600.0" />
+            <VBox prefHeight="82.0" prefWidth="800.0">
+               <children>
+                  <Label fx:id="AddUpdateApptLabel" prefHeight="41.0" prefWidth="358.0" text="Add Appointment" />
+                  <Label fx:id="apptAlertBoxLbl" layoutX="10.0" layoutY="10.0" prefHeight="45.0" prefWidth="788.0" />
+               </children>
+            </VBox>
          </children></Pane>
       <Pane layoutY="88.0" prefHeight="488.0" prefWidth="800.0">
          <children>
@@ -22,22 +27,48 @@
             <Label layoutX="367.0" layoutY="65.0" text="Type" />
             <TextField fx:id="type_TxtFld" layoutX="368.0" layoutY="85.0" prefHeight="25.0" prefWidth="345.0" />
             <Label layoutX="45.0" layoutY="116.0" text="Start Date" />
-            <DatePicker fx:id="ApptStart_DatePick" layoutX="45.0" layoutY="131.0" prefHeight="36.0" prefWidth="174.0" />
-            <Label layoutX="246.0" layoutY="116.0" text="Start Time" />
-            <ComboBox fx:id="StartTime" layoutX="246.0" layoutY="131.0" prefWidth="150.0" />
-            <Label layoutX="420.0" layoutY="116.0" text="Duration" />
-            <Label layoutX="598.0" layoutY="116.0" text="End Time" />
-            <ComboBox fx:id="DurationCB" layoutX="420.0" layoutY="131.0" onAction="#onDurationUpdate" prefWidth="150.0" />
-            <Label layoutX="45.0" layoutY="187.0" text="Customer ID#" />
-            <ListView fx:id="customer_ID_ListView" layoutX="44.0" layoutY="244.0" prefHeight="89.0" prefWidth="200.0" />
-            <Label layoutX="257.0" layoutY="187.0" text="Contact ID#" />
-            <ListView fx:id="contact_ID_ListView" layoutX="257.0" layoutY="244.0" prefHeight="89.0" prefWidth="200.0" />
-            <Label layoutX="489.0" layoutY="187.0" text="User ID#" />
-            <ListView fx:id="user_ID_ListView" layoutX="483.0" layoutY="244.0" prefHeight="89.0" prefWidth="200.0" />
-            <TextField fx:id="EndTime" editable="false" layoutX="598.0" layoutY="131.0" />
-            <TextField fx:id="customer_ID_TxtFld" layoutX="44.0" layoutY="207.0" />
-            <TextField fx:id="contact_ID_TxtFld" layoutX="257.0" layoutY="207.0" />
-            <TextField fx:id="user_ID_TxtFld" layoutX="483.0" layoutY="207.0" />
+            <DatePicker fx:id="ApptStart_DatePick" layoutX="45.0" layoutY="131.0" onAction="#onStartDate" prefHeight="25.0" prefWidth="137.0" />
+            <Label layoutX="200.0" layoutY="116.0" text="Start Time" />
+            <HBox layoutX="200.0" layoutY="131.0" prefHeight="25.0" prefWidth="149.0">
+               <children>
+                  <ComboBox fx:id="StartTimeHrs" editable="true" onAction="#onStartHrSet" prefHeight="25.0" prefWidth="85.0" promptText="Hrs." />
+                  <ComboBox fx:id="StartTimeMins" editable="true" layoutX="10.0" layoutY="10.0" onAction="#onStartMinSet" prefHeight="25.0" prefWidth="76.0" promptText="Mins." />
+               </children>
+            </HBox>
+            <Label layoutX="370.0" layoutY="116.0" prefWidth="60.0" text="Duration" />
+            <ComboBox fx:id="DurationCB" editable="true" layoutX="362.0" layoutY="131.0" onAction="#onDurationUpdate" prefHeight="25.0" prefWidth="60.0" />
+            <Label layoutX="583.0" layoutY="116.0" prefHeight="17.0" prefWidth="73.0" text="End Time" visible="false" />
+            <HBox layoutX="582.0" layoutY="156.0" prefHeight="25.0" prefWidth="149.0">
+               <children>
+                  <ComboBox fx:id="EndTimeHrs" prefHeight="25.0" prefWidth="78.0" promptText="Hrs." />
+                  <ComboBox fx:id="EndTimeMins" layoutX="10.0" layoutY="10.0" prefHeight="25.0" prefWidth="74.0" promptText="Mins." />
+               </children>
+            </HBox>
+            <VBox layoutX="44.0" layoutY="187.0">
+               <children>
+                  <Label text="Customer ID#" />
+                  <TextField fx:id="customer_ID_TxtFld" />
+                  <ListView fx:id="customer_ID_ListView" prefHeight="89.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <VBox layoutX="257.0" layoutY="187.0">
+               <children>
+                  <Label text="Contact ID#" />
+                  <TextField fx:id="contact_ID_TxtFld" />
+                  <ListView fx:id="contact_ID_ListView" prefHeight="89.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <VBox layoutX="483.0" layoutY="187.0">
+               <children>
+                  <Label text="User ID#" />
+                  <TextField fx:id="user_ID_TxtFld" />
+                  <ListView fx:id="user_ID_ListView" prefHeight="89.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <DatePicker fx:id="EndStart_DatePick" editable="false" layoutX="439.0" layoutY="156.0" prefHeight="25.0" prefWidth="137.0" />
+            <Label layoutX="439.0" layoutY="116.0" text="End Date and Time" />
+            <TextField fx:id="end_TxtFld" editable="false" layoutX="439.0" layoutY="131.0" />
+            <TextField fx:id="start_TxtFld" editable="false" layoutX="45.0" layoutY="156.0" visible="false" />
          </children>
       </Pane>
       <ButtonBar layoutY="472.0" prefHeight="89.0" prefWidth="790.0">

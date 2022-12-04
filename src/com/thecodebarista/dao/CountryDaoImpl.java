@@ -68,6 +68,34 @@ public class CountryDaoImpl implements UnmanagedDAO {
         }
         return allCountries;
     }
-    
-    
+
+    @Override
+    public Country getByName(String name) throws SQLException {
+        Country country = null;
+        String sqlStmt="SELECT * FROM countries" +
+                " WHERE Country = '?'";
+
+        try{
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setString(1, name);
+
+            // Pass the preparedStatement to be executed.
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // If Country data found, extract the ResultSet to a Country object and return.
+            if (rs.next()) {
+                System.out.println("made it here 4");
+                country = getCoData(rs);
+            }
+        }
+        catch(SQLException e)  {
+            e.printStackTrace();
+        }
+        // No Country data found return null object
+        return country;
+    }
+
 }

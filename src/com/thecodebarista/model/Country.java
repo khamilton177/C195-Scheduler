@@ -27,9 +27,7 @@ public class Country {
 
     @Override
     public String toString() {
-        return "Country{" +
-                "Country_ID=" + Country_ID +
-                ", Country='" + Country + '\'' +
-                '}';
+        return "[" + Country_ID +
+                "] " + Country;
     }
 }

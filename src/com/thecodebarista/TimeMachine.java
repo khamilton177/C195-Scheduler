@@ -7,6 +7,7 @@ import java.time.LocalTime;
 public interface TimeMachine {
 
 
-    LocalDateTime getLDT(LocalDate ldt, LocalTime lt);
+    // LocalDateTime getLDT(LocalDate ldt, LocalTime lt);
+    LocalDateTime makeLDT();
 
 }

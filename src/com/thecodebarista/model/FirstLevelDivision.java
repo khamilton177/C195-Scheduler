@@ -37,11 +37,8 @@ public class FirstLevelDivision {
 
     @Override
     public String toString() {
-        return "FirstLevelDivision{" +
-                "Division_ID=" + Division_ID +
-                ", Division='" + Division + '\'' +
-                ", Country_ID=" + Country_ID +
-                '}';
+        return "[" + Division_ID +
+                "] " + Division;
     }
 
 }

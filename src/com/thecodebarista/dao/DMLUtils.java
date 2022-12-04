@@ -54,14 +54,20 @@ public class DMLUtils {
      * @throws SQLException Log will have SQL statement error.
      */
     public static Customer getCstData(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+
         int customer_ID = (rs.getInt("Customer_ID"));
         String customer_Name = rs.getString("Customer_Name");
         String address = rs.getString("Address");
         String postal_Code = rs.getString("Postal_Code");
         String phone = rs.getString("Phone");
+        int country_ID = rs.getInt("Country_ID");
+        String country_Name = rs.getString("Country");
         int division_ID = rs.getInt("Division_ID");
+        String division_Name = rs.getString("Division");
+
         return new Customer(customer_ID, customer_Name, address, postal_Code, phone, division_ID);
-        // return new Customer(customer_id, customer_name, address, postal_code, phone, division_id);
     }
 
     /**
@@ -96,7 +102,7 @@ public class DMLUtils {
         int division_ID = (rs.getInt("Division_ID"));
         String division = (rs.getString("division"));
         int country_ID = (rs.getInt("Country_ID"));
-        return new FirstLevelDivision(country_ID, division, country_ID);
+        return new FirstLevelDivision(division_ID, division, country_ID);
     }
 
     public static Contact getCntData(ResultSet rs) throws SQLException {

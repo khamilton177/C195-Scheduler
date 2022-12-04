@@ -7,6 +7,9 @@ public class Customer {
     private String Postal_Code;
     private String Phone;
     private int Division_ID;
+    private String Division;
+    private int Country_ID;
+    private String Country;
 
     public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID) {
         Customer_ID = customer_ID;
@@ -15,6 +18,19 @@ public class Customer {
         Postal_Code = postal_Code;
         Phone = phone;
         Division_ID = division_ID;
+    }
+
+
+    public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID, String division, int country_ID, String country) {
+        Customer_ID = customer_ID;
+        Customer_Name = customer_Name;
+        Address = address;
+        Postal_Code = postal_Code;
+        Phone = phone;
+        Division_ID = division_ID;
+        Division = division;
+        Country_ID = country_ID;
+        Country = country;
     }
 
     public int getCustomer_ID() {
@@ -64,6 +80,19 @@ public class Customer {
     public void setDivision_ID(int division_ID) {
         Division_ID = division_ID;
     }
+
+    public String getDivision(int division_ID) {
+        return Division;
+    }
+
+    public int getCountry_ID() {
+        return Country_ID;
+    }
+
+    public String getCountry(int country_ID) {
+        return Country;
+    }
+
 
     @Override
     public String toString() {

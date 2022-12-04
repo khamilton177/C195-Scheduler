@@ -9,19 +9,13 @@ import java.util.ResourceBundle;
 
 public class CntListFormCtrl extends MainMenuCtrl implements Initializable {
     @javafx.fxml.FXML
-    private TableView CstTblView;
+    private TableView CntTblView;
     @javafx.fxml.FXML
-    private TableColumn phone_Col;
+    private TableColumn contact_ID_Col;
     @javafx.fxml.FXML
-    private TableColumn address_Col;
+    private TableColumn contact_Name_Col;
     @javafx.fxml.FXML
-    private TableColumn division_ID_Col;
-    @javafx.fxml.FXML
-    private TableColumn customer_Name_Col;
-    @javafx.fxml.FXML
-    private TableColumn postal_Code_Col;
-    @javafx.fxml.FXML
-    private TableColumn customer_ID_Col;
+    private TableColumn email_Col;
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
