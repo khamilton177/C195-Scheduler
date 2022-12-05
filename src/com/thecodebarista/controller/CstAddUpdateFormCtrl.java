@@ -81,6 +81,27 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
         System.out.println("2 Setting fields");
     }
 
+
+    protected void createCstData(String btnTxt) throws SQLException {
+        int result;
+
+        String phone = phone_TxtFld.getText();
+        String customer_Name = customer_Name_TxtFld.getText();
+        String address = address_TxtFld.getText();
+        String postal_Code = postal_Code_TxtFld.getText();
+
+        int getCurrDiv = division_ID_CBox.getSelectionModel().getSelectedItem().getDivision_ID();
+
+        System.out.println("Curr. Div ID: " + getCurrDiv);
+        int division_ID = getCurrDiv;
+        System.out.println("Div ID: " + division_ID);
+
+        CustomerDAO cstDAOIns = new CustomerDaoImpl();
+        Customer cstIns = new Customer(0, customer_Name, address, postal_Code, phone, division_ID);
+        result = cstDAOIns.insert(cstIns);
+        System.out.println(result);
+    }
+
     @javafx.fxml.FXML
     public void onActionSetDivisionList(ActionEvent actionEvent) throws SQLException {
  //       FirstLevelDivisionDAOImpl divCBItems = new FirstLevelDivisionDAOImpl();
@@ -101,7 +122,7 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
 
                 switch (static_AddUpdateLabel.getText()) {
                     case "Add Customer":
-                        cstDao.insert(selectedCst);
+                        createCstData(btnTxt);
                         break;
 
                     case "Update Customer":

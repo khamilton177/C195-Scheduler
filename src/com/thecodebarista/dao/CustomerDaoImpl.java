@@ -104,18 +104,19 @@ public class CustomerDaoImpl implements CustomerDAO {
 
     @Override
     public int insert(Customer customer) throws SQLException {
-        String sqlStmt = "INSERT INTO customers ( Customer_Name, Address, Postal_Code, Phone, Division_ID)" +
-                " VAlUES(NULL, ?, ?, ?, ?, ?)";
+        String sqlStmt = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID)" +
+                //" VAlUES(NULL, ?, ?, ?, ?, ?)";
+                " VAlUES(?, ?, ?, ?, ?)";
 
         // Build the preparedStatement.
         try {
             //prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt = useConnection().prepareStatement(sqlStmt, Statement.RETURN_GENERATED_KEYS);
-            prepStmt.setString(2, customer.getCustomer_Name());
-            prepStmt.setString(3, customer.getAddress());
-            prepStmt.setString(4, customer.getPostal_Code());
-            prepStmt.setString(5, customer.getPhone());
-            prepStmt.setInt(6, customer.getDivision_ID());
+            prepStmt.setString(1, customer.getCustomer_Name());
+            prepStmt.setString(2, customer.getAddress());
+            prepStmt.setString(3, customer.getPostal_Code());
+            prepStmt.setString(4, customer.getPhone());
+            prepStmt.setInt(5, customer.getDivision_ID());
 
             // Pass the preparedStatement to be executed with plain string for validation and log.
             rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
