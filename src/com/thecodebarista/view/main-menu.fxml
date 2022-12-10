@@ -205,7 +205,7 @@
                                        <buttons>
                                           <Button fx:id="CstAddBtn" mnemonicParsing="false" onAction="#onActionCstNew" text="New" />
                                           <Button fx:id="CstModifyBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" onAction="#onActionCstUpdate" text="Update" />
-                                          <Button fx:id="CstDeleteBtn" layoutX="993.0" layoutY="19.0" mnemonicParsing="false" text="Delete" />
+                                          <Button fx:id="CstDeleteBtn" layoutX="993.0" layoutY="19.0" mnemonicParsing="false" onAction="#onActionDeleteCst" text="Delete" />
                                        </buttons>
                                     </ButtonBar>
                                  </children>

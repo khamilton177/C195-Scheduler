@@ -255,6 +255,60 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         ApptTblView.setItems(allApptAppointments);
     }
 
+    protected Boolean delCstRow(Customer selectedCst) throws SQLException {
+        boolean deleted = false;
+        int result = -1;
+
+        CustomerDAO cstDAODel = new CustomerDaoImpl();
+        Customer cstDel = cstDAODel.extract(selectedCst.getCustomer_ID());
+        result = cstDAODel.delete(cstDel);
+
+        if(result > -1) {
+            deleted = true;
+        }
+
+        System.out.println(result);
+        return deleted;
+    }
+
+    /**
+     * Delete Scheduler Item with confirmation.
+     * @param selectedSchedItem Selected object from either Inventory table view.
+     * @param btnTxt Modified Event button text passed as Alert title.
+     * @param msgCtx Event errorMsg passed as Alert context.
+     */
+    public void confirmDelete(Object selectedSchedItem, String btnTxt, String msgCtx){
+        alert = buildAlert(Alert.AlertType.CONFIRMATION, btnTxt, msgCtx);
+        confirm = alert.showAndWait();
+        if (confirm.isPresent() && confirm.get() == ButtonType.OK){
+            if (selectedSchedItem instanceof Customer){
+                try {
+                    if (delCstRow(selectedCst)){
+                        displayCstWithCoInfo();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+            }
+        }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            displayApptTblViewData();
+            //displayCstTblViewData();
+            displayCstWithCoInfo();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Loads the ApptAddUpdateFormCtrl and calls its method to send the selected row data in the Appointment table view to the appt-add-update-form view.
      * @param actionEvent Update form button, ApptUpdateBtn, clicked.
@@ -281,9 +335,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
         }
-     //   catch (SQLException e) {
-    //        e.printStackTrace();
-    //    }
+        //   catch (SQLException e) {
+        //        e.printStackTrace();
+        //    }
     }
 
     /**
@@ -391,7 +445,29 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             confirm = alert.showAndWait();
         }
         catch (SQLException e) {
-          e.printStackTrace();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Deletes selected row in Customer table view.  Presents alert confirmation dialog box.
+     * @param actionEvent Delete form button, CstDeleteBtn, clicked.
+     * @throws IOException java.io.IOException - captures name exception: NullPointerException.
+     * <BR>Present alert error dialog when no selection made.
+     */
+    @javafx.fxml.FXML
+    private void onActionDeleteCst(ActionEvent actionEvent) throws IOException {
+        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+
+        try {
+            selectedCst = CstTblView.getSelectionModel().getSelectedItem();
+            String msgCtx = "Please confirm deletion of " + " ID: " + selectedCst.getCustomer_ID();
+            confirmDelete(selectedCst, btnTxt, msgCtx);
+        } catch (NullPointerException e) {
+            String errorMsg = "Error: No Customer Selected!";
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
+            confirm = alert.showAndWait();
         }
     }
 
@@ -417,17 +493,4 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             System.out.println(e.getCause());
         }
     }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
-        try {
-            displayApptTblViewData();
-            //displayCstTblViewData();
-            displayCstWithCoInfo();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

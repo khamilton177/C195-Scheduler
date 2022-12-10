@@ -75,15 +75,15 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
         Country setCurrCo = coCBItems.extract(setCurrDivCo);
         country_ID_CBox.setValue(setCurrCo);
 
-        //        FirstLevelDivisionDAOImpl divCBItems = new FirstLevelDivisionDAOImpl();
+        // FirstLevelDivisionDAOImpl divCBItems = new FirstLevelDivisionDAOImpl();
         FirstLevelDivision setCurrDiv = divCBItems.extract(selectedCst.getDivision_ID());
         division_ID_CBox.setValue(setCurrDiv);
         System.out.println("2 Setting fields");
     }
 
 
-    protected void createCstData(String btnTxt) throws SQLException {
-        int result;
+    protected void saveCstData(String btnTxt) throws SQLException {
+        int result = 0;
 
         String phone = phone_TxtFld.getText();
         String customer_Name = customer_Name_TxtFld.getText();
@@ -96,9 +96,18 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
         int division_ID = getCurrDiv;
         System.out.println("Div ID: " + division_ID);
 
-        CustomerDAO cstDAOIns = new CustomerDaoImpl();
-        Customer cstIns = new Customer(0, customer_Name, address, postal_Code, phone, division_ID);
-        result = cstDAOIns.insert(cstIns);
+        CustomerDAO cstDAOSave = new CustomerDaoImpl();
+        switch (static_AddUpdateLabel.getText()) {
+            case "Add Customer":
+                Customer cstIns = new Customer(0, customer_Name, address, postal_Code, phone, division_ID);
+                result = cstDAOSave.insert(cstIns);
+                break;
+            case "Update Customer":
+                int customer_ID = Integer.parseInt(customer_ID_TxtFld.getText());
+                Customer cstUpd = new Customer(customer_ID, customer_Name, address, postal_Code, phone, division_ID);
+                result = cstDAOSave.update(cstUpd);
+                break;
+        }
         System.out.println(result);
     }
 
@@ -120,18 +129,7 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
 
             if (validForm) {
 
-                switch (static_AddUpdateLabel.getText()) {
-                    case "Add Customer":
-                        createCstData(btnTxt);
-                        break;
-
-                    case "Update Customer":
-                        //int selectedProdId = Integer.parseInt(ProdIdTxtFld.getText());
-                        //int selectProdIndex = getProdIndex(selectedProdId);
-                       // System.out.println("Index: " + selectProdIndex);
-                        cstDao.update(selectedCst);
-                        break;
-                }
+                saveCstData(btnTxt);
 
                 // Cast window to stage
                 stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
