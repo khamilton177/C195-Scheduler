@@ -62,12 +62,10 @@ public class DMLUtils {
         String address = rs.getString("Address");
         String postal_Code = rs.getString("Postal_Code");
         String phone = rs.getString("Phone");
-        int country_ID = rs.getInt("Country_ID");
-        String country_Name = rs.getString("Country");
         int division_ID = rs.getInt("Division_ID");
-        String division_Name = rs.getString("Division");
+        int country_ID = rs.getInt("Country_ID");
 
-        return new Customer(customer_ID, customer_Name, address, postal_Code, phone, division_ID);
+        return new Customer(customer_ID, customer_Name, address, postal_Code, phone, division_ID, country_ID);
     }
 
     /**

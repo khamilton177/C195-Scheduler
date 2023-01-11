@@ -19,14 +19,14 @@ public interface AppointmentDAO extends SchedulerDAO<Appointment> {
 
     ObservableList<Appointment> adhocQuery(String wc) throws SQLException;
     ObservableList<Appointment> getCustomerAppts(int id) throws SQLException;
+    ObservableList<Appointment> getCustomerApptsByFK(String fk, int id) throws SQLException;
+    ObservableList<Appointment> getCustomerApptsByUser(int id) throws SQLException;
+
 
     Appointment getByType(String name) throws SQLException;
-    Appointment getByMonth(String name) throws SQLException;
-    Appointment getByWeek(String name) throws SQLException;
-
-
-    //   void displayApptTblViewData() throws SQLException;
-
+    ObservableList<Appointment> getByMonth() throws SQLException;
+    ObservableList<Appointment> getByWeekly() throws SQLException;
+    int deleteAllCstAppts(int id);
 
 }
 

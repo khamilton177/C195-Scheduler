@@ -1,8 +1,10 @@
 package com.thecodebarista.model;
 
+import com.thecodebarista.dao.ModelsDTO;
+
 import java.sql.Timestamp;
 
-public class Appointment {
+public class Appointment implements ModelsDTO {
     /**
      * The Appointment ID
      */
@@ -111,6 +113,11 @@ public class Appointment {
     }
 
     @Override
+    public int getFk() {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return "Appointment{" +
                 "Appointment_ID=" + Appointment_ID +
@@ -125,4 +132,5 @@ public class Appointment {
                 ", Contact_ID=" + Contact_ID +
                 '}';
     }
+
 }

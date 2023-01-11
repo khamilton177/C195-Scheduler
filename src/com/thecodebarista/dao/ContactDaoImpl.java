@@ -57,7 +57,8 @@ public class ContactDaoImpl implements UnmanagedDAO {
         ObservableList<Contact> allContacts = FXCollections.observableArrayList();
 
         try{
-            String sqlStmt = "SELECT * FROM contacts";
+            String sqlStmt = "SELECT * FROM contacts" +
+                    " ORDER BY Contact_ID ASC";
             prepStmt = useConnection().prepareStatement(sqlStmt);
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
@@ -83,7 +84,7 @@ public class ContactDaoImpl implements UnmanagedDAO {
     public Contact getByName(String name) throws SQLException{
         Contact contact = null;
         String sqlStmt="SELECT * FROM contacts" +
-                " WHERE Contact_NAME LIKE '?'";
+                " WHERE Contact_Name LIKE '?'";
 
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);

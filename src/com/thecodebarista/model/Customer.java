@@ -1,36 +1,27 @@
 package com.thecodebarista.model;
 
-public class Customer {
+import com.thecodebarista.dao.ModelsDTO;
+
+public class Customer implements ModelsDTO {
     private int Customer_ID;
     private String Customer_Name;
     private String Address;
     private String Postal_Code;
     private String Phone;
     private int Division_ID;
-    private String Division;
+    /**
+     * Exist in Object Only field used to capture the associated Division_ID's Country_ID for Customer Tableviews
+     */
     private int Country_ID;
-    private String Country;
 
-    public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID) {
+    public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID, int country_ID) {
         Customer_ID = customer_ID;
         Customer_Name = customer_Name;
         Address = address;
         Postal_Code = postal_Code;
         Phone = phone;
         Division_ID = division_ID;
-    }
-
-
-    public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID, String division, int country_ID, String country) {
-        Customer_ID = customer_ID;
-        Customer_Name = customer_Name;
-        Address = address;
-        Postal_Code = postal_Code;
-        Phone = phone;
-        Division_ID = division_ID;
-        Division = division;
         Country_ID = country_ID;
-        Country = country;
     }
 
     public int getCustomer_ID() {
@@ -81,18 +72,14 @@ public class Customer {
         Division_ID = division_ID;
     }
 
-    public String getDivision(int division_ID) {
-        return Division;
-    }
-
     public int getCountry_ID() {
         return Country_ID;
     }
 
-    public String getCountry(int country_ID) {
-        return Country;
+    @Override
+    public int getFk() {
+        return Customer_ID;
     }
-
 
     @Override
     public String toString() {

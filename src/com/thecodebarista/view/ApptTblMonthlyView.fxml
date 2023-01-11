@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="905.0" prefWidth="1099.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.ApptTableMonthlyCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="905.0" prefWidth="1099.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.ApptTableMonthlyCtrl">
    <children>
       <TableView fx:id="ApptTblViewMonthly" prefHeight="764.0" prefWidth="888.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columns>
-            <TableColumn fx:id="appointment_ID_ColMo" editable="false" prefWidth="125.0" text="Appointment_ID" />
-            <TableColumn fx:id="title_ColMo" prefWidth="100.0" text="Title" />
-            <TableColumn fx:id="description_ColMo" minWidth="0.0" prefWidth="136.0" text="Description" />
-            <TableColumn fx:id="location_ColMo" minWidth="7.0" prefWidth="99.0" text="Location" />
-            <TableColumn fx:id="contact_ID_ColMo" minWidth="9.0" prefWidth="88.0" text="Contact" />
-            <TableColumn fx:id="type_ColMo" prefWidth="82.0" text="Type" />
-            <TableColumn fx:id="start_ColMo" prefWidth="137.0" text="Start Date and Time" />
-            <TableColumn fx:id="end_ColMo" minWidth="0.0" prefWidth="146.0" text="End Date and Time" />
-            <TableColumn fx:id="customer_ID_ColMo" minWidth="0.0" prefWidth="93.0" text="Customer_ID" />
-            <TableColumn fx:id="user_ID_ColMo" prefWidth="92.0" text="User_ID" />
+            <TableColumn fx:id="appointment_ID_Col" editable="false" prefWidth="125.0" text="Appointment ID" />
+            <TableColumn fx:id="title_Col" prefWidth="100.0" text="Title" />
+            <TableColumn fx:id="description_Col" minWidth="0.0" prefWidth="136.0" text="Description" />
+            <TableColumn fx:id="location_Col" minWidth="7.0" prefWidth="99.0" text="Location" />
+            <TableColumn fx:id="contact_ID_Col" minWidth="9.0" prefWidth="88.0" text="Contact" />
+            <TableColumn fx:id="type_Col" prefWidth="82.0" text="Type" />
+            <TableColumn fx:id="start_Col" prefWidth="137.0" text="Start" />
+            <TableColumn fx:id="end_Col" minWidth="0.0" prefWidth="146.0" text="End Date and Time" />
+            <TableColumn fx:id="customer_ID_Col" minWidth="0.0" prefWidth="93.0" text="Customer ID" />
+            <TableColumn fx:id="user_ID_Col" prefWidth="92.0" text="User ID" />
          </columns>
       </TableView>
    </children>

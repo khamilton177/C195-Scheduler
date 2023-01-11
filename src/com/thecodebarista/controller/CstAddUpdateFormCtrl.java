@@ -82,7 +82,7 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
     }
 
 
-    protected void saveCstData(String btnTxt) throws SQLException {
+    protected void saveCstData() throws SQLException {
         int result = 0;
 
         String phone = phone_TxtFld.getText();
@@ -91,20 +91,19 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
         String postal_Code = postal_Code_TxtFld.getText();
 
         int getCurrDiv = division_ID_CBox.getSelectionModel().getSelectedItem().getDivision_ID();
+        int country_ID = division_ID_CBox.getSelectionModel().getSelectedItem().getCountry_ID();
 
         System.out.println("Curr. Div ID: " + getCurrDiv);
-        int division_ID = getCurrDiv;
-        System.out.println("Div ID: " + division_ID);
 
         CustomerDAO cstDAOSave = new CustomerDaoImpl();
         switch (static_AddUpdateLabel.getText()) {
             case "Add Customer":
-                Customer cstIns = new Customer(0, customer_Name, address, postal_Code, phone, division_ID);
+                Customer cstIns = new Customer(0, customer_Name, address, postal_Code, phone, getCurrDiv, country_ID);
                 result = cstDAOSave.insert(cstIns);
                 break;
             case "Update Customer":
                 int customer_ID = Integer.parseInt(customer_ID_TxtFld.getText());
-                Customer cstUpd = new Customer(customer_ID, customer_Name, address, postal_Code, phone, division_ID);
+                Customer cstUpd = new Customer(customer_ID, customer_Name, address, postal_Code, phone, getCurrDiv, country_ID);
                 result = cstDAOSave.update(cstUpd);
                 break;
         }
@@ -125,11 +124,11 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
 
         try{
             //Boolean validForm = displayProductRowData(btnTxt);
-            Boolean validForm = true;
+            boolean validForm = true;
 
             if (validForm) {
 
-                saveCstData(btnTxt);
+                saveCstData();
 
                 // Cast window to stage
                 stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();

@@ -24,7 +24,8 @@ public interface CustomerDAO extends SchedulerDAO<Customer> {
             " ,first_level_divisions.Division" +
             " FROM customers, first_level_divisions, countries" +
             " WHERE first_level_divisions.Division_ID = customers.Division_ID" +
-            " AND countries.Country_ID = first_level_divisions.Country_ID";
+            " AND countries.Country_ID = first_level_divisions.Country_ID" +
+            " ORDER BY customers.Customer_ID ASC";
 
 
  //@Override

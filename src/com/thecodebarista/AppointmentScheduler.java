@@ -45,7 +45,6 @@ public class AppointmentScheduler extends Application {
 
         try{
             Parent root = FXMLLoader.load(getClass().getResource("view/login-form.fxml"));
-//            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("view/login-form.fxml")));
             stage.setTitle("C195-Scheduler");
             stage.setScene(new Scene(root));
             stage.show();

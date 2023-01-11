@@ -1,6 +1,4 @@
 package com.thecodebarista.controller;
-
-import com.thecodebarista.dao.UserDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,8 +10,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import com.thecodebarista.model.User;
-
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
@@ -25,9 +21,10 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
-import static com.thecodebarista.AppointmentScheduler.actLog;
+import com.thecodebarista.model.User;
+import com.thecodebarista.dao.UserDaoImpl;
 //import static main.AppointmentScheduler.loginLogger;
+import static com.thecodebarista.AppointmentScheduler.actLog;
 
 public class LoginFormCtrl implements Initializable {
 
@@ -53,6 +50,14 @@ public class LoginFormCtrl implements Initializable {
     public static String static_ZoneId;
     String ZoneIdRegion;
 
+
+    public Boolean isNewLogin = true;
+    public static int sessionUserId;
+
+    int currentUserId;
+    String currentUserName;
+
+
     @javafx.fxml.FXML
     private Label LoginMsgTxt;
     @javafx.fxml.FXML
@@ -76,7 +81,6 @@ public class LoginFormCtrl implements Initializable {
     private Button ExitBtn;
     @javafx.fxml.FXML
     private ImageView BrandImageView;
-
 
     /**
      * Method gets current users ZoneID at login then sets the labels in Login Form<>BR</>Timezone info is used for Scheduling appointments.
@@ -197,6 +201,22 @@ public class LoginFormCtrl implements Initializable {
         return emptyCredentials;
     }
 
+    public void setCurrentUserid(int objId) {
+        LoginFormCtrl.sessionUserId = objId;
+    }
+
+/*
+
+    public int getCurrentUserId(int objId) {
+        currentUserId = objId;
+        return currentUserId;
+    }
+
+    public String getCurrentUserName() {
+        return currentUserName;
+    }
+*/
+
     /**
      * Exits application.
      * @param event Cancel Button clicked.
@@ -219,7 +239,7 @@ public class LoginFormCtrl implements Initializable {
     private void onActionLogin(ActionEvent event) throws IOException {
         String btnTxt = ((Button)event.getSource()).getId().replace("Btn", "");
         System.out.println("Login Button clicked.: " + ((Button)event.getSource()).getId());
-
+        currentUserId = -1;
 
         try{
             String credentials = login();
@@ -234,17 +254,29 @@ public class LoginFormCtrl implements Initializable {
                         System.out.println("Valid Login: " + getCurrentUserid);
                         setLoginErrMsg("Success");
                         actLog.info(setLoginErrMsg("Success"));
+                        currentUserId = getCurrentUserid;
+
+                        setCurrentUserid(getCurrentUserid);
+
+
+                        currentUserName = currentUser.getUser_Name();
 
                         FXMLLoader loader = new FXMLLoader();
                         loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                         scene = loader.load();
                         MainMenuCtrl formController = loader.getController();
-                        formController.setCurrentUserId(getCurrentUserid);
+                        formController.setCurrentUserIdInfo(currentUserId);
+                        formController.setCurrentUserNameInfo(currentUserName);
+
+
+                        // formController.loginAppointAlert(currentUserId, currentUserName);
 
                         // Cast window to stage
                         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
                         stage.setScene(new Scene(scene));
                         stage.show();
+
+                        System.out.println("This is session user: " + LoginFormCtrl.sessionUserId);
                     }
                 }
                 catch(NullPointerException e) {
@@ -258,15 +290,13 @@ public class LoginFormCtrl implements Initializable {
         }
     }
 
-
-
     /**
      * Initializes the LoginFormController class.
      * <BR>Sets the label text for the TimeZone ID at Login.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Set the Login Form label with the ZoneID information.
+        // Set the Login Form's label with the ZoneID information.
         setZoneId();
         static_ZoneId = ZoneIdLbl.getText();
         ZoneIdRegion = ZoneIdLbl.getText().split("/")[0];

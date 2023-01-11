@@ -4,38 +4,49 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.thecodebarista.dao.*;
 import com.thecodebarista.model.Appointment;
 import com.thecodebarista.model.Customer;
 import com.thecodebarista.model.FirstLevelDivision;
-import javafx.beans.value.ObservableValue;
+import com.thecodebarista.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     public static Label static_AddUpdateLabel;
-    Appointment selectedAppt;
+
+    public Appointment selectedAppt;
     Customer selectedCst;
     Alert alert;
     String btnTxt;
     Optional<ButtonType> confirm;
+    Tab currentTab;
 
     FirstLevelDivisionDAOImpl divCBItems = new FirstLevelDivisionDAOImpl();
 
     @javafx.fxml.FXML
-    protected TableView<Appointment> ApptTblView;
+    protected Parent includeApptMo;
     @javafx.fxml.FXML
-    protected DatePicker ApptEnd_SF;
+    protected Parent includeApptWk;
+    @javafx.fxml.FXML
+    protected ApptTableMonthlyCtrl includeApptMoController;
+    @javafx.fxml.FXML
+    protected ApptTableWeeklyCtrl includeApptWkController;
+
+    @javafx.fxml.FXML
+    protected TableView<Appointment> ApptTblView;
     @javafx.fxml.FXML
     protected Button CstAddBtn;
     @javafx.fxml.FXML
@@ -43,13 +54,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     protected TableColumn<Customer, String> CstAddressCol;
     @javafx.fxml.FXML
-    protected ListView contact_ID_SF;
-    @javafx.fxml.FXML
     protected MenuItem CntSchedule_MenuItem;
-    @javafx.fxml.FXML
-    protected TextField title_SF;
-    @javafx.fxml.FXML
-    protected TextField address_SF;
     @javafx.fxml.FXML
     private TableColumn<Customer, String> CstPhoneCol;
     @javafx.fxml.FXML
@@ -57,19 +62,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     protected Button ApptUpdateBtn;
     @javafx.fxml.FXML
-    protected ComboBox StartTime_SF;
-    @javafx.fxml.FXML
     protected Button CstModifyBtn;
     @javafx.fxml.FXML
-    protected ComboBox division_ID_SF;
-    @javafx.fxml.FXML
-    protected ComboBox EndTime_SF;
-    @javafx.fxml.FXML
     protected MenuButton ReportMenuBtn;
-    @javafx.fxml.FXML
-    protected TextField description_SF;
-    @javafx.fxml.FXML
-    protected TextField type_SF;
     @javafx.fxml.FXML
     protected TableView<Customer> CstTblView;
     @javafx.fxml.FXML
@@ -77,27 +72,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     protected MenuItem THIRD_MenuItem;
     @javafx.fxml.FXML
-    protected DatePicker ApptStart_SF;
-    @javafx.fxml.FXML
     protected TableColumn<Customer, String> CstNameCol;
     @javafx.fxml.FXML
     protected Button ApptAddBtn;
     @javafx.fxml.FXML
-    protected ComboBox country_ID_SF;
-    @javafx.fxml.FXML
-    protected ListView user_ID_SF;
-    @javafx.fxml.FXML
-    protected TextField appointment_ID_SF;
-    @javafx.fxml.FXML
     protected TableColumn<Customer, Integer> CstDivisionIdCol;
-    @javafx.fxml.FXML
-    protected TextField customer_Name_SF;
-    @javafx.fxml.FXML
-    protected TextField postal_Code_SF;
-    @javafx.fxml.FXML
-    protected TextField location_SF;
-    @javafx.fxml.FXML
-    protected TextField phone_SF;
     @javafx.fxml.FXML
     protected Hyperlink LogOutBtn;
     @javafx.fxml.FXML
@@ -128,14 +107,69 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     protected TableColumn<Appointment, Integer> user_ID_Col;
     @javafx.fxml.FXML
-    private TextField customer_ID_cstSF;
-    @javafx.fxml.FXML
     private TableColumn<FirstLevelDivision, Integer> CstCountryIdCol;
     @javafx.fxml.FXML
-    private ListView customer_ID_apptSF;
+    private Label CurrentUserNameLbl;
+    @javafx.fxml.FXML
+    private TabPane ApptsTab;
+    @javafx.fxml.FXML
+    private Tab AppTab;
+    @javafx.fxml.FXML
+    private Tab AppWkTab;
+    @javafx.fxml.FXML
+    private Tab AppMoTab;
 
-    protected void setCurrentUserId(int currentUserId) {
-        CurrentUserIdLbl.setText(String.valueOf(currentUserId));
+    protected void loginAppointAlert(int currentUserId, String currentUserName) throws SQLException, NumberFormatException {
+        System.out.println("Doing loginAppt Alert #1");
+        AppointmentDAO apptdao = new AppointmentDaoImpl();
+        UnmanagedDAO userDAOGet = new UserDaoImpl();
+
+        try{
+            User currentUser = (User) userDAOGet.extract(currentUserId);
+            String userName = currentUser.getUser_Name();
+            int userId = currentUser.getUser_ID();
+
+            // User currentUser = (User) userDAOGet.extract(currentUserId);
+            // String userName = this.currentUserName;
+            // int userId = this.currentUserId;
+            System.out.println("Doing loginAppt Alert #2 - userid is: " + userId);
+
+            int userAppts = apptdao.getCustomerApptsByFK("User_ID", userId).size();
+            System.out.println("Doing loginAppt Alert #3 - count: " + userAppts);
+
+            if(userAppts > 0) {
+                System.out.println("Doing loginAppt Alert #4");
+
+                String msgCtx = "Hi " +
+                        userName +
+                        ". Relax! You don't have any appoints within the next 15 minutes.";
+                alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
+                confirm = alert.showAndWait();
+            }
+        }
+        catch(SQLException | NumberFormatException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+    }
+
+    protected void setCurrentUserLbls(int setCurrentUserId, String setCurrentUserName) {
+        CurrentUserIdLbl.setText(String.valueOf(setCurrentUserId));
+        CurrentUserNameLbl.setText(setCurrentUserName);
+        //setCurrentUserId(setCurrentUserId);
+        //setCurrentUserName(setCurrentUserName);
+    }
+
+    protected void setCurrentUserIdInfo(int setCurrentUserId) {
+        CurrentUserIdLbl.setText("ID #" + setCurrentUserId);
+        currentUserId = setCurrentUserId;
+        //return currentUserId;
+    }
+
+    protected void setCurrentUserNameInfo(String setCurrentUserName) {
+        CurrentUserNameLbl.setText(setCurrentUserName);
+        currentUserName = setCurrentUserName;
+       // return currentUserName;
     }
 
     /**
@@ -194,20 +228,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         CstAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
         CstPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postal_Code"));
         CstPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-
         CstCountryIdCol.setCellValueFactory(new PropertyValueFactory<>("country_ID"));
         CstDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
 
-
-/*
-        try {
-            int DivCo = divCBItems.extract(Integer.parseInt(String.valueOf(new PropertyValueFactory<Customer, String>("division_ID")))).getCountry_ID();
-            System.out.println("see divco " + DivCo);
-            //CstCountryIdCol.setCellValueFactory(new PropertyValueFactory<FirstLevelDivision, Integer>("country_ID".DivCo);
-        } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
-        }
-*/
         cstWithCoInfo.addAll(cstdao.customerWithCoInfo());
         CstTblView.setItems(cstWithCoInfo);
     }
@@ -251,7 +274,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
 
         allApptAppointments.addAll(apptdao.extractAll());
-
         ApptTblView.setItems(allApptAppointments);
     }
 
@@ -259,21 +281,26 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         boolean deleted = false;
         int result = -1;
 
-        CustomerDAO cstDAODel = new CustomerDaoImpl();
-        Customer cstDel = cstDAODel.extract(selectedCst.getCustomer_ID());
-        result = cstDAODel.delete(cstDel);
+        AppointmentDAO cstApptDaoDel = new AppointmentDaoImpl();
+        result = cstApptDaoDel.deleteAllCstAppts(selectedCst.getCustomer_ID());
 
         if(result > -1) {
-            deleted = true;
-        }
+            result = -1;
+            CustomerDAO cstDaoDel = new CustomerDaoImpl();
+            Customer cstDel = cstDaoDel.extract(selectedCst.getCustomer_ID());
+            result = cstDaoDel.delete(cstDel);
 
+            if (result > -1) {
+                deleted = true;
+            }
+        }
         System.out.println(result);
         return deleted;
     }
 
     /**
      * Delete Scheduler Item with confirmation.
-     * @param selectedSchedItem Selected object from either Inventory table view.
+     * @param selectedSchedItem Selected object from either table view.
      * @param btnTxt Modified Event button text passed as Alert title.
      * @param msgCtx Event errorMsg passed as Alert context.
      */
@@ -284,6 +311,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             if (selectedSchedItem instanceof Customer){
                 try {
                     if (delCstRow(selectedCst)){
+                        displayApptTblViewData();
                         displayCstWithCoInfo();
                     }
                 } catch (SQLException e) {
@@ -301,17 +329,37 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         try {
+            //test seed data
+            //appointmentSeed();
+
+            System.out.println("On init newLogin: " + isNewLogin);
             displayApptTblViewData();
+
             //displayCstTblViewData();
             displayCstWithCoInfo();
+
+            setCurrentUserid(currentUserId);
+
+            if (isNewLogin) {
+                System.out.println("Made it to newLogin Test");
+                //currentUserId = Integer.parseInt(CurrentUserIdLbl.getText());
+                System.out.println("Made it to newLogin Test - id: " + sessionUserId);
+                //currentUserName = CurrentUserNameLbl.getText();
+                System.out.println("Made it to newLogin Test - name: " + sessionUserId);
+
+                //loginAppointAlert(currentUserId, currentUserName);
+                //loginAppointAlert(currentUserId, currentUserName);
+
+            }
+            isNewLogin = false;
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Loads the ApptAddUpdateFormCtrl and calls its method to send the selected row data in the Appointment table view to the appt-add-update-form view.
-     * @param actionEvent Update form button, ApptUpdateBtn, clicked.
+     * Loads the ApptAddUpdateFormCtrl to create appointments in the appt-add-update-form view.
+     * @param actionEvent New form button, ApptAddBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
      * <BR>Present alert error dialog when no selection made.
      */
@@ -335,14 +383,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
         }
-        //   catch (SQLException e) {
-        //        e.printStackTrace();
-        //    }
     }
 
     /**
      * Loads the ApptAddUpdateFormCtrl and calls its method to send the selected row data in the Appointment table view to the appt-add-update-form view.
-     * @param actionEvent Modify form button, ApptUpdateBtn, clicked.
+     * @param actionEvent Update form button, ApptUpdateBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
      * <BR>Present alert error dialog when no selection made.
      */
@@ -352,11 +397,25 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         System.out.println("Update Appointment Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
         try{
+            currentTab = ApptsTab.getSelectionModel().getSelectedItem();
+            System.out.println("Current Tab: " + currentTab.getId());
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/com/thecodebarista/view/appt-add-update-form.fxml"));
             scene = loader.load();
             ApptAddUpdateFormCtrl modelCtrl = loader.getController();
-            selectedAppt = ApptTblView.getSelectionModel().getSelectedItem();
+            switch (currentTab.getId()) {
+                case "AppMoTab":
+                    TableView.TableViewSelectionModel<Appointment> selectorMo = includeApptMoController.ApptTblViewMonthly.getSelectionModel();
+                    selectedAppt = selectorMo.getSelectedItem();
+                    break;
+                case "AppWkTab":
+                    TableView.TableViewSelectionModel<Appointment> selectorWk = includeApptWkController.ApptTblViewWeekly.getSelectionModel();
+                    selectedAppt = selectorWk.getSelectedItem();
+                    break;
+                default:
+                    selectedAppt = ApptTblView.getSelectionModel().getSelectedItem();
+                    break;
+            }
             System.out.println("Made it here 1");
             modelCtrl.sendApptModifyData(selectedAppt);
 
@@ -380,8 +439,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     }
 
     /**
-     * Loads the CstAddUpdateFormCtrl and calls its method to send the selected row data in the Customer table view to the cst-add-update-form view.
-     * @param actionEvent Update form button, CstUpdateBtn, clicked.
+     * Loads the CstAddUpdateFormCtrl to create customers in view the cst-add-update-form view.
+     * @param actionEvent Update form button, CstAddBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
      * <BR>Present alert error dialog when no selection made.
      */
@@ -405,9 +464,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
         }
-        //   catch (SQLException e) {
-        //        e.printStackTrace();
-        //    }
     }
 
     /**
@@ -462,7 +518,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
         try {
             selectedCst = CstTblView.getSelectionModel().getSelectedItem();
-            String msgCtx = "Please confirm deletion of " + " ID: " + selectedCst.getCustomer_ID();
+            String msgCtx = "Please confirm deletion of " + "Customer ID: " + selectedCst.getCustomer_ID() +
+                    System.getProperty("line.separator") + System.getProperty("line.separator") + "ALL ASSOCIATED CUSTOMER APPOINTMENTS WILL BE DELETED.";
             confirmDelete(selectedCst, btnTxt, msgCtx);
         } catch (NullPointerException e) {
             String errorMsg = "Error: No Customer Selected!";
@@ -491,6 +548,72 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         catch(Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onTabSelectLoad(Event event) {
+        try {
+            currentTab = ApptsTab.getSelectionModel().getSelectedItem();
+            System.out.println("Current Tab Inquiry for tabSelect: " + currentTab.getId());
+/*
+
+            FXMLLoader loader = new FXMLLoader();
+            switch (currentTab.getId()){
+                case "AppMoTab":
+                    getTableView().
+                    TableSelectionModel<Appointment> selector = ApptTblViewMonthly.getTableView().getSelectionModel();
+                    selectedAppt = selector.getSelectedItem();
+
+                    loader.setLocation(getClass().getResource("/com/thecodebarista//view/ApptTblMonthlyView.fxml"));
+                    scene = loader.load();
+                    ApptTableMonthlyCtrl modelCtrl = loader.getController();
+                    modelCtrl.getTableView();
+                    break;
+                case "AppWkTab":
+//                    loader.setLocation(getClass().getResource("/com/thecodebarista//view/ApptTblWeeklyView.fxml"));
+//                    scene = loader.load();
+//                    ApptTableWeeklyCtrl modelCtrl = loader.getController();
+//                    modelCtrl.displayApptTblViewWeekly();
+                    break;
+                default:
+//                    loader.setLocation(getClass().getResource("/com/thecodebarista//view/main-menu.fxml"));
+
+
+            }
+ //           loader.setLocation(getClass().getResource("/com/thecodebarista//view/ApptTblMonthlyView.fxml"));
+  //          scene = loader.load();
+  //          ApptTableMonthlyCtrl modelCtrl = loader.getController();
+//              modelCtrl.displayApptTblViewMonthly();
+*/
+
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+        }
+    }
+
+    private void appointmentSeed() throws SQLException {
+        int result;
+
+        LocalDateTime ldt = LocalDateTime.now();
+        System.out.println("Raw Now- : " + ldt);
+        Timestamp tsStart = Timestamp.valueOf(ldt.withSecond(0).withNano(0).plusMinutes((65-ldt.getMinute())%5));
+        Timestamp tsEnd = Timestamp.valueOf(ldt.withSecond(0).withNano(0).plusMinutes((65-ldt.getMinute())%5).plusMinutes(45));
+
+        //LocalDateTime ldt = ts.toLocalDateTime();
+
+        try{
+            AppointmentDAO apptdaoI = new AppointmentDaoImpl();
+            // ObservableList<Appointment> minCstId = apptdaoI.adhocQuery("SELECT MIN(Customer_ID) FROM Appointment");
+            // minCstId.stream().findFirst().get().getCustomer_ID();
+            Appointment appointment2 = new Appointment(0,"Java help", "Seed data", "remote", "Mentor", tsStart, tsEnd, 2, 2, 3);
+            result = apptdaoI.insert(appointment2);
+            System.out.println(result);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

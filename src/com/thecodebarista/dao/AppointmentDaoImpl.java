@@ -8,6 +8,7 @@ import com.thecodebarista.model.Appointment;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,7 +19,7 @@ import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getApptData;
 
 public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
-    private static String returnGenKeys = ".RETURN_GENERATED_KEYS";
+    private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
     private static PreparedStatement prepStmt;
     private int rowsAffected = 0; // Setting to 0. SELECT statements don't return a value so this is a nominal value.
 
@@ -60,7 +61,6 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     @Override
     public ObservableList<Appointment> extractAll() throws SQLException {
         ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
-    //    List<Appointment> allAppointments = new ArrayList<>();
 
         try{
             String sqlStmt = "SELECT * FROM appointments";
@@ -92,7 +92,7 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
 
         // Build the preparedStatement.
         try {
-            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt = useConnection().prepareStatement(sqlStmt, Statement.RETURN_GENERATED_KEYS);
             prepStmt.setString(1, appointment.getTitle());
             prepStmt.setString(2, appointment.getDescription());
             prepStmt.setString(3, appointment.getLocation());
@@ -105,9 +105,15 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
 
             // Pass the preparedStatement to be executed with plain string for validation and log.
             rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
-        } catch (SQLException e) {
+
+            ResultSet rs = prepStmt.getGeneratedKeys();
+            rs.next();
+            int Appointment_ID = rs.getInt(1);
+        }
+        catch (SQLException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
 
         }
         return rowsAffected;
@@ -196,21 +202,89 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
         return wcAppointments;
     }
 
+    @Override
     public ObservableList<Appointment> getCustomerAppts(int id) throws SQLException{
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
-        String sqlStmt = "SELECT appointment_id FROM appointments" +
-                " WHERE Customer_ID = ?";
-        prepStmt = useConnection().prepareStatement(sqlStmt);
-        DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
-        // Get the ResultSet of the executed query.
-        ResultSet rs = DMLUtils.getResult();
+        try {
+            String sqlStmt = "SELECT * FROM appointments" +
+                    " WHERE Customer_ID = ?";
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
-        // Extract the ResultSet to a class object.
-        System.out.println("Building Associated Appointments List");
-        while (rs.next()) {
-            Appointment appointment = getApptData(rs);
-            cstAppointments.add(appointment);
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Associated Appointments List");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                cstAppointments.add(appointment);
+            }
+            return cstAppointments;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return cstAppointments;
+    }
+
+    @Override
+    public ObservableList<Appointment> getCustomerApptsByFK(String fk, int id) throws SQLException{
+        ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
+
+        String fkID = fk;
+        int qID = id;
+        try {
+            String sqlStmt = "SELECT * FROM appointments" +
+                    " WHERE " + fkID +
+                    " = " + qID;
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Associated Appointments List");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                cstAppointments.add(appointment);
+            }
+            return cstAppointments;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return cstAppointments;
+    }
+
+    @Override
+    public ObservableList<Appointment> getCustomerApptsByUser(int id) throws SQLException{
+        ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
+
+        try {
+            String sqlStmt = "SELECT appointment_id FROM appointments" +
+                    " WHERE User_ID = ?";
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Associated Appointments List");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                cstAppointments.add(appointment);
+            }
+            return cstAppointments;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
         }
         return cstAppointments;
     }
@@ -221,21 +295,89 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     }
 
     @Override
-    public Appointment getByMonth(String name) throws SQLException {
-        return null;
+    public ObservableList<Appointment> getByMonth() throws SQLException {
+        ObservableList<Appointment> allApptMonthly = FXCollections.observableArrayList();
+
+        try{
+            String sqlStmt = "SELECT Appointment_ID" +
+                    ", Title" +
+                    ", Description" +
+                    ", Location" +
+                    ", Contact_ID" +
+                    ", Type" +
+                    ", Start" +
+                    ", End" +
+                    ", Customer_ID" +
+                    ", User_ID" +
+                    " FROM appointments" +
+                    " WHERE MONTH(Start) = MONTH(NOW())" +
+                    " ORDER BY End";
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Appt. Monthly List");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                allApptMonthly.add(appointment);
+            }
+            return allApptMonthly;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return allApptMonthly;
     }
 
     @Override
-    public Appointment getByWeek(String name) throws SQLException {
-        return null;
+    public ObservableList<Appointment> getByWeekly() throws SQLException {
+        ObservableList<Appointment> allApptWeekly = FXCollections.observableArrayList();
+
+        try{
+            String sqlStmt = "SELECT Appointment_ID" +
+                    ", Title" +
+                    ", Description" +
+                    ", Location" +
+                    ", Contact_ID" +
+                    ", Type" +
+                    ", Start" +
+                    ", End" +
+                    ", Customer_ID" +
+                    ", User_ID" +
+                    " FROM appointments" +
+                    " WHERE YEARWEEK(Start) = YEARWEEK(NOW())" +
+                    " ORDER BY End";
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Appt. Wkly List");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                allApptWeekly.add(appointment);
+            }
+            return allApptWeekly;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return allApptWeekly;
     }
 
-    public int deleteCstAppointment(Appointment appointment) {
+    public int deleteAllCstAppts(int id) {
         String sqlStmt = "DELETE FROM appointments" +
-                " WHERE Appointment_ID = ?";
+                " WHERE Customer_ID = ?";
         try {
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            prepStmt.setInt(1, appointment.getAppointment_ID());
+            prepStmt.setInt(1, id);
             rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
         }
         catch (SQLException e) {

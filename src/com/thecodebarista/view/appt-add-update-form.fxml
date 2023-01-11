@@ -31,19 +31,13 @@
             <Label layoutX="200.0" layoutY="116.0" text="Start Time" />
             <HBox layoutX="200.0" layoutY="131.0" prefHeight="25.0" prefWidth="149.0">
                <children>
-                  <ComboBox fx:id="StartTimeHrs" editable="true" onAction="#onStartHrSet" prefHeight="25.0" prefWidth="85.0" promptText="Hrs." />
-                  <ComboBox fx:id="StartTimeMins" editable="true" layoutX="10.0" layoutY="10.0" onAction="#onStartMinSet" prefHeight="25.0" prefWidth="76.0" promptText="Mins." />
+                  <ComboBox fx:id="StartTimeHrs" onAction="#onDurationUpdate" prefHeight="25.0" prefWidth="85.0" promptText="Hrs." />
+                  <ComboBox fx:id="StartTimeMins" layoutX="10.0" layoutY="10.0" onAction="#onDurationUpdate" prefHeight="25.0" prefWidth="76.0" promptText="Mins." />
                </children>
             </HBox>
             <Label layoutX="370.0" layoutY="116.0" prefWidth="60.0" text="Duration" />
-            <ComboBox fx:id="DurationCB" editable="true" layoutX="362.0" layoutY="131.0" onAction="#onDurationUpdate" prefHeight="25.0" prefWidth="60.0" />
-            <Label layoutX="583.0" layoutY="116.0" prefHeight="17.0" prefWidth="73.0" text="End Time" visible="false" />
-            <HBox layoutX="582.0" layoutY="156.0" prefHeight="25.0" prefWidth="149.0">
-               <children>
-                  <ComboBox fx:id="EndTimeHrs" prefHeight="25.0" prefWidth="78.0" promptText="Hrs." />
-                  <ComboBox fx:id="EndTimeMins" layoutX="10.0" layoutY="10.0" prefHeight="25.0" prefWidth="74.0" promptText="Mins." />
-               </children>
-            </HBox>
+            <ComboBox fx:id="DurationCB" layoutX="362.0" layoutY="131.0" onAction="#onDurationUpdate" prefHeight="25.0" prefWidth="60.0" />
+            <HBox layoutX="582.0" layoutY="156.0" prefHeight="25.0" prefWidth="149.0" />
             <VBox layoutX="44.0" layoutY="187.0">
                <children>
                   <Label text="Customer ID#" />
@@ -65,7 +59,6 @@
                   <ListView fx:id="user_ID_ListView" prefHeight="89.0" prefWidth="200.0" />
                </children>
             </VBox>
-            <DatePicker fx:id="EndStart_DatePick" editable="false" layoutX="439.0" layoutY="156.0" prefHeight="25.0" prefWidth="137.0" />
             <Label layoutX="439.0" layoutY="116.0" text="End Date and Time" />
             <TextField fx:id="end_TxtFld" editable="false" layoutX="439.0" layoutY="131.0" />
             <TextField fx:id="start_TxtFld" editable="false" layoutX="45.0" layoutY="156.0" visible="false" />
