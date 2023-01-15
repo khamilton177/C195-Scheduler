@@ -300,18 +300,18 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
 
         try{
             String sqlStmt = "SELECT Appointment_ID" +
-                    ", Title" +
-                    ", Description" +
-                    ", Location" +
-                    ", Contact_ID" +
-                    ", Type" +
-                    ", Start" +
-                    ", End" +
-                    ", Customer_ID" +
-                    ", User_ID" +
-                    " FROM appointments" +
-                    " WHERE MONTH(Start) = MONTH(NOW())" +
-                    " ORDER BY End";
+                ", Title" +
+                ", Description" +
+                ", Location" +
+                ", Contact_ID" +
+                ", Type" +
+                ", Start" +
+                ", End" +
+                ", Customer_ID" +
+                ", User_ID" +
+                " FROM appointments" +
+                " WHERE MONTH(Start) = MONTH(NOW())" +
+                " ORDER BY End";
             prepStmt = useConnection().prepareStatement(sqlStmt);
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
 

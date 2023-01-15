@@ -1,8 +1,6 @@
 package com.thecodebarista.model;
 
-import com.thecodebarista.dao.ModelsDTO;
-
-public class Customer implements ModelsDTO {
+public class Customer {
     private int Customer_ID;
     private String Customer_Name;
     private String Address;
@@ -74,11 +72,6 @@ public class Customer implements ModelsDTO {
 
     public int getCountry_ID() {
         return Country_ID;
-    }
-
-    @Override
-    public int getFk() {
-        return Customer_ID;
     }
 
     @Override

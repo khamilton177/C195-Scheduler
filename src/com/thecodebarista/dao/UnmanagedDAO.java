@@ -1,5 +1,6 @@
 package com.thecodebarista.dao;
 
+import com.thecodebarista.model.Customer;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
@@ -17,4 +18,7 @@ public interface UnmanagedDAO<T> {
     ObservableList<T> extractAll() throws SQLException;
 
     T getByName(String name) throws SQLException;
+
+    int getObjByIndex(int id);
+
 }

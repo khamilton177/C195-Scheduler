@@ -25,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
+    //private final int sessionUserId = currentUser.getUser_ID();
     public static Label static_AddUpdateLabel;
 
     public Appointment selectedAppt;
@@ -153,13 +154,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         }
     }
 
-    protected void setCurrentUserLbls(int setCurrentUserId, String setCurrentUserName) {
-        CurrentUserIdLbl.setText(String.valueOf(setCurrentUserId));
-        CurrentUserNameLbl.setText(setCurrentUserName);
-        //setCurrentUserId(setCurrentUserId);
-        //setCurrentUserName(setCurrentUserName);
-    }
-
     protected void setCurrentUserIdInfo(int setCurrentUserId) {
         CurrentUserIdLbl.setText("ID #" + setCurrentUserId);
         currentUserId = setCurrentUserId;
@@ -267,6 +261,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         description_Col.setCellValueFactory(new PropertyValueFactory<>("description"));
         location_Col.setCellValueFactory(new PropertyValueFactory<>("location"));
         type_Col.setCellValueFactory(new PropertyValueFactory<>("type"));
+        //Timestamp rawStart = new PropertyValueFactory<>("Start").getProperty().t;
+        System.out.println("WHAT'S IT LOOK LIKE RAW: " + new PropertyValueFactory<>("Start").getProperty().toString());
         start_Col.setCellValueFactory(new PropertyValueFactory<>("Start"));
         end_Col.setCellValueFactory(new PropertyValueFactory<>("End"));
         customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
@@ -322,38 +318,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
 
             }
-        }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
-        try {
-            //test seed data
-            //appointmentSeed();
-
-            System.out.println("On init newLogin: " + isNewLogin);
-            displayApptTblViewData();
-
-            //displayCstTblViewData();
-            displayCstWithCoInfo();
-
-            setCurrentUserid(currentUserId);
-
-            if (isNewLogin) {
-                System.out.println("Made it to newLogin Test");
-                //currentUserId = Integer.parseInt(CurrentUserIdLbl.getText());
-                System.out.println("Made it to newLogin Test - id: " + sessionUserId);
-                //currentUserName = CurrentUserNameLbl.getText();
-                System.out.println("Made it to newLogin Test - name: " + sessionUserId);
-
-                //loginAppointAlert(currentUserId, currentUserName);
-                //loginAppointAlert(currentUserId, currentUserName);
-
-            }
-            isNewLogin = false;
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -594,6 +558,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         }
     }
 
+    private void convertBusinessHrs() {
+
+    }
+
     private void appointmentSeed() throws SQLException {
         int result;
 
@@ -613,6 +581,38 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             System.out.println(result);
         }
         catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            //test seed data
+            //appointmentSeed();
+
+            System.out.println("On init newLogin: " + isNewLogin);
+            displayApptTblViewData();
+
+            //displayCstTblViewData();
+            displayCstWithCoInfo();
+
+            setCurrentUserid(currentUserId);
+
+            if (isNewLogin) {
+                System.out.println("Made it to newLogin Test");
+                //currentUserId = Integer.parseInt(CurrentUserIdLbl.getText());
+                System.out.println("Made it to newLogin Test - id: " + sessionUserId);
+                //currentUserName = CurrentUserNameLbl.getText();
+                System.out.println("Made it to newLogin Test - name: " + sessionUserId);
+
+                //loginAppointAlert(currentUserId, currentUserName);
+                //loginAppointAlert(currentUserId, currentUserName);
+
+            }
+            isNewLogin = false;
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import com.thecodebarista.model.User;
 import com.thecodebarista.dao.UserDaoImpl;
-//import static main.AppointmentScheduler.loginLogger;
 import static com.thecodebarista.AppointmentScheduler.actLog;
 
 public class LoginFormCtrl implements Initializable {
@@ -68,7 +67,6 @@ public class LoginFormCtrl implements Initializable {
     private Button LoginBtn;
     @javafx.fxml.FXML
     private ImageView LoginIconImageView;
-
     @javafx.fxml.FXML
     private TextField UserNameTxtFld;
     @javafx.fxml.FXML

@@ -55,6 +55,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     LocalDateTime StartTime;
     LocalDateTime EndTime;
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+    SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected LocalDate propValDtPick;
     protected Integer propValHrs;
@@ -162,6 +164,26 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         type_TxtFld.setText(String.valueOf(selectedAppt.getType()));
         System.out.println("2 Setting fields");
 
+        System.out.println("Local Date Time: " + selectedAppt.getStart().toLocalDateTime());
+        ZonedDateTime locZdt = ZonedDateTime.of(selectedAppt.getStart().toLocalDateTime(), ZoneId.systemDefault());
+        System.out.println("sendApptModifyData  Sys Default: " + locZdt);
+        ZonedDateTime staticZdt = locZdt.withZoneSameInstant(ZoneId.of(static_ZoneId));
+        System.out.println("sendApptModifyData  Sys Static: " + staticZdt);
+        ZonedDateTime utahZdt = locZdt.withZoneSameInstant(ZoneId.of("America/Denver"));
+        System.out.println("sendApptModifyData  Sys Utah: " + utahZdt);
+        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
+        System.out.println("sendApptModifyData  Sys Business (EST): " + businessZdt);
+        ZonedDateTime utcZdt = locZdt.withZoneSameInstant(ZoneOffset.UTC);
+        System.out.println("sendApptModifyData  Sys UTC: " + utcZdt);
+        //locZdt.getOffset().compareTo(utahZdt.getOffset());
+        System.out.println("sendApptModifyData  Sys Compare local to Utah: " + locZdt.getOffset().compareTo(businessZdt.getOffset()));
+
+
+
+        LocalDateTime utcLdtStart = ZonedDateTime.of(selectedAppt.getStart().toLocalDateTime(), ZoneId.of(static_ZoneId)).toLocalDateTime();
+
+        LocalDateTime localLdtStart = ZonedDateTime.of(selectedAppt.getStart().toLocalDateTime(), ZoneId.of(static_ZoneId)).toLocalDateTime();
+
 
         ApptStart_DatePick.setValue(selectedAppt.getStart().toLocalDateTime().toLocalDate());
         dpSet = true;
@@ -178,7 +200,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         EndTimeMins.setValue(selectedAppt.getEnd().toLocalDateTime().toLocalTime().getMinute());
 */
 
-        String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(selectedAppt.getEnd());
+        String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(selectedAppt.getEnd());
         end_TxtFld.setText(tsEndFormatted);
 
 
@@ -265,11 +287,11 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private void setDuration(Appointment selectedAppt) {
         //if (static_AddUpdateLabel.getText().equals("Update Appointment")) {
             // LocaleDateTime from DB timestamp conversion
-            LocalDateTime persistStartLDT = selectedAppt.getStart().toLocalDateTime();
-            LocalDateTime persistEndLDT = selectedAppt.getEnd().toLocalDateTime();
-            Long minEnd = Long.valueOf(persistEndLDT.toLocalTime().getMinute());
-            Long minStart = Long.valueOf(persistStartLDT.toLocalTime().getMinute());
-            Long durationMins = ChronoUnit.MINUTES.between(persistStartLDT, persistEndLDT);
+            LocalDateTime dbUtcStartLDT = selectedAppt.getStart().toLocalDateTime();
+            LocalDateTime dbUtcEndLDT = selectedAppt.getEnd().toLocalDateTime();
+            Long minEnd = Long.valueOf(dbUtcEndLDT.toLocalTime().getMinute());
+            Long minStart = Long.valueOf(dbUtcStartLDT.toLocalTime().getMinute());
+            Long durationMins = ChronoUnit.MINUTES.between(dbUtcStartLDT, dbUtcEndLDT);
             DurationCB.setValue(durationMins);
             System.out.println("Duration set to: " + String.valueOf(minEnd-minStart));
         //}
@@ -352,10 +374,13 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                     start_TxtFld.setText(tsStartFormatted);
                     System.out.println("In doCalc #3.2 " + StartTime);
                     ZonedDateTime locZdt = ZonedDateTime.of(StartTime, ZoneId.of(static_ZoneId));
-                    System.out.println("In doCalc #3.3 " + locZdt);
-                    locZdt.toLocalDateTime();
+                    ZonedDateTime utcZdt = locZdt.withZoneSameInstant(ZoneOffset.UTC);
+                    System.out.println("In doCalc #3.3 -Local time: " + locZdt);
+                    System.out.println("In doCalc #3.3 -UTC time: " + utcZdt);
                     System.out.println("In doCalc #3.4 ");
                     EndTime = StartTime.plusMinutes(DurationCB.getValue());
+                    LocalDateTime dbEndTime = utcZdt.toLocalDateTime().plusMinutes(DurationCB.getValue());
+
                     Timestamp tsEnd = Timestamp.valueOf(EndTime);
                     String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(tsEnd);
                     end_TxtFld.setText(tsEndFormatted);

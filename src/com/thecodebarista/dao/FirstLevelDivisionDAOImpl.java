@@ -111,6 +111,11 @@ public class FirstLevelDivisionDAOImpl implements UnmanagedDAO{
         return division;
     }
 
+    @Override
+    public int getObjByIndex(int id) {
+        return 0;
+    }
+
     public ObservableList<FirstLevelDivision> getDivByCountry(int id) throws SQLException {
         ObservableList<FirstLevelDivision> selectedCoDivs = FXCollections.observableArrayList();
 

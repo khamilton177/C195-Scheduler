@@ -2,21 +2,14 @@ package com.thecodebarista;
 
 import com.thecodebarista.dao.*;
 import com.thecodebarista.controller.*;
-import com.thecodebarista.model.Appointment;
-import com.thecodebarista.model.Country;
-import com.thecodebarista.model.Customer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
-
-import java.lang.reflect.Constructor;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -34,7 +27,6 @@ public class AppointmentScheduler extends Application {
     /**
      * Label to retain current user's ZoneID information on forms.
      */
-    public static Label static_ZoneIdLbl;
     public static Logger actLog;
 
     @Override

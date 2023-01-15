@@ -98,4 +98,9 @@ public class CountryDaoImpl implements UnmanagedDAO {
         return country;
     }
 
+    @Override
+    public int getObjByIndex(int id) {
+        return 0;
+    }
+
 }

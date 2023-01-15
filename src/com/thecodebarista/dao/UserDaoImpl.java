@@ -129,4 +129,9 @@ public class UserDaoImpl implements UnmanagedDAO{
         // No User data found return null object
         return user;
     }
+
+    @Override
+    public int getObjByIndex(int id) {
+        return 0;
+    }
 }

@@ -114,4 +114,9 @@ public class ContactDaoImpl implements UnmanagedDAO {
         return contact;
     }
 
+    @Override
+    public int getObjByIndex(int id) {
+        return 0;
+    }
+
 }

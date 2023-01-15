@@ -9,7 +9,7 @@ import java.util.List;
  * Interface used for managed classes; tables whose data implements CRUD via the application.
  * @param <T>
  */
-public interface SchedulerDAO<T extends ModelsDTO> {
+public interface SchedulerDAO<T> {
 
     T extract(int id) throws SQLException;
 

@@ -16,11 +16,12 @@ public abstract class DBConnection {
     private static final String protocol = dbDriver + ":" + dbVendorName + ":";
     private static final String dbHostURL = "//" + dbHost + ":" + dbServerPort + "/";
     private static final String dbName = "client_schedule";
-    private static final String MySQLJDBCDriver = "com.mysql.cj.jdbc.Driver";
-    // private static final String connProperties = "?";
-    private static final String connTimeZone = "?connectionTimeZone=SERVER";
 
-    private static final String jdbcURL = protocol + dbHostURL + dbName + connTimeZone;
+    //Save the timestamp data in UTC while presenting time in GUI to user's zoned session.
+    private static final String connProperties = "?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true";
+    private static final String MySQLJDBCDriver = "com.mysql.cj.jdbc.Driver";
+
+    private static final String jdbcURL = protocol + dbHostURL + dbName + connProperties;
 
     private static final String userName = "sqlUser";
     private static final String password = "Passw0rd!";
@@ -33,10 +34,7 @@ public abstract class DBConnection {
             Class.forName(MySQLJDBCDriver);
             conn = DriverManager.getConnection(jdbcURL, userName, password);
         }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
-        catch(ClassNotFoundException e) {
+        catch(SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return conn;
