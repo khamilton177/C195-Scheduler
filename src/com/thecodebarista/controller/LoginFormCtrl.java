@@ -147,10 +147,8 @@ public class LoginFormCtrl implements Initializable {
 
         // Using lamda to enhance code.
         switch (msg) {
-            case "Success" -> {
-                // LoginMsgTxt.setText(rb.getString("Success"));
-                logMsg.append(enRb.getString("Success"));
-            }
+            case "Success" -> logMsg.append(enRb.getString("Success"));
+
             case "EmptyName" -> {
                 LoginMsgTxt.setText(rb.getString("EmptyName"));
                 logMsg.append(enRb.getString("EmptyName"));

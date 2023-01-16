@@ -5,6 +5,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import com.thecodebarista.dao.*;
@@ -23,9 +25,13 @@ import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import static java.lang.Math.addExact;
+import static java.lang.Math.subtractExact;
 
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     //private final int sessionUserId = currentUser.getUser_ID();
+    public final int busHrsOpen = 8;
+    public final int totalBusHrs = 14;
     public static Label static_AddUpdateLabel;
 
     public Appointment selectedAppt;
@@ -525,7 +531,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             FXMLLoader loader = new FXMLLoader();
             switch (currentTab.getId()){
                 case "AppMoTab":
-                    getTableView().
                     TableSelectionModel<Appointment> selector = ApptTblViewMonthly.getTableView().getSelectionModel();
                     selectedAppt = selector.getSelectedItem();
 
@@ -558,7 +563,58 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         }
     }
 
+    /**
+     * Get the Local Open hr. for the Appointments Business Hours.
+     * @param ldt
+     * @return the int representing the local start hr for Appointments.
+     */
+    protected int getLocOpenHr(LocalDateTime ldt) {
+        int openHr;
+
+        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
+        System.out.println("businessHrs  Sys Static: " + locZdt);
+
+        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
+        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
+
+        int localOffset = businessZdt.getOffset().compareTo(locZdt.getOffset())/60/60;
+        System.out.println("businessHrs Sys Compare business to local: " + localOffset);
+
+        if (localOffset < 0) {
+            openHr = addExact(busHrsOpen, localOffset);
+        }
+        else if (localOffset > 0){
+            openHr = subtractExact(busHrsOpen, localOffset);
+        }
+        else {
+            openHr = busHrsOpen;
+        }
+        return openHr;
+    }
+
+//    protected int getLocCloseHr(LocalDateTime ldt) {
+//
+//    }
+
+
     private void convertBusinessHrs() {
+        int locHrsOpen;
+        int locHrsClose;
+
+        LocalDateTime busNowLdt = LocalDateTime.now(ZoneId.of("US/Eastern")).withSecond(0).withNano(0);
+        System.out.println("Headquarters Time Now: " + busNowLdt);
+
+        LocalDateTime ldt = LocalDateTime.now();
+        System.out.println("Local Date Time: " + ldt);
+        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
+
+        System.out.println("businessHrs  Sys Static: " + locZdt);
+        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
+
+        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
+
+        //System.out.println("Local business Hrs: " + locHrsOpen + "am - " + locHrsClose + "pm");
+
 
     }
 
@@ -612,6 +668,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
             }
             isNewLogin = false;
+            // convertBusinessHrs();
         } catch (SQLException e) {
             e.printStackTrace();
         }

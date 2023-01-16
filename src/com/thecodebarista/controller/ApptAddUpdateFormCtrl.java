@@ -35,7 +35,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
      * Values for the Appointment duration. Select value will NOT be persisted.
      */
     ObservableList<Long> durations = FXCollections.observableArrayList();
-    ObservableList<Integer> hours;
+    ObservableList<Integer> hours = FXCollections.observableArrayList();
     ObservableList<Integer> minutes = FXCollections.observableArrayList();
 
     AppointmentDAO apptDao = new AppointmentDaoImpl();
@@ -116,6 +116,39 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     @javafx.fxml.FXML
     private TextField start_TxtFld;
 
+    /**
+     * Fills the list with the local business hours for Appointments.
+     */
+    private void buildHours() {
+        LocalDateTime ldt = LocalDateTime.now();
+
+        int locHrsOpen = getLocOpenHr(ldt);
+        for (int hrs = -1; hrs < totalBusHrs; hrs++) {
+            hours.add(locHrsOpen);
+            locHrsOpen++;
+        }
+        StartTimeHrs.setItems(hours);
+    }
+
+    /**
+     * Fills the list with the minutes intervals for Appointments.
+     */
+    private void buildMinutes() {
+        int d = 0;
+        DecimalFormat decF = new DecimalFormat("00");
+        minutes.addAll(0, 15, 30, 45);
+        StartTimeMins.setItems(minutes);
+    }
+
+    /**
+     * Fills the duration list with time periods for Appointments.
+     */
+    private void buildDurations() {
+        // DecimalFormat decF = new DecimalFormat("00");
+        durations.addAll(0L, 15L, 30L, 45L, 60l);
+        DurationCB.setItems(durations);
+    }
+
     private int getCstByIndex(int id) {
         int index = -1;
 
@@ -152,7 +185,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         return -1;
     }
 
-
     protected void sendApptModifyData(Appointment selectedAppt) throws SQLException {
         selectedAppt = apptDao.extract(selectedAppt.getAppointment_ID());
         System.out.println("1 Setting fields");
@@ -163,6 +195,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         location_TxtFld.setText(String.valueOf(selectedAppt.getLocation()));
         type_TxtFld.setText(String.valueOf(selectedAppt.getType()));
         System.out.println("2 Setting fields");
+/*
 
         System.out.println("Local Date Time: " + selectedAppt.getStart().toLocalDateTime());
         ZonedDateTime locZdt = ZonedDateTime.of(selectedAppt.getStart().toLocalDateTime(), ZoneId.systemDefault());
@@ -175,14 +208,10 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         System.out.println("sendApptModifyData  Sys Business (EST): " + businessZdt);
         ZonedDateTime utcZdt = locZdt.withZoneSameInstant(ZoneOffset.UTC);
         System.out.println("sendApptModifyData  Sys UTC: " + utcZdt);
-        //locZdt.getOffset().compareTo(utahZdt.getOffset());
-        System.out.println("sendApptModifyData  Sys Compare local to Utah: " + locZdt.getOffset().compareTo(businessZdt.getOffset()));
+        long localOffset = businessZdt.getOffset().compareTo(locZdt.getOffset())/60/60;
+        System.out.println("sendApptModifyData  Sys Compare Business to local: " + localOffset);
 
-
-
-        LocalDateTime utcLdtStart = ZonedDateTime.of(selectedAppt.getStart().toLocalDateTime(), ZoneId.of(static_ZoneId)).toLocalDateTime();
-
-        LocalDateTime localLdtStart = ZonedDateTime.of(selectedAppt.getStart().toLocalDateTime(), ZoneId.of(static_ZoneId)).toLocalDateTime();
+*/
 
 
         ApptStart_DatePick.setValue(selectedAppt.getStart().toLocalDateTime().toLocalDate());
@@ -193,15 +222,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         minSet = true;
         setDuration(selectedAppt);
 
-/*
-
-        ApptEnd_DatePick.setValue(selectedAppt.getEnd().toLocalDateTime().toLocalDate());
-        EndTimeHrs.setValue(selectedAppt.getEnd().toLocalDateTime().toLocalTime().getHour());
-        EndTimeMins.setValue(selectedAppt.getEnd().toLocalDateTime().toLocalTime().getMinute());
-*/
-
-        String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(selectedAppt.getEnd());
-        end_TxtFld.setText(tsEndFormatted);
+        start_TxtFld.setText(tsFormat.format(selectedAppt.getStart()));
+//        String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(selectedAppt.getEnd());
+        end_TxtFld.setText(tsFormat.format(selectedAppt.getEnd()));
 
 
         customer_ID_TxtFld.setText(String.valueOf(selectedAppt.getCustomer_ID()));
@@ -229,29 +252,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     public LocalDateTime getLDT(LocalDate ldt, LocalTime lt) {
         return LocalDateTime.of(ldt, lt);
-    }
-
-    private ObservableList<Integer> buildHours() {
-        ObservableList<Integer> hours = FXCollections.observableArrayList();
-
-        for (int hrs = 0; hrs < 24; hrs++) {
-            hours.add(hrs);
-        }
-        StartTimeHrs.setItems(hours);
-        return hours;
-    }
-
-    private void buildMinutes() {
-        int d = 0;
-        DecimalFormat decF = new DecimalFormat("00");
-        minutes.addAll(0, 15, 30, 45);
-        StartTimeMins.setItems(minutes);
-    }
-
-    private void buildDurations() {
-        // DecimalFormat decF = new DecimalFormat("00");
-        durations.addAll(0L, 15L, 30L, 45L);
-        DurationCB.setItems(durations);
     }
 
     private Boolean canCalcDuration() {

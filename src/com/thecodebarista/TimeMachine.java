@@ -12,7 +12,7 @@ import java.time.LocalTime;
 //public interface TimeMachine<T> {
 public interface TimeMachine {
 
-//    public T timeConvert();
+    //T timeConverter();
     // LocalDateTime getLDT(LocalDate ldt, LocalTime lt);
     LocalDateTime makeLDT();
 
