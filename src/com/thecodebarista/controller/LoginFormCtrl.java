@@ -23,15 +23,8 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import com.thecodebarista.model.User;
 import com.thecodebarista.dao.UserDaoImpl;
-import static com.thecodebarista.AppointmentScheduler.actLog;
 
 public class LoginFormCtrl implements Initializable {
-
-    /**
-     * Obtains current user's information from users table.
-     */
-    User currentUser;
-
     /**
      * Top-level container of the JavaFX application.
      */
@@ -43,17 +36,33 @@ public class LoginFormCtrl implements Initializable {
     Parent scene;
 
     /**
+     * Logger to track application login attempts.
+     */
+    public static Logger actLog;
+
+    /**
      * Boolean to instruct application to use the foreign language error messages
      */
-    public static boolean uselocaleErrMsg;
+    public static boolean useLocale;
+
+    /**
+     * Static string used to retain the current user's ZoneID information in the form Label- ZoneIdLbl.
+     */
     public static String static_ZoneId;
-    String ZoneIdRegion;
+
+    /**
+     * Obtains current user's information from users table.
+     */
+    User currentUser;
 
 
     public Boolean isNewLogin = true;
+
+    /**
+     * Static int used to retain the current user's ID information in the form Label- ZoneIdLbl.
+     */
     public static int sessionUserId;
 
-    int currentUserId;
     String currentUserName;
 
 
@@ -177,7 +186,7 @@ public class LoginFormCtrl implements Initializable {
     private String login() {
         String userName = UserNameTxtFld.getText();
         String password = PwdFld.getText();
-        String emptyCredentials = "";
+        String passCredentials = "";
 
         if (userName.isEmpty() && password.isEmpty()){
             actLog.warning(setLoginErrMsg("EmptyBoth"));
@@ -194,24 +203,12 @@ public class LoginFormCtrl implements Initializable {
                     "' AND Password  = '" + password + "'";
             return loginCredentials;
         }
-        return emptyCredentials;
+        return passCredentials;
     }
 
     public void setCurrentUserid(int objId) {
         LoginFormCtrl.sessionUserId = objId;
     }
-
-/*
-
-    public int getCurrentUserId(int objId) {
-        currentUserId = objId;
-        return currentUserId;
-    }
-
-    public String getCurrentUserName() {
-        return currentUserName;
-    }
-*/
 
     /**
      * Exits application.
@@ -235,7 +232,7 @@ public class LoginFormCtrl implements Initializable {
     private void onActionLogin(ActionEvent event) throws IOException {
         String btnTxt = ((Button)event.getSource()).getId().replace("Btn", "");
         System.out.println("Login Button clicked.: " + ((Button)event.getSource()).getId());
-        currentUserId = -1;
+        sessionUserId = -1;
 
         try{
             String credentials = login();
@@ -250,7 +247,7 @@ public class LoginFormCtrl implements Initializable {
                         System.out.println("Valid Login: " + getCurrentUserid);
                         setLoginErrMsg("Success");
                         actLog.info(setLoginErrMsg("Success"));
-                        currentUserId = getCurrentUserid;
+                        sessionUserId = getCurrentUserid;
 
                         setCurrentUserid(getCurrentUserid);
 
@@ -261,11 +258,11 @@ public class LoginFormCtrl implements Initializable {
                         loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                         scene = loader.load();
                         MainMenuCtrl formController = loader.getController();
-                        formController.setCurrentUserIdInfo(currentUserId);
+                        formController.setCurrentUserIdInfo(sessionUserId);
                         formController.setCurrentUserNameInfo(currentUserName);
 
 
-                        // formController.loginAppointAlert(currentUserId, currentUserName);
+                        // formController.loginAppointAlert(sessionUserId, currentUserName);
 
                         // Cast window to stage
                         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
@@ -295,12 +292,11 @@ public class LoginFormCtrl implements Initializable {
         // Set the Login Form's label with the ZoneID information.
         setZoneId();
         static_ZoneId = ZoneIdLbl.getText();
-        ZoneIdRegion = ZoneIdLbl.getText().split("/")[0];
-        System.out.println("Region: " + ZoneIdRegion);
+        System.out.println("Region: " + ZoneIdLbl.getText().split("/")[0]);
 
         // Get the locale information and direct application to use the foreign messages for the Login Form.
-        uselocaleErrMsg = setLoginLanguage();
-        System.out.println("Are we using foreign error messages? " + uselocaleErrMsg);
+        useLocale = setLoginLanguage();
+        System.out.println("Are we using foreign error messages? " + useLocale);
     }
 
 }

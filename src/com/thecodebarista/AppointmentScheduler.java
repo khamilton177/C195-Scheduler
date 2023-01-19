@@ -5,35 +5,36 @@ import com.thecodebarista.controller.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 public class AppointmentScheduler extends Application {
-    /**
-     * Top-level container of the JavaFX application.
-     */
-    Stage stage;
 
-    /**
-     * The loaded fxml file used to present a JavaFX application screen.
-     */
-    Parent scene;
 
-    /**
-     * Label to retain current user's ZoneID information on forms.
-     */
-    public static Logger actLog;
+    public final class SchedulerUtils {
+        /**
+         * The alert built by the onAction event triggered.
+         */
+        Alert alert;
+
+        /**
+         *
+         */
+        LocalTime ESTOfficeHrsStart = LocalTime.of(8, 0);
+
+        /**
+         *
+         */
+        LocalTime ESTOfficeHrsEnd = LocalTime.of(22, 0);
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Locale.setDefault(new Locale("fr")); // USe this for testng language conversion only
-        ResourceBundle rb = ResourceBundle.getBundle("Lang");
-        Logger actLog = Logger.getLogger("/login_activity.txt");
+        //Locale.setDefault(new Locale("fr")); // Use this for testng language conversion only
 
         try{
             Parent root = FXMLLoader.load(getClass().getResource("view/login-form.fxml"));
@@ -48,7 +49,6 @@ public class AppointmentScheduler extends Application {
     }
 
     public static void main(String[] args) throws SQLException {
-        Logger actLog = Logger.getLogger("login_activity.txt");
         DBConnection.establishConnection();
         LoginFormCtrl.loginLogger();
 

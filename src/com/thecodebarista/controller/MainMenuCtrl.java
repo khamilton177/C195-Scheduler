@@ -136,9 +136,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             String userName = currentUser.getUser_Name();
             int userId = currentUser.getUser_ID();
 
-            // User currentUser = (User) userDAOGet.extract(currentUserId);
+            // User currentUser = (User) userDAOGet.extract(sessionUserId);
             // String userName = this.currentUserName;
-            // int userId = this.currentUserId;
+            // int userId = this.sessionUserId;
             System.out.println("Doing loginAppt Alert #2 - userid is: " + userId);
 
             int userAppts = apptdao.getCustomerApptsByFK("User_ID", userId).size();
@@ -162,8 +162,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
     protected void setCurrentUserIdInfo(int setCurrentUserId) {
         CurrentUserIdLbl.setText("ID #" + setCurrentUserId);
-        currentUserId = setCurrentUserId;
-        //return currentUserId;
+        sessionUserId = setCurrentUserId;
+        //return sessionUserId;
     }
 
     protected void setCurrentUserNameInfo(String setCurrentUserName) {
@@ -654,20 +654,18 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             //displayCstTblViewData();
             displayCstWithCoInfo();
 
-            setCurrentUserid(currentUserId);
+            setCurrentUserid(sessionUserId);
 
             if (isNewLogin) {
+                //appointmentSeed();
+
                 System.out.println("Made it to newLogin Test");
-                //currentUserId = Integer.parseInt(CurrentUserIdLbl.getText());
                 System.out.println("Made it to newLogin Test - id: " + sessionUserId);
-                //currentUserName = CurrentUserNameLbl.getText();
                 System.out.println("Made it to newLogin Test - name: " + sessionUserId);
 
-                //loginAppointAlert(currentUserId, currentUserName);
-                //loginAppointAlert(currentUserId, currentUserName);
-
+                //loginAppointAlert(sessionUserId, currentUserName);
+                //loginAppointAlert(sessionUserId, currentUserName);
             }
-            isNewLogin = false;
             // convertBusinessHrs();
         } catch (SQLException e) {
             e.printStackTrace();
