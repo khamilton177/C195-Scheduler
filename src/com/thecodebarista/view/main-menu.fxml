@@ -50,7 +50,7 @@
                                       <buttons>
                                         <Button fx:id="ApptAddBtn" mnemonicParsing="false" onAction="#onActionApptNew" text="New" />
                                           <Button fx:id="ApptUpdateBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" onAction="#onActionApptUpdate" text="Update" />
-                                          <Button fx:id="ApptDeleteBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" text="Delete" />
+                                          <Button fx:id="ApptDeleteBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" onAction="#onActionDeleteAppt" text="Delete" />
                                       </buttons>
                                     </ButtonBar>
                                  </children>

@@ -203,7 +203,7 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     }
 
     @Override
-    public ObservableList<Appointment> getCustomerAppts(int id) throws SQLException{
+    public ObservableList<Appointment> getCstAppt(int id) throws SQLException{
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         try {
@@ -231,7 +231,7 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     }
 
     @Override
-    public ObservableList<Appointment> getCustomerApptsByFK(String fk, int id) throws SQLException{
+    public ObservableList<Appointment> getCstApptByFK(String fk, int id) throws SQLException{
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         String fkID = fk;
@@ -262,12 +262,44 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     }
 
     @Override
-    public ObservableList<Appointment> getCustomerApptsByUser(int id) throws SQLException{
+    public ObservableList<Appointment> getCstApptByUser(int id) throws SQLException{
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         try {
             String sqlStmt = "SELECT appointment_id FROM appointments" +
                     " WHERE User_ID = ?";
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Associated Appointments List");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                cstAppointments.add(appointment);
+            }
+            return cstAppointments;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return cstAppointments;
+    }
+
+    @Override
+    public ObservableList<Appointment> getApptNowByUser(int id) throws SQLException{
+        ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
+        int qID = id;
+
+        try {
+            String sqlStmt = "SELECT * FROM appointments" +
+                " WHERE User_ID = " +
+                qID +
+                " ORDER BY Start";
+
             prepStmt = useConnection().prepareStatement(sqlStmt);
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
 

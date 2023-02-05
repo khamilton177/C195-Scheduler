@@ -6,11 +6,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Locale;
+import java.util.Optional;
 
 public class AppointmentScheduler extends Application {
 
@@ -19,7 +21,7 @@ public class AppointmentScheduler extends Application {
         /**
          * The alert built by the onAction event triggered.
          */
-        Alert alert;
+        //Alert alert;
 
         /**
          *
@@ -30,6 +32,13 @@ public class AppointmentScheduler extends Application {
          *
          */
         LocalTime ESTOfficeHrsEnd = LocalTime.of(22, 0);
+
+        public void launchConfirmAlert(String btnTxt, StringBuilder validateErrMsg) {
+            Alert alert;
+            Optional<ButtonType> confirm;
+  //          alert = buildAlert(Alert.AlertType.ERROR, btnTxt, validateErrMsg.toString());
+  //          confirm = alert.showAndWait();
+        }
     }
 
     @Override

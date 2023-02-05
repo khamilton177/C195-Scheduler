@@ -1,15 +1,14 @@
 package com.thecodebarista.controller;
 
+import com.thecodebarista.AppointmentScheduler;
 import com.thecodebarista.dao.*;
-import com.thecodebarista.model.Appointment;
-import com.thecodebarista.model.Contact;
-import com.thecodebarista.model.Customer;
-import com.thecodebarista.model.User;
+import com.thecodebarista.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -26,18 +25,24 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable {
 
     /**
-     * Values for the Appointment duration. Select value will NOT be persisted.
+     * List values for the hours ComboBox
+     */
+    ObservableList<Integer> hours = FXCollections.observableArrayList();
+
+    /**
+     * List values for the minutes ComboBox
+     */
+    ObservableList<Integer> minutes = FXCollections.observableArrayList();
+
+    /**
+     * List values for the Appointment duration. Select value will NOT be persisted in database.
      */
     ObservableList<Long> durations = FXCollections.observableArrayList();
-    ObservableList<Integer> hours = FXCollections.observableArrayList();
-    ObservableList<Integer> minutes = FXCollections.observableArrayList();
 
     AppointmentDAO apptDao = new AppointmentDaoImpl();
     CustomerDAO cstLVItems = new CustomerDaoImpl();
@@ -56,12 +61,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     LocalDateTime StartTime;
     LocalDateTime EndTime;
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
     SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    protected LocalDate propValDtPick;
-    protected Integer propValHrs;
-    protected Integer propValMins;
+    LocalDate dpPrevDate;
 
     private Boolean dpSet = false;
     private Boolean hrSet = false;
@@ -86,13 +87,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     @javafx.fxml.FXML
     private ListView<Customer> customer_ID_ListView;
     @javafx.fxml.FXML
-    private ListView<Contact> contact_ID_ListView;
-    @javafx.fxml.FXML
     private ListView<User> user_ID_ListView;
     @javafx.fxml.FXML
     private TextField customer_ID_TxtFld;
-    @javafx.fxml.FXML
-    private TextField contact_ID_TxtFld;
     @javafx.fxml.FXML
     private TextField user_ID_TxtFld;
     @javafx.fxml.FXML
@@ -106,15 +103,12 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     @javafx.fxml.FXML
     private Label AddUpdateApptLabel;
     @javafx.fxml.FXML
-    private DatePicker ApptEnd_DatePick;
-    @javafx.fxml.FXML
     private TextField end_TxtFld;
     @javafx.fxml.FXML
-    private ComboBox<Integer> EndTimeHrs;
-    @javafx.fxml.FXML
-    private ComboBox<Integer> EndTimeMins;
-    @javafx.fxml.FXML
     private TextField start_TxtFld;
+    @javafx.fxml.FXML
+    private ComboBox<Contact> contact_ID_CBox;
+
 
     /**
      * Fills the list with the local business hours for Appointments.
@@ -123,7 +117,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         LocalDateTime ldt = LocalDateTime.now();
 
         int locHrsOpen = getLocOpenHr(ldt);
-        for (int hrs = -1; hrs < totalBusHrs; hrs++) {
+        for (int hrs = -1; hrs < totalBusHrs-1; hrs++) {
             hours.add(locHrsOpen);
             locHrsOpen++;
         }
@@ -145,7 +139,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
      */
     private void buildDurations() {
         // DecimalFormat decF = new DecimalFormat("00");
-        durations.addAll(0L, 15L, 30L, 45L, 60l);
+        durations.addAll(15L, 30L, 45L, 60l);
         DurationCB.setItems(durations);
     }
 
@@ -160,6 +154,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         }
         return -1;
     }
+/*
 
     private int getCntByIndex(int id) {
         int index = -1;
@@ -172,6 +167,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         }
         return -1;
     }
+*/
 
     private int getUserByIndex(int id) {
         int index = -1;
@@ -183,6 +179,20 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                 return index;
         }
         return -1;
+    }
+
+    /**
+     * Calculate and sets the DurationCB ComboBox in the Update Appointment form. The duration is not persisted in DB.
+     * @param selectedAppt
+     */
+    private void setDuration(Appointment selectedAppt) {
+        // LocaleDateTime from DB timestamp conversion
+        LocalDateTime dbUtcStartLDT = selectedAppt.getStart().toLocalDateTime();
+        LocalDateTime dbUtcEndLDT = selectedAppt.getEnd().toLocalDateTime();
+        //calculate difference between start and end
+        Long durationMins = ChronoUnit.MINUTES.between(dbUtcStartLDT, dbUtcEndLDT);
+        DurationCB.setValue(durationMins);
+        System.out.println("Duration set to: " + durationMins);
     }
 
     protected void sendApptModifyData(Appointment selectedAppt) throws SQLException {
@@ -205,25 +215,26 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         setDuration(selectedAppt);
 
         start_TxtFld.setText(tsFormat.format(selectedAppt.getStart()));
-//        String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(selectedAppt.getEnd());
         end_TxtFld.setText(tsFormat.format(selectedAppt.getEnd()));
 
 
         customer_ID_TxtFld.setText(String.valueOf(selectedAppt.getCustomer_ID()));
-        contact_ID_TxtFld.setText(String.valueOf(selectedAppt.getContact_ID()));
+        Contact setCurrCnt = cntLVItems.extract(selectedAppt.getContact_ID());
+        contact_ID_CBox.setValue(setCurrCnt);
+        //contact_ID_TxtFld.setText(String.valueOf(selectedAppt.getContact_ID()));
         user_ID_TxtFld.setText(String.valueOf(selectedAppt.getUser_ID()));
         System.out.println("3 Setting fields");
 
         selectedCstId = Integer.parseInt(customer_ID_TxtFld.getText());
         selectedCstIndex = getCstByIndex(selectedCstId);
-        int selectedCntId = Integer.parseInt(contact_ID_TxtFld.getText());
-        int selectedCntIndex = getCntByIndex(selectedCntId);
-        int selectedUserId = Integer.parseInt(user_ID_TxtFld.getText());
-        int selectedUserIndex = getUserByIndex(selectedUserId);
+        //selectedCntId = Integer.parseInt(contact_ID_TxtFld.getText());
+        //selectedCntIndex = getCntByIndex(selectedCntId);
+        selectedUserId = Integer.parseInt(user_ID_TxtFld.getText());
+        selectedUserIndex = getUserByIndex(selectedUserId);
         System.out.println("4 Setting fields");
 
         customer_ID_ListView.getSelectionModel().select(selectedCstIndex);
-        contact_ID_ListView.getSelectionModel().select(selectedCntIndex);
+        //contact_ID_ListView.getSelectionModel().select(selectedCntIndex);
         user_ID_ListView.getSelectionModel().select(selectedUserIndex);
         System.out.println("Finished Setting fields");
     }
@@ -246,11 +257,11 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         String endTxtFld = end_TxtFld.getText();
         String customerIdTxt = customer_ID_TxtFld.getText();
         String userIdTxt = user_ID_TxtFld.getText();
-        String contactIdTxt = contact_ID_TxtFld.getText();
-        return fields = "title, description, location, type, startTxtFld, endTxtFld, customerIdTxt, userIdTxt, contactIdTxt";
+        //String contactIdTxt = contact_ID_TxtFld.getText();
+        return fields = "title, description, location, type, startTxtFld, endTxtFld, customerIdTxt, userIdTxt";
     }
 
-    private LocalDateTime calculateStartDt() {
+    private LocalDateTime calculateStartLdt() {
         LocalTime lt = ltInput(StartTimeHrs.getValue(), StartTimeMins.getValue());
         StartTime = lt.atDate(ApptStart_DatePick.getValue());
         Timestamp tsStart = Timestamp.valueOf(StartTime);
@@ -259,13 +270,14 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         return StartTime;
     }
 
-    private void calculateEndDt() {
-        StartTime = calculateStartDt();
+    private LocalDateTime calculateEndLdt() {
+        StartTime = calculateStartLdt();
         EndTime = StartTime.plusMinutes(DurationCB.getValue());
+        System.out.println("This is end time: " + EndTime);
         Timestamp tsEnd = Timestamp.valueOf(EndTime);
         end_TxtFld.setText(tsFormat.format(tsEnd));
         System.out.println("End Text Field: " + end_TxtFld.getText());
-        System.out.println("This is end time: " + EndTime);
+        return EndTime;
     }
 
     private Boolean validateFormFields() {
@@ -283,19 +295,20 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         //System.out.println("On Save End Text Field: " + end);
         String customerIdTxt = customer_ID_TxtFld.getText();
         String userIdTxt = user_ID_TxtFld.getText();
-        String contactIdTxt = contact_ID_TxtFld.getText();
+        //String contactIdTxt = contact_ID_TxtFld.getText();
 
         if (ApptStart_DatePick.getValue() == null) {
             validateMsg = "Please select a valid Start Date";
             validateErrMsg.append(validateMsg);
             validateErrMsg.append(System.getProperty("line.separator"));
         }
-        TextField[] formFields = {title_TxtFld, description_TxtFld, location_TxtFld, type_TxtFld, start_TxtFld, end_TxtFld, customer_ID_TxtFld, user_ID_TxtFld, contact_ID_TxtFld};
+
+        TextField[] formFields = {title_TxtFld, description_TxtFld, location_TxtFld, type_TxtFld, start_TxtFld, end_TxtFld, customer_ID_TxtFld, user_ID_TxtFld};
         for (TextField field : formFields) {
             if(field.getText() == null || field.getText().isEmpty()){
                 if(field.getId().equals("start_TxtFld")){
                     if (ApptStart_DatePick.getValue() != null && StartTimeHrs.getValue() != null  && StartTimeMins.getValue() != null) {
-                        calculateStartDt();
+                        calculateStartLdt();
                         validateMsg = "";
                     }
                 }
@@ -311,8 +324,14 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             }
         }
 
+        if (contact_ID_CBox.getValue() == null || contact_ID_CBox.getValue().toString().isEmpty()) {
+            validateMsg = "Please select a Contact";
+            validateErrMsg.append(validateMsg);
+            validateErrMsg.append(System.getProperty("line.separator"));
+        }
+
         if (validateErrMsg.length() > 0) {
-            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, validateErrMsg.toString());
+            alert = buildAlert(Alert.AlertType.ERROR, "Form Incomplete", validateErrMsg.toString());
             confirm = alert.showAndWait();
         }
         else {
@@ -322,7 +341,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             System.out.println("On Save End Text Field: " + end);
             int customer_ID = Integer.parseInt(customerIdTxt);
             int user_ID = Integer.parseInt(userIdTxt);
-            int contact_ID = Integer.parseInt(contactIdTxt);
+            //int contact_ID = Integer.parseInt(contactIdTxt);
+            int contact_ID = contact_ID_CBox.getValue().getContact_ID();
             isValid = true;
         }
         return isValid;
@@ -330,46 +350,32 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     private Boolean canCalcDuration() {
         Boolean canCalc = false;
-        StringBuilder checkLDTFields = new StringBuilder();
+        StringBuilder validateErrMsg = new StringBuilder();
 
         if(!dpSet) {
-            checkLDTFields.append("Start Date");
-            checkLDTFields.append(System.getProperty("line.separator"));
+            validateErrMsg.append("Start Date");
+            validateErrMsg.append(System.getProperty("line.separator"));
         }
 
         if(!hrSet){
-            checkLDTFields.append("Start Time hours");
-            checkLDTFields.append(System.getProperty("line.separator"));
+            validateErrMsg.append("Start Time hours");
+            validateErrMsg.append(System.getProperty("line.separator"));
         }
 
         if(!minSet){
-            checkLDTFields.append("Start Time minutes");
-            checkLDTFields.append(System.getProperty("line.separator"));
+            validateErrMsg.append("Start Time minutes");
+            validateErrMsg.append(System.getProperty("line.separator"));
         }
 
-        if(checkLDTFields.length() > 0) {
-            checkLDTFields.insert(0, System.getProperty("line.separator"));
-            checkLDTFields.insert(0, "Please Fill-in the following fields:");
-            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, checkLDTFields.toString());
+        if(validateErrMsg.length() > 0) {
+            validateErrMsg.insert(0, System.getProperty("line.separator"));
+            validateErrMsg.insert(0, "Please enter value for field: ");
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, validateErrMsg.toString());
             confirm = alert.showAndWait();
         }else{
             canCalc = true;
         }
         return canCalc;
-    }
-
-    /**
-     * Calculate and sets the DurationCB ComboBox in the Update Appointment form. The duration is not persisted in DB.
-     * @param selectedAppt
-     */
-    private void setDuration(Appointment selectedAppt) {
-        // LocaleDateTime from DB timestamp conversion
-        LocalDateTime dbUtcStartLDT = selectedAppt.getStart().toLocalDateTime();
-        LocalDateTime dbUtcEndLDT = selectedAppt.getEnd().toLocalDateTime();
-        //calculate difference between start and end
-        Long durationMins = ChronoUnit.MINUTES.between(dbUtcStartLDT, dbUtcEndLDT);
-        DurationCB.setValue(durationMins);
-        System.out.println("Duration set to: " + durationMins);
     }
 
     protected void saveApptData() throws SQLException {
@@ -386,7 +392,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         System.out.println("On Save End Text Field: " + end);
         int customer_ID = Integer.parseInt(customer_ID_TxtFld.getText());
         int user_ID = Integer.parseInt(user_ID_TxtFld.getText());
-        int contact_ID = Integer.parseInt(contact_ID_TxtFld.getText());
+        //int contact_ID = Integer.parseInt(contact_ID_TxtFld.getText());
+        int contact_ID = contact_ID_CBox.getValue().getContact_ID();
 
         AppointmentDAO apptDAOSave = new AppointmentDaoImpl();
         switch (static_AddUpdateLabel.getText()) {
@@ -405,18 +412,29 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     @javafx.fxml.FXML
     public Boolean onStartDate(ActionEvent actionEvent) {
-        if (ApptStart_DatePick.getValue() != null){
-            dpSet = true;
-        }
-        if (!start_TxtFld.getText().isEmpty() && !end_TxtFld.getText().isEmpty()) {
-            // If DatePick value changed after end date calculate, recalculate start and end dates
-            calculateEndDt();
-/*            if (ApptStart_DatePick.getValue() != null && StartTimeHrs.getValue() != null  && StartTimeMins.getValue() != null) {
-                return dpSet = true;
+        btnTxt = ((DatePicker)actionEvent.getSource()).getId().replace("_", " ").concat("er");
+        if ((static_AddUpdateLabel.getText() == "New Appointment") && ((ApptStart_DatePick.getValue().isBefore(LocalDateTime.now().toLocalDate())))) {
+            StringBuilder validateErrMsg = new StringBuilder();
+            String validateMsg = "Selected date has past.";
+            validateErrMsg.append(validateMsg);
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, validateErrMsg.toString());
+            confirm = alert.showAndWait();
+            if (confirm.isPresent() && confirm.get() == ButtonType.OK) {
+                ApptStart_DatePick.setValue(dpPrevDate);
             }
-            if (ApptStart_DatePick.getValue() != null && StartTimeHrs.getValue() != null  && StartTimeMins.getValue() != null) {
-                return dpSet = true;
-            }*/
+            return dpSet;
+        }
+        if (ApptStart_DatePick.getValue() != null) {
+            dpSet = true;
+
+            if (!start_TxtFld.getText().isEmpty() && !end_TxtFld.getText().isEmpty()) {
+                // If DatePick value changed after end date calculate, recalculate start and end dates
+                calculateEndLdt();
+            }
+            if ((!start_TxtFld.getText().isEmpty()) && (end_TxtFld.getText().isEmpty()) && (DurationCB.getValue() > 0l)) {
+                // If DatePick value changed after canCalcDuration() validation, recalculate start and end dates
+                calculateEndLdt();
+            }
         }
         return dpSet;
     }
@@ -448,32 +466,12 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             System.out.println("Duration Updated #3");
             try {
                 Boolean doCalc = canCalcDuration();
-                System.out.println("Check doCalc #3");
+                System.out.println("Check doCalc: " + doCalc);
 
                 if (doCalc) {
-                    System.out.println("In doCalc #3");
-            /*        LocalTime lt = ltInput(StartTimeHrs.getValue(), StartTimeMins.getValue());
-                    System.out.println("In doCalc #3.1 " + lt);
-                    // StartTime = getLDT(lt.getHour(), lt.getMinute());
-                    StartTime = lt.atDate(ApptStart_DatePick.getValue());
-                    Timestamp tsStart = Timestamp.valueOf(StartTime);
-                    String tsStartFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(tsStart);
-                    start_TxtFld.setText(tsStartFormatted);
-                    System.out.println("In doCalc #3.2 " + StartTime);
-                    ZonedDateTime locZdt = ZonedDateTime.of(StartTime, ZoneId.of(static_ZoneId));
-                    ZonedDateTime utcZdt = locZdt.withZoneSameInstant(ZoneOffset.UTC);
-                    System.out.println("In doCalc #3.3 -Local time: " + locZdt);
-                    System.out.println("In doCalc #3.3 -UTC time: " + utcZdt);
-                    System.out.println("In doCalc #3.4 ");*/
-
-/*                    StartTime = calculateStartDt();
-                    EndTime = StartTime.plusMinutes(DurationCB.getValue());
-                    Timestamp tsEnd = Timestamp.valueOf(EndTime);
-                    String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(tsEnd);
-                    end_TxtFld.setText(tsEndFormatted);*/
-
-                    calculateEndDt();
-                    System.out.println("In doCalc #3.5" );
+                    System.out.println("In doCalc #3.1");
+                    calculateEndLdt();
+                    System.out.println("In doCalc #3.2" );
                     // System.out.println("This is end time: " + EndTime);
                 } else {
                     if (confirm.isPresent() && confirm.get() == ButtonType.OK) {
@@ -491,13 +489,12 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     public void onActionSaveAppt(ActionEvent actionEvent) {
         String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
-        //if (ApptStart_DatePick.valueProperty().isNull().ApptAddBtn.){
 
         try{
             boolean validForm = validateFormFields();
 
             if (validForm) {
-                //saveApptData();
+                saveApptData();
                 // Cast window to stage
                 stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
                 scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
@@ -530,27 +527,35 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         }
     }
 
+    /**
+     * Utilized lambda to replace the anonymous function used to create the Callback<DatePicker, DateCell> in the
+     * setDayCellFactory function to set DataPicker dayCellFactoryProperty date values before current date or empty to disable.
+     */
     @Override
-        public void initialize(URL url, ResourceBundle rb) {
+    public void initialize(URL url, ResourceBundle rb) {
         static_AddUpdateLabel = AddUpdateApptLabel;
         buildHours();
         buildMinutes();
         buildDurations();
 
-        try {
-            //ApptSaveBtn.disableProperty().bind(ApptStart_DatePick.valueProperty().isNull());
+        ApptStart_DatePick.setDayCellFactory(dp -> new DateCell() {
+            // Disable all cell dates before current date and empty cells.
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                setDisable(item.isBefore(LocalDateTime.now().toLocalDate()) || empty);
+            }
+        });
 
-/*
+        try {
+
             ApptStart_DatePick.valueProperty().addListener(new ChangeListener<LocalDate>() {
                 @Override
                 public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate ldtPrev, LocalDate ldtNew) {
-                    propValDtPick = ldtNew;
-                    System.out.println("Start Date Changed to " + ldtNew);
-
+                    System.out.println("Start Previous Date: " + ldtPrev);
+                    dpPrevDate = ldtPrev;
                 }
             });
-
-*/
 
             // Code will populate the listviews then assign change listeners to detect and track the selected item.
             customer_ID_ListView.setItems(cstLVItems.extractAll());
@@ -566,6 +571,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                 }
             });
 
+            contact_ID_CBox.setItems(cntLVItems.extractAll());
+/*
             contact_ID_ListView.setItems(cntLVItems.extractAll());
             contact_ID_ListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Contact>() {
                 @Override
@@ -578,6 +585,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                     contact_ID_TxtFld.setText(String.valueOf(selectedCntId));
                 }
            });
+*/
 
             user_ID_ListView.setItems(userLVItems.extractAll());
             user_ID_ListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
@@ -597,4 +605,11 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         }
     }
 
+    @javafx.fxml.FXML
+    public LocalDate getPrev(Event event) {
+        btnTxt = ((DatePicker)event.getSource()).getId().replace("_", " ").concat("er");
+        System.out.println("Mouse Clicked: "+ btnTxt);
+        System.out.println(ApptStart_DatePick.getValue());
+        return ApptStart_DatePick.getValue();
+    }
 }

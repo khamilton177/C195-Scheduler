@@ -4,22 +4,19 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.thecodebarista.dao.*;
 import com.thecodebarista.model.Appointment;
 import com.thecodebarista.model.Customer;
 import com.thecodebarista.model.FirstLevelDivision;
-import com.thecodebarista.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
@@ -43,10 +40,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
     FirstLevelDivisionDAOImpl divCBItems = new FirstLevelDivisionDAOImpl();
 
-    @javafx.fxml.FXML
-    protected Parent includeApptMo;
-    @javafx.fxml.FXML
-    protected Parent includeApptWk;
     @javafx.fxml.FXML
     protected ApptTableMonthlyCtrl includeApptMoController;
     @javafx.fxml.FXML
@@ -126,30 +119,54 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     private Tab AppMoTab;
 
-    protected void loginAppointAlert(int currentUserId, String currentUserName) throws SQLException, NumberFormatException {
+    /**
+     * Alert user of appointment happening within the next 15 minutes.
+     * @throws SQLException
+     * @throws NumberFormatException
+     */
+    protected void loginAppointAlert() throws SQLException, NumberFormatException {
         System.out.println("Doing loginAppt Alert #1");
         AppointmentDAO apptdao = new AppointmentDaoImpl();
-        UnmanagedDAO userDAOGet = new UserDaoImpl();
+        String msgCtx = "";
 
         try{
-            User currentUser = (User) userDAOGet.extract(currentUserId);
-            String userName = currentUser.getUser_Name();
-            int userId = currentUser.getUser_ID();
-
-            // User currentUser = (User) userDAOGet.extract(sessionUserId);
-            // String userName = this.currentUserName;
-            // int userId = this.sessionUserId;
-            System.out.println("Doing loginAppt Alert #2 - userid is: " + userId);
-
-            int userAppts = apptdao.getCustomerApptsByFK("User_ID", userId).size();
+            ObservableList<Appointment> userAppts = apptdao.getApptNowByUser(sessionUserId);
+            int userApptsSize = userAppts.size();
             System.out.println("Doing loginAppt Alert #3 - count: " + userAppts);
 
-            if(userAppts > 0) {
+            if(userApptsSize > 0) {
+                //For testing. TODO: Don't forget to reset
+                //LocalDateTime ldt = LocalDateTime.of(2023, 02, 04, 19, 15);
+                LocalDateTime ldt = LocalDateTime.now();
+                LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
+                System.out.println("UTC Date NOW: " + UtcNowLdt);
+                Timestamp TsUtcNow = Timestamp.valueOf(UtcNowLdt);
+                System.out.println("TS Date NOW: " + TsUtcNow);
+                LocalDate today = UtcNowLdt.toLocalDate();
+                LocalTime time = UtcNowLdt.toLocalTime();
+
+                for (Appointment appt : userAppts) {
+                    LocalDateTime apptLdt = appt.getStart().toLocalDateTime();
+                    System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), appt.getStart().toLocalDateTime().toString()));
+                    LocalDateTime apptStart = appt.getStart().toLocalDateTime();
+                    if(apptStart.toLocalDate().equals(ldt.toLocalDate())){
+                        if(apptStart.toLocalTime().isAfter(ldt.toLocalTime())) {
+                            Long minsTill = ChronoUnit.MINUTES.between(ldt, apptStart);
+                            System.out.println("Minutes until appointment: " + minsTill);
+                            if (minsTill < 16L){
+                                msgCtx = String.format("Hi %s,%nYou have Appointment ID #%d soon!%n%tD at %tR",
+                                        CurrentUserNameLbl.getText(), appt.getAppointment_ID(), apptStart.toLocalDate(), apptStart.toLocalTime());
+                                alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
+                                confirm = alert.showAndWait();
+                                return;
+                            }
+                        }
+                    }
+                }
                 System.out.println("Doing loginAppt Alert #4");
 
-                String msgCtx = "Hi " +
-                        userName +
-                        ". Relax! You don't have any appoints within the next 15 minutes.";
+                msgCtx = String.format("Hi %s. Relax! You don't have any appoints within the next 15 minutes.",
+                            CurrentUserNameLbl.getText());
                 alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
                 confirm = alert.showAndWait();
             }
@@ -408,6 +425,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         }
     }
 
+    @javafx.fxml.FXML
+    public void onActionDeleteAppt(ActionEvent actionEvent) {
+
+    }
+
     /**
      * Loads the CstAddUpdateFormCtrl to create customers in view the cst-add-update-form view.
      * @param actionEvent Update form button, CstAddBtn, clicked.
@@ -592,9 +614,16 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         return openHr;
     }
 
-//    protected int getLocCloseHr(LocalDateTime ldt) {
-//
-//    }
+    /**
+     * Get the Local Close hr. for the Appointments Business Hours.
+     * @param ldt
+     * @return the int representing the local end hr for Appointments.
+     */
+    protected int getLocCloseHr(LocalDateTime ldt) {
+        int locHrsOpen = getLocOpenHr(ldt);
+        int closeHr = locHrsOpen + totalBusHrs;
+        return closeHr;
+    }
 
 
     private void convertBusinessHrs() {
@@ -661,7 +690,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
                 System.out.println("Made it to newLogin Test");
                 System.out.println("Made it to newLogin Test - id: " + sessionUserId);
-                System.out.println("Made it to newLogin Test - name: " + sessionUserId);
+                System.out.println("Made it to newLogin Test - name: " + CurrentUserNameLbl.getText());
 
                 //loginAppointAlert(sessionUserId, currentUserName);
                 //loginAppointAlert(sessionUserId, currentUserName);
@@ -671,4 +700,5 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             e.printStackTrace();
         }
     }
+
 }

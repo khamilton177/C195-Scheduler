@@ -262,7 +262,7 @@ public class LoginFormCtrl implements Initializable {
                         formController.setCurrentUserNameInfo(currentUserName);
 
 
-                        // formController.loginAppointAlert(sessionUserId, currentUserName);
+                        formController.loginAppointAlert();
 
                         // Cast window to stage
                         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
