@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import com.thecodebarista.model.Appointment;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public interface AppointmentDAO extends SchedulerDAO<Appointment> {
 
@@ -15,7 +16,7 @@ public interface AppointmentDAO extends SchedulerDAO<Appointment> {
     ObservableList<Appointment> adhocQuery(String wc) throws SQLException;
     ObservableList<Appointment> getCstAppt(int id) throws SQLException;
     ObservableList<Appointment> getCstApptByFK(String fk, int id) throws SQLException;
-    ObservableList<Appointment> getCstApptByUser(int id) throws SQLException;
+    ObservableList<Appointment> getApptByCstnUser(int cstId, LocalDate startDt) throws SQLException;
     ObservableList<Appointment> getApptNowByUser(int id) throws SQLException;
 
 

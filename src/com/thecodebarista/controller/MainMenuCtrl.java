@@ -26,7 +26,6 @@ import static java.lang.Math.addExact;
 import static java.lang.Math.subtractExact;
 
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
-    //private final int sessionUserId = currentUser.getUser_ID();
     public final int busHrsOpen = 8;
     public final int totalBusHrs = 14;
     public static Label static_AddUpdateLabel;
@@ -111,7 +110,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     private Label CurrentUserNameLbl;
     @javafx.fxml.FXML
-    private TabPane ApptsTab;
+    private TabPane ApptTabs;
     @javafx.fxml.FXML
     private Tab AppTab;
     @javafx.fxml.FXML
@@ -124,18 +123,18 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
      * @throws SQLException
      * @throws NumberFormatException
      */
-    protected void loginAppointAlert() throws SQLException, NumberFormatException {
+    protected void loginAppointAlert() throws NumberFormatException {
         System.out.println("Doing loginAppt Alert #1");
-        AppointmentDAO apptdao = new AppointmentDaoImpl();
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
         String msgCtx = "";
 
         try{
-            ObservableList<Appointment> userAppts = apptdao.getApptNowByUser(sessionUserId);
-            int userApptsSize = userAppts.size();
-            System.out.println("Doing loginAppt Alert #3 - count: " + userAppts);
+            ObservableList<Appointment> userAppt = apptDao.getApptNowByUser(sessionUserId);
+            int userApptSize = userAppt.size();
+            System.out.println("Doing loginAppt Alert #3 - count: " + userAppt);
 
-            if(userApptsSize > 0) {
-                //For testing. TODO: Don't forget to reset
+            if(userApptSize > 0) {
+                //For testing. TODO: Don't forget to comment out and use now
                 //LocalDateTime ldt = LocalDateTime.of(2023, 02, 04, 19, 15);
                 LocalDateTime ldt = LocalDateTime.now();
                 LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
@@ -145,7 +144,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
                 LocalDate today = UtcNowLdt.toLocalDate();
                 LocalTime time = UtcNowLdt.toLocalTime();
 
-                for (Appointment appt : userAppts) {
+                for (Appointment appt : userAppt) {
                     LocalDateTime apptLdt = appt.getStart().toLocalDateTime();
                     System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), appt.getStart().toLocalDateTime().toString()));
                     LocalDateTime apptStart = appt.getStart().toLocalDateTime();
@@ -180,17 +179,15 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     protected void setCurrentUserIdInfo(int setCurrentUserId) {
         CurrentUserIdLbl.setText("ID #" + setCurrentUserId);
         sessionUserId = setCurrentUserId;
-        //return sessionUserId;
     }
 
     protected void setCurrentUserNameInfo(String setCurrentUserName) {
         CurrentUserNameLbl.setText(setCurrentUserName);
         currentUserName = setCurrentUserName;
-       // return currentUserName;
     }
 
     /**
-     * Creates an Alert instance.<BR>RUNTIME ERROR:<BR>java.lang.NullPointerException<BR>Caused by: java.lang.NullPointerException<BR>at controller.MainFormController.buildAlert(MainFormController.java:254)<BR>I orginally planned to use the switch case statements to set the AlertType using "alert.setAlertType(alertType)."<BR>I realized I had not initialized the alert with the "alert = new (alertType)"<BR>Adding the Alert constructor fixed the issue.<BR>I removed the setAlert function anyway since the Alert constructor was being passed the AlertType directly at that point.
+     * Creates an Alert instance.<BR>RUNTIME ERROR:<BR>java.lang.NullPointerException<BR>Caused by: java.lang.NullPointerException<BR>at controller.MainFormController.buildAlert(MainFormController.java:254)<BR>I originally planned to use the switch case statements to set the AlertType using "alert.setAlertType(alertType)."<BR>I realized I had not initialized the alert with the "alert = new (alertType)"<BR>Adding the Alert constructor fixed the issue.<BR>I removed the setAlert function anyway since the Alert constructor was being passed the AlertType directly at that point.
      * @param alertType Alert Type to create.
      * @param titleTxt Text for Alert title.
      * @param msgCtx Text for Alert context.
@@ -237,7 +234,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
      */
     public void displayCstWithCoInfo() throws SQLException {
         ObservableList<Customer> cstWithCoInfo = FXCollections.observableArrayList();
-        CustomerDAO cstdao = new CustomerDaoImpl();
+        CustomerDAO cstDao = new CustomerDaoImpl();
 
         // Set the cell to the property value for the specified column name in string
         CstIdCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
@@ -248,7 +245,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         CstCountryIdCol.setCellValueFactory(new PropertyValueFactory<>("country_ID"));
         CstDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
 
-        cstWithCoInfo.addAll(cstdao.customerWithCoInfo());
+        cstWithCoInfo.addAll(cstDao.customerWithCoInfo());
         CstTblView.setItems(cstWithCoInfo);
     }
 
@@ -257,7 +254,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
      */
     public void displayCstTblViewData() throws SQLException {
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-        CustomerDAO cstdao = new CustomerDaoImpl();
+        CustomerDAO cstDao = new CustomerDaoImpl();
 
         // Set the cell to the property value for the specified column name in string
         CstIdCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
@@ -268,7 +265,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         CstCountryIdCol.setCellValueFactory(new PropertyValueFactory<>("country_ID"));
         CstDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
 
-        allCustomers.addAll(cstdao.extractAll());
+        allCustomers.addAll(cstDao.extractAll());
         CstTblView.setItems(allCustomers);
     }
 
@@ -277,7 +274,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
      */
     public void displayApptTblViewData() throws SQLException {
         ObservableList<Appointment> allApptAppointments = FXCollections.observableArrayList();
-        AppointmentDAO apptdao = new AppointmentDaoImpl();
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
 
         appointment_ID_Col.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
         title_Col.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -292,7 +289,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
         contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
 
-        allApptAppointments.addAll(apptdao.extractAll());
+        allApptAppointments.addAll(apptDao.extractAll());
         ApptTblView.setItems(allApptAppointments);
     }
 
@@ -319,27 +316,34 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
     /**
      * Delete Scheduler Item with confirmation.
-     * @param selectedSchedItem Selected object from either table view.
+     * @param selectedSchedulerItem Selected object from either table view.
      * @param btnTxt Modified Event button text passed as Alert title.
      * @param msgCtx Event errorMsg passed as Alert context.
      */
-    public void confirmDelete(Object selectedSchedItem, String btnTxt, String msgCtx){
+    public void confirmDelete(Object selectedSchedulerItem, String btnTxt, String msgCtx){
         alert = buildAlert(Alert.AlertType.CONFIRMATION, btnTxt, msgCtx);
         confirm = alert.showAndWait();
         if (confirm.isPresent() && confirm.get() == ButtonType.OK){
-            if (selectedSchedItem instanceof Customer){
+            if (selectedSchedulerItem instanceof Customer) {
                 try {
                     if (delCstRow(selectedCst)){
-                        displayApptTblViewData();
+                        refreshApptTables();
                         displayCstWithCoInfo();
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-
-
-
+            }
+            if (selectedSchedulerItem instanceof Appointment) {
+                AppointmentDAO apptDao = new AppointmentDaoImpl();
+                try {
+                    if (apptDao.delete(selectedAppt) > -1) {
+                        refreshApptTables();
+                    }
+                }
+                catch(SQLException e){
+                        e.printStackTrace();
+                }
             }
         }
     }
@@ -384,25 +388,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         System.out.println("Update Appointment Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
         try{
-            currentTab = ApptsTab.getSelectionModel().getSelectedItem();
-            System.out.println("Current Tab: " + currentTab.getId());
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/com/thecodebarista/view/appt-add-update-form.fxml"));
             scene = loader.load();
             ApptAddUpdateFormCtrl modelCtrl = loader.getController();
-            switch (currentTab.getId()) {
-                case "AppMoTab":
-                    TableView.TableViewSelectionModel<Appointment> selectorMo = includeApptMoController.ApptTblViewMonthly.getSelectionModel();
-                    selectedAppt = selectorMo.getSelectedItem();
-                    break;
-                case "AppWkTab":
-                    TableView.TableViewSelectionModel<Appointment> selectorWk = includeApptWkController.ApptTblViewWeekly.getSelectionModel();
-                    selectedAppt = selectorWk.getSelectedItem();
-                    break;
-                default:
-                    selectedAppt = ApptTblView.getSelectionModel().getSelectedItem();
-                    break;
-            }
+            tableItemSelector();
             System.out.println("Made it here 1");
             modelCtrl.sendApptModifyData(selectedAppt);
 
@@ -425,9 +415,24 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         }
     }
 
+    /**
+     * Deletes selected row in Appointment table view.  Presents alert confirmation dialog box.
+     * @param actionEvent Delete form button, ApptDeleteBtn, clicked.
+     */
     @javafx.fxml.FXML
     public void onActionDeleteAppt(ActionEvent actionEvent) {
+        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
+        try {
+            tableItemSelector();
+            String msgCtx = "Please confirm deletion of " + "Appointment ID: " + selectedAppt.getAppointment_ID();
+            confirmDelete(selectedAppt, btnTxt, msgCtx);
+        } catch (NullPointerException e) {
+            String errorMsg = "Error: No Appointment Selected!";
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
+            confirm = alert.showAndWait();
+        }
     }
 
     /**
@@ -521,11 +526,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     }
 
     /**
-     * Logout of application.<>BR</>Returns to Login Screen
-     *
+     * Logout of application.<>BR</>Returns to Log In Screen
      */
     @javafx.fxml.FXML
-    private void onActionLogout(ActionEvent actionEvent) {
+    private void onActionLogout(ActionEvent actionEvent) throws Exception{
 
         try{
             FXMLLoader loader = new FXMLLoader();
@@ -543,45 +547,49 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         }
     }
 
+    /**
+     * Sets currentTab variable on Appointment tab change.
+     * @param event
+     */
     @javafx.fxml.FXML
     public void onTabSelectLoad(Event event) {
-        try {
-            currentTab = ApptsTab.getSelectionModel().getSelectedItem();
-            System.out.println("Current Tab Inquiry for tabSelect: " + currentTab.getId());
-/*
+        currentTab = ApptTabs.getSelectionModel().getSelectedItem();
+        System.out.println("Current Tab Inquiry for tabSelect: " + currentTab.getId());
+    }
 
-            FXMLLoader loader = new FXMLLoader();
-            switch (currentTab.getId()){
-                case "AppMoTab":
-                    TableSelectionModel<Appointment> selector = ApptTblViewMonthly.getTableView().getSelectionModel();
-                    selectedAppt = selector.getSelectedItem();
-
-                    loader.setLocation(getClass().getResource("/com/thecodebarista//view/ApptTblMonthlyView.fxml"));
-                    scene = loader.load();
-                    ApptTableMonthlyCtrl modelCtrl = loader.getController();
-                    modelCtrl.getTableView();
-                    break;
-                case "AppWkTab":
-//                    loader.setLocation(getClass().getResource("/com/thecodebarista//view/ApptTblWeeklyView.fxml"));
-//                    scene = loader.load();
-//                    ApptTableWeeklyCtrl modelCtrl = loader.getController();
-//                    modelCtrl.displayApptTblViewWeekly();
-                    break;
-                default:
-//                    loader.setLocation(getClass().getResource("/com/thecodebarista//view/main-menu.fxml"));
-
-
-            }
- //           loader.setLocation(getClass().getResource("/com/thecodebarista//view/ApptTblMonthlyView.fxml"));
-  //          scene = loader.load();
-  //          ApptTableMonthlyCtrl modelCtrl = loader.getController();
-//              modelCtrl.displayApptTblViewMonthly();
-*/
-
+    /**
+     * Sets the getSelectedItem to the Appointment Tableview associated with the current tab.
+     */
+    private void tableItemSelector() {
+        TableView.TableViewSelectionModel<Appointment> itemSelector;
+        switch (currentTab.getId()) {
+            case "AppMoTab":
+                itemSelector = includeApptMoController.ApptTblViewMonthly.getSelectionModel();
+                selectedAppt = itemSelector.getSelectedItem();
+                break;
+            case "AppWkTab":
+                itemSelector = includeApptWkController.ApptTblViewWeekly.getSelectionModel();
+                selectedAppt = itemSelector.getSelectedItem();
+                break;
+            default:
+                itemSelector = ApptTblView.getSelectionModel();
+                selectedAppt = itemSelector.getSelectedItem();
+                break;
         }
-        catch(Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getCause());
+    }
+
+    /**
+     * Repopulate all Appointment Tableviews
+     * @throws SQLException
+     */
+    private void refreshApptTables() throws SQLException {
+        try {
+            displayApptTblViewData();
+            includeApptMoController.displayApptTblViewMonthly();
+            includeApptWkController.displayApptTblViewWeekly();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
         }
     }
 
@@ -643,6 +651,13 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
 
         //System.out.println("Local business Hrs: " + locHrsOpen + "am - " + locHrsClose + "pm");
+/*
+
+        LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
+        System.out.println("UTC Date NOW: " + UtcNowLdt);
+        LocalDate UtcCurDt = UtcNowLdt.toLocalDate();
+        LocalTime UtcCurTime = UtcNowLdt.toLocalTime();
+*/
 
 
     }
@@ -658,11 +673,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         //LocalDateTime ldt = ts.toLocalDateTime();
 
         try{
-            AppointmentDAO apptdaoI = new AppointmentDaoImpl();
-            // ObservableList<Appointment> minCstId = apptdaoI.adhocQuery("SELECT MIN(Customer_ID) FROM Appointment");
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            // ObservableList<Appointment> minCstId = apptDao.adhocQuery("SELECT MIN(Customer_ID) FROM Appointment");
             // minCstId.stream().findFirst().get().getCustomer_ID();
-            Appointment appointment2 = new Appointment(0,"Java help", "Seed data", "remote", "Mentor", tsStart, tsEnd, 2, 2, 3);
-            result = apptdaoI.insert(appointment2);
+            Appointment appointment = new Appointment(0,"Java help", "Seed data", "remote", "Mentor", tsStart, tsEnd, 2, 2, 3);
+            result = apptDao.insert(appointment);
             System.out.println(result);
         }
         catch (SQLException e) {
@@ -691,9 +706,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
                 System.out.println("Made it to newLogin Test");
                 System.out.println("Made it to newLogin Test - id: " + sessionUserId);
                 System.out.println("Made it to newLogin Test - name: " + CurrentUserNameLbl.getText());
-
-                //loginAppointAlert(sessionUserId, currentUserName);
-                //loginAppointAlert(sessionUserId, currentUserName);
             }
             // convertBusinessHrs();
         } catch (SQLException e) {

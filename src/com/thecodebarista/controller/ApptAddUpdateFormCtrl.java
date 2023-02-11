@@ -146,7 +146,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private int getCstByIndex(int id) {
         int index = -1;
 
-        for (Customer customer : customer_ID_ListView.getItems()){
+        for (Customer customer : customer_ID_ListView.getItems()) {
             index++;
 
             if (customer.getCustomer_ID() == id)
@@ -159,7 +159,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private int getCntByIndex(int id) {
         int index = -1;
 
-        for (Contact contact : contact_ID_ListView.getItems()){
+        for (Contact contact : contact_ID_ListView.getItems()) {
             index++;
 
             if (contact.getContact_ID() == id)
@@ -172,7 +172,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private int getUserByIndex(int id) {
         int index = -1;
 
-        for (User user : user_ID_ListView.getItems()){
+        for (User user : user_ID_ListView.getItems()) {
             index++;
 
             if (user.getUser_ID() == id)
@@ -280,22 +280,67 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         return EndTime;
     }
 
+    /**
+     * Check Appointment conflicts for Customer.
+     * @throws SQLException
+     */
+    private Boolean apptOverlapCheck() throws SQLException {
+        System.out.println("CHECKING APPOINT OVERLAPS");
+        int i = 0;
+        Boolean noConflict = true;
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+        StringBuilder validateErrMsg = new StringBuilder();
+        String validateMsg = "";
+        LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
+        System.out.println("UTC Date NOW: " + UtcNowLdt);
+
+        try {
+            ObservableList<Appointment> apptOverLap = apptDao.getApptByCstnUser(selectedCstId, ApptStart_DatePick.getValue());
+            for (Appointment appt : apptOverLap) {
+                LocalDateTime apptStart = appt.getStart().toLocalDateTime();
+                LocalDateTime apptEnd = appt.getEnd().toLocalDateTime();
+                System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), appt.getStart().toLocalDateTime().toString()));
+                if (apptStart.equals(StartTime)) {
+                    validateMsg = String.format("Please select a new Start Time.%n Customer already scheduled for appointment #%d at that time.",
+                            appt.getAppointment_ID());
+                }
+                if (apptStart.isBefore(StartTime) && apptEnd.isAfter(StartTime)) {
+                    validateMsg = String.format("Appointment overlaps customer's existing appointment #%d.",
+                            appt.getAppointment_ID());
+                }
+                if (apptStart.isAfter(StartTime) && apptStart.isBefore(EndTime)) {
+                    validateMsg = String.format("Please choose a shorter duration.%n Next appointment starts at %tR",
+                            apptStart.toLocalTime());
+                }
+
+                validateErrMsg.append(validateMsg);
+                if (validateErrMsg.length() > 0) {
+                    noConflict = false;
+                    alert = buildAlert(Alert.AlertType.ERROR, "Customer Appointment Conflict", validateErrMsg.toString());
+                    confirm = alert.showAndWait();
+                    validateMsg = "";
+                    break;
+                }
+                System.out.println(String.format("Has Conflict at BREAK- Loop %d ", i++));
+                System.out.println("error length- " + validateErrMsg.length());
+            }
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Has Conflict? " + noConflict);
+        return noConflict;
+    }
+
     private Boolean validateFormFields() {
         Boolean isValid = false;
         StringBuilder validateErrMsg = new StringBuilder();
         String validateMsg = "";
 
-        String title = title_TxtFld.getText();
-        String description = description_TxtFld.getText();
-        String location = location_TxtFld.getText();
-        String type = type_TxtFld.getText();
         String startTxtFld = start_TxtFld.getText();
         //System.out.println("Invisible Start Text Field: " + start);
         String endTxtFld = end_TxtFld.getText();
         //System.out.println("On Save End Text Field: " + end);
-        String customerIdTxt = customer_ID_TxtFld.getText();
-        String userIdTxt = user_ID_TxtFld.getText();
-        //String contactIdTxt = contact_ID_TxtFld.getText();
 
         if (ApptStart_DatePick.getValue() == null) {
             validateMsg = "Please select a valid Start Date";
@@ -305,7 +350,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
         TextField[] formFields = {title_TxtFld, description_TxtFld, location_TxtFld, type_TxtFld, start_TxtFld, end_TxtFld, customer_ID_TxtFld, user_ID_TxtFld};
         for (TextField field : formFields) {
-            if(field.getText() == null || field.getText().isEmpty()){
+            if(field.getText() == null || field.getText().isEmpty()) {
                 if(field.getId().equals("start_TxtFld")){
                     if (ApptStart_DatePick.getValue() != null && StartTimeHrs.getValue() != null  && StartTimeMins.getValue() != null) {
                         calculateStartLdt();
@@ -339,10 +384,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             System.out.println("Invisible Start Text Field: " + start);
             Timestamp end = Timestamp.valueOf(endTxtFld);
             System.out.println("On Save End Text Field: " + end);
-            int customer_ID = Integer.parseInt(customerIdTxt);
-            int user_ID = Integer.parseInt(userIdTxt);
-            //int contact_ID = Integer.parseInt(contactIdTxt);
-            int contact_ID = contact_ID_CBox.getValue().getContact_ID();
             isValid = true;
         }
         return isValid;
@@ -357,12 +398,12 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             validateErrMsg.append(System.getProperty("line.separator"));
         }
 
-        if(!hrSet){
+        if(!hrSet) {
             validateErrMsg.append("Start Time hours");
             validateErrMsg.append(System.getProperty("line.separator"));
         }
 
-        if(!minSet){
+        if(!minSet) {
             validateErrMsg.append("Start Time minutes");
             validateErrMsg.append(System.getProperty("line.separator"));
         }
@@ -372,7 +413,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             validateErrMsg.insert(0, "Please enter value for field: ");
             alert = buildAlert(Alert.AlertType.ERROR, btnTxt, validateErrMsg.toString());
             confirm = alert.showAndWait();
-        }else{
+        }
+        else {
             canCalc = true;
         }
         return canCalc;
@@ -392,7 +434,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         System.out.println("On Save End Text Field: " + end);
         int customer_ID = Integer.parseInt(customer_ID_TxtFld.getText());
         int user_ID = Integer.parseInt(user_ID_TxtFld.getText());
-        //int contact_ID = Integer.parseInt(contact_ID_TxtFld.getText());
         int contact_ID = contact_ID_CBox.getValue().getContact_ID();
 
         AppointmentDAO apptDAOSave = new AppointmentDaoImpl();
@@ -443,18 +484,18 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     public void onDurationUpdate(ActionEvent actionEvent) throws Exception {
         btnTxt = ((ComboBox)actionEvent.getSource()).getId().replace("Btn", "");
 
-        if (btnTxt.equalsIgnoreCase("StartTimeHrs")){
+        if (btnTxt.equalsIgnoreCase("StartTimeHrs")) {
             hrSet = true;
 
-            if(DurationCB.getValue() == null){
+            if(DurationCB.getValue() == null) {
                 return;
             }
         }
 
-        if (btnTxt.equalsIgnoreCase("StartTimeMins")){
+        if (btnTxt.equalsIgnoreCase("StartTimeMins")) {
             minSet = true;
 
-            if(DurationCB.getValue() == null){
+            if(DurationCB.getValue() == null) {
                 return;
             }
         }
@@ -477,7 +518,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                     if (confirm.isPresent() && confirm.get() == ButtonType.OK) {
                     }
                 }
-            } catch (RuntimeException e) {
+            }
+            catch (RuntimeException e) {
                 System.out.println("Resetting Duration #2");
                 System.out.println(e.getMessage());
                 System.out.println(e.getCause());
@@ -485,22 +527,29 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         }
     }
 
+    /**
+     * Save new or updated customer appointment.
+     * @param actionEvent
+     */
     @javafx.fxml.FXML
     public void onActionSaveAppt(ActionEvent actionEvent) {
         String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
-        try{
+        try {
             boolean validForm = validateFormFields();
 
             if (validForm) {
-                saveApptData();
-                // Cast window to stage
-                stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-                scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
-                stage.setTitle("C195-Scheduler");
-                stage.setScene(new Scene(scene));
-                stage.show();
+                boolean noConflict = apptOverlapCheck();
+                if (noConflict) {
+                    saveApptData();
+                    // Cast window to stage
+                    stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+                    scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+                    stage.setTitle("C195-Scheduler");
+                    stage.setScene(new Scene(scene));
+                    stage.show();
+                }
             }
         }
         catch(Exception e) {
@@ -513,7 +562,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     public void onActionCancel(ActionEvent actionEvent) {
         System.out.println("Cancel Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
-        try{
+        try {
             // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));

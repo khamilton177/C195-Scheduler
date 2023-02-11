@@ -5,10 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.Appointment;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -210,6 +207,7 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
             String sqlStmt = "SELECT * FROM appointments" +
                     " WHERE Customer_ID = ?";
             prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setInt(1, id);
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
@@ -262,13 +260,19 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     }
 
     @Override
-    public ObservableList<Appointment> getCstApptByUser(int id) throws SQLException{
+    public ObservableList<Appointment> getApptByCstnUser(int cstId, LocalDate startDt) throws SQLException{
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         try {
-            String sqlStmt = "SELECT appointment_id FROM appointments" +
-                    " WHERE User_ID = ?";
+            String sqlStmt = "SELECT * FROM appointments" +
+                    " WHERE (Customer_ID = ?) &&" +
+                    " (DATE(Start) = ? || DATE(Start) = ?-1 || DATE(Start) = ?+1)";
+
             prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setInt(1, cstId);
+            prepStmt.setDate(2, Date.valueOf(startDt));
+            prepStmt.setDate(3, Date.valueOf(startDt));
+            prepStmt.setDate(4, Date.valueOf(startDt));
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
