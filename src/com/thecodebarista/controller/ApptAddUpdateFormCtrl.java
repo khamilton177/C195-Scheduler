@@ -1,6 +1,5 @@
 package com.thecodebarista.controller;
 
-import com.thecodebarista.AppointmentScheduler;
 import com.thecodebarista.dao.*;
 import com.thecodebarista.model.*;
 import javafx.beans.value.ChangeListener;
@@ -111,7 +110,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
 
     /**
-     * Fills the list with the local business hours for Appointments.
+     * Fills the StartTimeHrs ComboBox with the local business hours for Appointments.
      */
     private void buildHours() {
         LocalDateTime ldt = LocalDateTime.now();
@@ -125,7 +124,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * Fills the list with the minutes intervals for Appointments.
+     * Fills the StartTimeMins ComboBox with the minutes intervals for Appointments.
      */
     private void buildMinutes() {
         int d = 0;
@@ -135,10 +134,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * Fills the duration list with time periods for Appointments.
+     * Fills the DurationCB ComboBox with time periods for Appointments.
      */
     private void buildDurations() {
-        // DecimalFormat decF = new DecimalFormat("00");
         durations.addAll(15L, 30L, 45L, 60l);
         DurationCB.setItems(durations);
     }
@@ -291,44 +289,58 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         AppointmentDAO apptDao = new AppointmentDaoImpl();
         StringBuilder validateErrMsg = new StringBuilder();
         String validateMsg = "";
-        LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
-        System.out.println("UTC Date NOW: " + UtcNowLdt);
+        LocalTime busCloseTime = getLocCloseTime(LocalDateTime.now());
+        LocalTime thisAppt = EndTime.toLocalTime();
+        //System.out.println("Appointment is after Business Hours Close? " + thisAppt.isAfter(busCloseTime));
 
-        try {
-            ObservableList<Appointment> apptOverLap = apptDao.getApptByCstnUser(selectedCstId, ApptStart_DatePick.getValue());
-            for (Appointment appt : apptOverLap) {
-                LocalDateTime apptStart = appt.getStart().toLocalDateTime();
-                LocalDateTime apptEnd = appt.getEnd().toLocalDateTime();
-                System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), appt.getStart().toLocalDateTime().toString()));
-                if (apptStart.equals(StartTime)) {
-                    validateMsg = String.format("Please select a new Start Time.%n Customer already scheduled for appointment #%d at that time.",
-                            appt.getAppointment_ID());
-                }
-                if (apptStart.isBefore(StartTime) && apptEnd.isAfter(StartTime)) {
-                    validateMsg = String.format("Appointment overlaps customer's existing appointment #%d.",
-                            appt.getAppointment_ID());
-                }
-                if (apptStart.isAfter(StartTime) && apptStart.isBefore(EndTime)) {
-                    validateMsg = String.format("Please choose a shorter duration.%n Next appointment starts at %tR",
-                            apptStart.toLocalTime());
-                }
+        //Prevent appointment being scheduled after Business Hours Close
+        if(thisAppt.isAfter(busCloseTime)) {
+            validateMsg = String.format("Please choose a shorter duration.%n Appointment ends after Business Close- %tR",
+                   busCloseTime);
+            validateErrMsg.append(validateMsg);
+        }
+        //Test for and prevent conflicts with existing appointments.
+        else {
+            try {
+                ObservableList<Appointment> apptOverLap = apptDao.getApptByCst(selectedCstId, ApptStart_DatePick.getValue());
+                for (Appointment appt : apptOverLap) {
+                    LocalDateTime apptStart = appt.getStart().toLocalDateTime();
+                    LocalDateTime apptEnd = appt.getEnd().toLocalDateTime();
+                    System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), appt.getStart().toLocalDateTime().toString()));
+                    if (apptStart.equals(StartTime)) {
+                        validateMsg = String.format("Please select a new Start Time.%n Customer already scheduled for appointment #%d at that time.",
+                                appt.getAppointment_ID());
+                    }
+                    if (apptStart.isBefore(StartTime) && apptEnd.isAfter(StartTime)) {
+                        validateMsg = String.format("Appointment overlaps customer's existing appointment #%d.",
+                                appt.getAppointment_ID());
+                    }
+                    if (apptStart.isAfter(StartTime) && apptStart.isBefore(EndTime)) {
+                        validateMsg = String.format("Please choose a shorter duration.%n Next appointment starts at %tR",
+                                apptStart.toLocalTime());
+                    }
 
-                validateErrMsg.append(validateMsg);
-                if (validateErrMsg.length() > 0) {
-                    noConflict = false;
-                    alert = buildAlert(Alert.AlertType.ERROR, "Customer Appointment Conflict", validateErrMsg.toString());
-                    confirm = alert.showAndWait();
-                    validateMsg = "";
-                    break;
+                    validateErrMsg.append(validateMsg);
+                    if (validateErrMsg.length() > 0) {
+                        break;
+                    }
+                    System.out.println(String.format("Has Conflict at BREAK- Loop %d ", i++));
+                    System.out.println("error length- " + validateErrMsg.length());
                 }
-                System.out.println(String.format("Has Conflict at BREAK- Loop %d ", i++));
-                System.out.println("error length- " + validateErrMsg.length());
+            }
+            catch(SQLException e) {
+                e.printStackTrace();
             }
         }
-        catch(SQLException e) {
-            e.printStackTrace();
+
+        if (validateErrMsg.length() > 0) {
+            noConflict = false;
+            alert = buildAlert(Alert.AlertType.ERROR, "Customer Appointment Conflict", validateErrMsg.toString());
+            confirm = alert.showAndWait();
+            validateMsg = "";
         }
-        System.out.println("Has Conflict? " + noConflict);
+
+        System.out.println("No Conflicts? " + noConflict);
         return noConflict;
     }
 

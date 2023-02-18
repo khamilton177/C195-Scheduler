@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormatSymbols;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -17,10 +18,13 @@ import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import static java.lang.Math.addExact;
 import static java.lang.Math.subtractExact;
@@ -38,6 +42,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     Tab currentTab;
 
     FirstLevelDivisionDAOImpl divCBItems = new FirstLevelDivisionDAOImpl();
+    ObservableList<String> monthsItems = FXCollections.observableArrayList();
+    ObservableList<String> typeItems = FXCollections.observableArrayList();
+
+    private Boolean moFilter = false;
+    private Boolean typeFilter = false;
 
     @javafx.fxml.FXML
     protected ApptTableMonthlyCtrl includeApptMoController;
@@ -53,8 +62,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     protected TableColumn<Customer, String> CstAddressCol;
     @javafx.fxml.FXML
-    protected MenuItem CntSchedule_MenuItem;
-    @javafx.fxml.FXML
     private TableColumn<Customer, String> CstPhoneCol;
     @javafx.fxml.FXML
     protected Label CurrentUserIdLbl;
@@ -69,8 +76,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     protected TableColumn<Customer, Integer> CstIdCol;
     @javafx.fxml.FXML
-    protected MenuItem THIRD_MenuItem;
-    @javafx.fxml.FXML
     protected TableColumn<Customer, String> CstNameCol;
     @javafx.fxml.FXML
     protected Button ApptAddBtn;
@@ -78,8 +83,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     protected TableColumn<Customer, Integer> CstDivisionIdCol;
     @javafx.fxml.FXML
     protected Hyperlink LogOutBtn;
-    @javafx.fxml.FXML
-    protected MenuItem TotalCstByMonth_MenuItem;
     @javafx.fxml.FXML
     protected Button ApptDeleteBtn;
     @javafx.fxml.FXML
@@ -117,6 +120,56 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     private Tab AppWkTab;
     @javafx.fxml.FXML
     private Tab AppMoTab;
+    @javafx.fxml.FXML
+    private TitledPane ReportTitlePane;
+    @javafx.fxml.FXML
+    private Pane CstMonthTypePane;
+    @javafx.fxml.FXML
+    private ComboBox<String> MonthCB;
+    @javafx.fxml.FXML
+    private ComboBox<String> TypeCB;
+    @javafx.fxml.FXML
+    private TextArea reportTextArea;
+    @javafx.fxml.FXML
+    private MenuItem CstMonthTypePaneMenuItem;
+    @javafx.fxml.FXML
+    private MenuItem CntSchedulePaneMenuItem;
+    @javafx.fxml.FXML
+    private MenuItem ThirdReportMenuItem;
+    @javafx.fxml.FXML
+    private Pane CntSchedulePane;
+    @javafx.fxml.FXML
+    private ComboBox MonthCbox1;
+    @javafx.fxml.FXML
+    private Pane ThirdReport;
+    @javafx.fxml.FXML
+    private ComboBox MonthCbox11;
+    @javafx.fxml.FXML
+    private ComboBox TypeCbox11;
+    @javafx.fxml.FXML
+    private StackPane reportFilterStackPane;
+    @javafx.fxml.FXML
+    private ButtonBar CstMonthTypeBtnBar;
+    @javafx.fxml.FXML
+    private Button CstMonthTypeSearchBtn;
+    @javafx.fxml.FXML
+    private Button CstMonthTypeClearBtn;
+    @javafx.fxml.FXML
+    protected TableView<String> ReportsTblView;
+    @javafx.fxml.FXML
+    protected TableColumn rptCol1;
+    @javafx.fxml.FXML
+    protected TableColumn rptCol2;
+    @javafx.fxml.FXML
+    protected TableColumn rptCol3;
+    @javafx.fxml.FXML
+    protected TableColumn rptCol4;
+    @javafx.fxml.FXML
+    protected TableColumn rptCol5;
+    @javafx.fxml.FXML
+    protected TableColumn rptCol6;
+    @javafx.fxml.FXML
+    protected TableColumn rptCol7;
 
     /**
      * Alert user of appointment happening within the next 15 minutes.
@@ -141,13 +194,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
                 System.out.println("UTC Date NOW: " + UtcNowLdt);
                 Timestamp TsUtcNow = Timestamp.valueOf(UtcNowLdt);
                 System.out.println("TS Date NOW: " + TsUtcNow);
-                LocalDate today = UtcNowLdt.toLocalDate();
-                LocalTime time = UtcNowLdt.toLocalTime();
 
                 for (Appointment appt : userAppt) {
-                    LocalDateTime apptLdt = appt.getStart().toLocalDateTime();
-                    System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), appt.getStart().toLocalDateTime().toString()));
                     LocalDateTime apptStart = appt.getStart().toLocalDateTime();
+                    System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), apptStart.toString()));
                     if(apptStart.toLocalDate().equals(ldt.toLocalDate())){
                         if(apptStart.toLocalTime().isAfter(ldt.toLocalTime())) {
                             Long minsTill = ChronoUnit.MINUTES.between(ldt, apptStart);
@@ -293,12 +343,23 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         ApptTblView.setItems(allApptAppointments);
     }
 
+    public void displayReportQuery(String reportParams) throws SQLException {
+        List<String> reportQueryData = new ArrayList<>();
+        rptCol1.setText("Month");
+        rptCol2.setText("Type");
+        rptCol3.setText("Count");
+        ReportsTblView.getColumns();
+        rptCol1.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
+        rptCol2.setCellValueFactory(new PropertyValueFactory<>("title"));
+        rptCol3.setCellValueFactory(new PropertyValueFactory<>("description"));
+    }
+
     protected Boolean delCstRow(Customer selectedCst) throws SQLException {
         boolean deleted = false;
         int result = -1;
 
         AppointmentDAO cstApptDaoDel = new AppointmentDaoImpl();
-        result = cstApptDaoDel.deleteAllCstAppts(selectedCst.getCustomer_ID());
+        result = cstApptDaoDel.deleteAllCstAppt(selectedCst.getCustomer_ID());
 
         if(result > -1) {
             result = -1;
@@ -345,6 +406,183 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
                         e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void tableItemSelector() {
+        TableView.TableViewSelectionModel<Appointment> itemSelector;
+        switch (currentTab.getId()) {
+            case "AppMoTab":
+                itemSelector = includeApptMoController.ApptTblViewMonthly.getSelectionModel();
+                selectedAppt = itemSelector.getSelectedItem();
+                break;
+            case "AppWkTab":
+                itemSelector = includeApptWkController.ApptTblViewWeekly.getSelectionModel();
+                selectedAppt = itemSelector.getSelectedItem();
+                break;
+            default:
+                itemSelector = ApptTblView.getSelectionModel();
+                selectedAppt = itemSelector.getSelectedItem();
+                break;
+        }
+    }
+
+    /**
+     * Repopulate all Appointment Tableviews
+     * @throws SQLException
+     */
+    private void refreshApptTables() throws SQLException {
+        try {
+            displayApptTblViewData();
+            includeApptMoController.displayApptTblViewMonthly();
+            includeApptWkController.displayApptTblViewWeekly();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get the Local Open hr. for the Appointments Business Hours.
+     * @param ldt
+     * @return the int representing the local start hr for Appointments.
+     */
+    protected int getLocOpenHr(LocalDateTime ldt) {
+        int openHr;
+
+        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
+        System.out.println("businessHrs  Sys Static: " + locZdt);
+
+        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
+        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
+
+        int localOffset = businessZdt.getOffset().compareTo(locZdt.getOffset())/60/60;
+        System.out.println("businessHrs Sys Compare business to local: " + localOffset);
+
+        if (localOffset < 0) {
+            openHr = addExact(busHrsOpen, localOffset);
+        }
+        else if (localOffset > 0){
+            openHr = subtractExact(busHrsOpen, localOffset);
+        }
+        else {
+            openHr = busHrsOpen;
+        }
+        return openHr;
+    }
+
+    /**
+     * Get the Local Close hr. for the Appointments Business Hours.
+     * @param ldt
+     * @return the int representing the local end hr for Appointments.
+     */
+    protected LocalTime getLocCloseTime(LocalDateTime ldt) {
+        int locHrsOpen = getLocOpenHr(ldt);
+        int closeHr = locHrsOpen + totalBusHrs;
+        LocalTime busCloseTime = ldt.withHour(closeHr).withMinute(0).withSecond(0).withNano(0).toLocalTime();
+        System.out.println(busCloseTime);
+        return busCloseTime;
+    }
+
+    private void convertBusinessHrs() {
+        int locHrsOpen;
+        int locHrsClose;
+
+        LocalDateTime busNowLdt = LocalDateTime.now(ZoneId.of("US/Eastern")).withSecond(0).withNano(0);
+        System.out.println("Headquarters Time Now: " + busNowLdt);
+
+        LocalDateTime ldt = LocalDateTime.now();
+        System.out.println("Local Date Time: " + ldt);
+        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
+
+        System.out.println("businessHrs  Sys Static: " + locZdt);
+        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
+
+        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
+
+        //System.out.println("Local business Hrs: " + locHrsOpen + "am - " + locHrsClose + "pm");
+/*
+
+        LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
+        System.out.println("UTC Date NOW: " + UtcNowLdt);
+        LocalDate UtcCurDt = UtcNowLdt.toLocalDate();
+        LocalTime UtcCurTime = UtcNowLdt.toLocalTime();
+*/
+
+
+    }
+
+    /**
+     * Fills the MonthCB ComboBox with the months of the year. Used on Reports tab.
+     */
+    private void buildMonths() {
+        String[] months = new DateFormatSymbols().getInstance().getMonths();
+        monthsItems.addAll(Arrays.stream(months).filter((m) -> (!m.isEmpty())).toList());
+        MonthCB.setItems(monthsItems);
+    }
+
+    /**
+     * Builds the data for Type ComboBox based on DB entries in Type field. Used on Reports tab.
+     * @throws SQLException
+     */
+    protected void buildTypes() throws SQLException {
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+        String[] types = apptDao.genericData("SELECT DISTINCT type FROM Appointments").toArray(new String[0]);
+        typeItems.addAll(Arrays.stream(types).sorted().toList());
+        TypeCB.setItems(typeItems);
+    }
+
+    /**
+     * Seed Data for appointment Alert and Update testing; it is not validated for Business Hour Constraints.
+     * @throws SQLException
+     */
+    private void appointmentSeed() throws SQLException {
+        int result;
+
+        LocalDateTime ldt = LocalDateTime.now();
+        System.out.println("Raw Now- : " + ldt);
+        Timestamp tsStart = Timestamp.valueOf(ldt.withSecond(0).withNano(0).plusMinutes((65-ldt.getMinute())%5));
+        Timestamp tsEnd = Timestamp.valueOf(ldt.withSecond(0).withNano(0).plusMinutes((65-ldt.getMinute())%5).plusMinutes(45));
+
+        try{
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            ObservableList<String> minCstId = apptDao.genericData("SELECT MIN(Customer_ID) FROM appointments");
+            minCstId.stream().findFirst().get();
+            Appointment appointment = new Appointment(0,"Java help", "Seed data", "remote", "Mentor", tsStart, tsEnd, Integer.parseInt(minCstId.stream().findFirst().get()), sessionUserId, 3);
+            result = apptDao.insert(appointment);
+            System.out.println(result);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            //test seed data
+            //appointmentSeed();
+
+            System.out.println("On init newLogin: " + isNewLogin);
+            displayApptTblViewData();
+
+            //displayCstTblViewData();
+            displayCstWithCoInfo();
+            buildMonths();
+
+            setCurrentUserid(sessionUserId);
+
+            if (isNewLogin) {
+                //appointmentSeed();
+
+                System.out.println("Made it to newLogin Test");
+                System.out.println("Made it to newLogin Test - id: " + sessionUserId);
+                System.out.println("Made it to newLogin Test - name: " + CurrentUserNameLbl.getText());
+            }
+            // convertBusinessHrs();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -526,6 +764,109 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     }
 
     /**
+     * Sets currentTab variable on Appointment tab change.
+     * @param event
+     */
+    @javafx.fxml.FXML
+    public void onTabSelectLoad(Event event) {
+        currentTab = ApptTabs.getSelectionModel().getSelectedItem();
+        System.out.println("Current Tab Inquiry for tabSelect: " + currentTab.getId());
+    }
+
+    /**
+     * Show pane with filter options for selected report.
+     * LAMBDA USAGE - Lambda used to find all visible Panes and set to invisible.
+     * @param actionEvent
+     */
+    @javafx.fxml.FXML
+    public void showFilterPane(ActionEvent actionEvent) throws SQLException {
+        String menuItemId = ((MenuItem) actionEvent.getSource()).getId().replace("MenuItem", "");
+        String menuItem = ((MenuItem) actionEvent.getSource()).getText();
+        if (menuItemId.equals("CstMonthTypePane")){
+            buildTypes();
+        }
+        ReportTitlePane.setText(menuItem);
+        reportFilterStackPane.getChildren().stream().filter((v) -> v.isVisible())
+                .forEach((v) -> v.setVisible(false));
+        Node paneNode = reportFilterStackPane.getChildren().stream().filter((p) -> p.getId().equals(menuItemId)).findFirst().get();
+        paneNode.setVisible(true);
+        paneNode.toFront();
+    }
+
+    @javafx.fxml.FXML
+    public void onReportFilterUpd(ActionEvent actionEvent) {
+        btnTxt = ((ComboBox)actionEvent.getSource()).getId();
+
+        if (btnTxt.equals("MonthCB")) {
+            moFilter = true;
+            return;
+        }
+
+        if (btnTxt.equals("TypeCB")) {
+            typeFilter = true;
+            return;
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionDoQuery(ActionEvent actionEvent) {
+        btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
+        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+        String reportParams = "";
+        int wc = 0;
+
+        if(btnTxt.equals("CstMonthType")) {
+            System.out.println("Running report- " + btnTxt);
+            ObservableList<String> reportQuery = FXCollections.observableArrayList();
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            String wcMonth = "";
+            String wcType = "";
+
+            if (moFilter) {
+                wcMonth = MonthCB.getValue();
+                wc = 2;
+            }
+
+            if (typeFilter) {
+                wcType = TypeCB.getValue();
+                wc++;
+            }
+
+            reportParams = "wcMonth, wcType, wc";
+            try {
+
+
+                reportQuery.addAll(apptDao.getByMonthType(wcMonth, wcType, wc));
+                ReportsTblView.setItems(reportQuery);
+            }
+            catch (SQLException e) {
+            }
+        }
+        try {
+            displayReportQuery(reportParams);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionClearFilter(ActionEvent actionEvent) {
+        btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
+        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+
+        if(moFilter) {
+            MonthCB.getSelectionModel().clearSelection();
+            moFilter = false;
+        }
+
+        if(typeFilter) {
+            TypeCB.getSelectionModel().clearSelection();
+            typeFilter = false;
+        }
+    }
+
+    /**
      * Logout of application.<>BR</>Returns to Log In Screen
      */
     @javafx.fxml.FXML
@@ -544,172 +885,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         catch(Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
-        }
-    }
-
-    /**
-     * Sets currentTab variable on Appointment tab change.
-     * @param event
-     */
-    @javafx.fxml.FXML
-    public void onTabSelectLoad(Event event) {
-        currentTab = ApptTabs.getSelectionModel().getSelectedItem();
-        System.out.println("Current Tab Inquiry for tabSelect: " + currentTab.getId());
-    }
-
-    /**
-     * Sets the getSelectedItem to the Appointment Tableview associated with the current tab.
-     */
-    private void tableItemSelector() {
-        TableView.TableViewSelectionModel<Appointment> itemSelector;
-        switch (currentTab.getId()) {
-            case "AppMoTab":
-                itemSelector = includeApptMoController.ApptTblViewMonthly.getSelectionModel();
-                selectedAppt = itemSelector.getSelectedItem();
-                break;
-            case "AppWkTab":
-                itemSelector = includeApptWkController.ApptTblViewWeekly.getSelectionModel();
-                selectedAppt = itemSelector.getSelectedItem();
-                break;
-            default:
-                itemSelector = ApptTblView.getSelectionModel();
-                selectedAppt = itemSelector.getSelectedItem();
-                break;
-        }
-    }
-
-    /**
-     * Repopulate all Appointment Tableviews
-     * @throws SQLException
-     */
-    private void refreshApptTables() throws SQLException {
-        try {
-            displayApptTblViewData();
-            includeApptMoController.displayApptTblViewMonthly();
-            includeApptWkController.displayApptTblViewWeekly();
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Get the Local Open hr. for the Appointments Business Hours.
-     * @param ldt
-     * @return the int representing the local start hr for Appointments.
-     */
-    protected int getLocOpenHr(LocalDateTime ldt) {
-        int openHr;
-
-        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
-        System.out.println("businessHrs  Sys Static: " + locZdt);
-
-        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
-        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
-
-        int localOffset = businessZdt.getOffset().compareTo(locZdt.getOffset())/60/60;
-        System.out.println("businessHrs Sys Compare business to local: " + localOffset);
-
-        if (localOffset < 0) {
-            openHr = addExact(busHrsOpen, localOffset);
-        }
-        else if (localOffset > 0){
-            openHr = subtractExact(busHrsOpen, localOffset);
-        }
-        else {
-            openHr = busHrsOpen;
-        }
-        return openHr;
-    }
-
-    /**
-     * Get the Local Close hr. for the Appointments Business Hours.
-     * @param ldt
-     * @return the int representing the local end hr for Appointments.
-     */
-    protected int getLocCloseHr(LocalDateTime ldt) {
-        int locHrsOpen = getLocOpenHr(ldt);
-        int closeHr = locHrsOpen + totalBusHrs;
-        return closeHr;
-    }
-
-
-    private void convertBusinessHrs() {
-        int locHrsOpen;
-        int locHrsClose;
-
-        LocalDateTime busNowLdt = LocalDateTime.now(ZoneId.of("US/Eastern")).withSecond(0).withNano(0);
-        System.out.println("Headquarters Time Now: " + busNowLdt);
-
-        LocalDateTime ldt = LocalDateTime.now();
-        System.out.println("Local Date Time: " + ldt);
-        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
-
-        System.out.println("businessHrs  Sys Static: " + locZdt);
-        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
-
-        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
-
-        //System.out.println("Local business Hrs: " + locHrsOpen + "am - " + locHrsClose + "pm");
-/*
-
-        LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
-        System.out.println("UTC Date NOW: " + UtcNowLdt);
-        LocalDate UtcCurDt = UtcNowLdt.toLocalDate();
-        LocalTime UtcCurTime = UtcNowLdt.toLocalTime();
-*/
-
-
-    }
-
-    private void appointmentSeed() throws SQLException {
-        int result;
-
-        LocalDateTime ldt = LocalDateTime.now();
-        System.out.println("Raw Now- : " + ldt);
-        Timestamp tsStart = Timestamp.valueOf(ldt.withSecond(0).withNano(0).plusMinutes((65-ldt.getMinute())%5));
-        Timestamp tsEnd = Timestamp.valueOf(ldt.withSecond(0).withNano(0).plusMinutes((65-ldt.getMinute())%5).plusMinutes(45));
-
-        //LocalDateTime ldt = ts.toLocalDateTime();
-
-        try{
-            AppointmentDAO apptDao = new AppointmentDaoImpl();
-            // ObservableList<Appointment> minCstId = apptDao.adhocQuery("SELECT MIN(Customer_ID) FROM Appointment");
-            // minCstId.stream().findFirst().get().getCustomer_ID();
-            Appointment appointment = new Appointment(0,"Java help", "Seed data", "remote", "Mentor", tsStart, tsEnd, 2, 2, 3);
-            result = apptDao.insert(appointment);
-            System.out.println(result);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
-        try {
-            //test seed data
-            //appointmentSeed();
-
-            System.out.println("On init newLogin: " + isNewLogin);
-            displayApptTblViewData();
-
-            //displayCstTblViewData();
-            displayCstWithCoInfo();
-
-            setCurrentUserid(sessionUserId);
-
-            if (isNewLogin) {
-                //appointmentSeed();
-
-                System.out.println("Made it to newLogin Test");
-                System.out.println("Made it to newLogin Test - id: " + sessionUserId);
-                System.out.println("Made it to newLogin Test - name: " + CurrentUserNameLbl.getText());
-            }
-            // convertBusinessHrs();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 

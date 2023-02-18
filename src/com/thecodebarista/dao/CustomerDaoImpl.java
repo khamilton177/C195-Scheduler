@@ -1,6 +1,5 @@
 package com.thecodebarista.dao;
 
-import com.thecodebarista.model.Appointment;
 import com.thecodebarista.model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,8 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getCstData;
@@ -174,11 +171,6 @@ public class CustomerDaoImpl implements CustomerDAO {
             e.printStackTrace();
         }
         return rowsAffected;
-    }
-
-    @Override
-    public int save(Customer customer) throws SQLException {
-        return 0;
     }
 
     @Override

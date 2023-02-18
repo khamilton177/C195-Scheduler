@@ -21,6 +21,4 @@ public interface SchedulerDAO<T> {
 
     int delete(T t);
 
-    int save(T t) throws SQLException;
-
 }

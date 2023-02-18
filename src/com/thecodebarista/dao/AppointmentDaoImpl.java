@@ -4,22 +4,21 @@ import com.thecodebarista.TimeMachine;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.Appointment;
+import javafx.scene.control.TableColumn;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getApptData;
 
-public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
+public class AppointmentDaoImpl implements AppointmentDAO {
     private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
     private static PreparedStatement prepStmt;
     private int rowsAffected = 0; // Setting to 0. SELECT statements don't return a value so this is a nominal value.
-
 
     @Override
     public Appointment extract(int appointment_id) throws SQLException {
@@ -167,17 +166,62 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
         return rowsAffected;
     }
 
-    @Override
-    public int save(Appointment appointment) throws SQLException {
-        return 0;
+    public int deleteAllCstAppt(int id) {
+        String sqlStmt = "DELETE FROM appointments" +
+                " WHERE Customer_ID = ?";
+        try {
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setInt(1, id);
+            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowsAffected;
     }
 
     @Override
-    public ObservableList<Appointment> adhocQuery(String wc) throws SQLException{
-        ObservableList<Appointment> wcAppointments = FXCollections.observableArrayList();
+    public ObservableList<String> genericData(String query) throws SQLException{
+        ObservableList<String> stringData = FXCollections.observableArrayList();
+        int i;
 
         try{
-            String sqlStmt = wc;
+            String sqlStmt = query;
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            while (rs.next()) {
+                List<String> rowData = new ArrayList<>();
+                for (i = 1; i <= columnCount; i++) {
+                    rowData.add(rs.getString(metaData.getColumnLabel(i)));
+                }
+                stringData.addAll(rowData);
+            }
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return stringData;
+    }
+
+    @Override
+    public ObservableList<String> getDataDistinct(String unique, String columns, String wc) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public ObservableList<Appointment> adhocQuery(String query) throws SQLException{
+        ObservableList<Appointment> adhocData = FXCollections.observableArrayList();
+        int i = 1;
+
+        try{
+            String sqlStmt = query;
             prepStmt = useConnection().prepareStatement(sqlStmt);
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
@@ -186,17 +230,42 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
 
             // Extract the ResultSet to a class object.
             System.out.println("Return Adhoc query results");
-            while (rs.next()) {
-                Appointment appointment = getApptData(rs);
-                wcAppointments.add(appointment);
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            //TableColumn[] colName = new TableColumn[columnCount];
+            for (i = 1; i <= columnCount; i++) {
+                TableColumn colName = new TableColumn<>(metaData.getColumnLabel(i));
+                //columns.add(colName.getText());
             }
-            return wcAppointments;
+            while (rs.next()) {
+                switch (metaData.getColumnTypeName(i)) {
+                    case "int":
+                        rs.getInt(metaData.getColumnLabel(i));
+                        break;
+                    case "timestamp":
+                    case "datetime":
+                        rs.getTimestamp(metaData.getColumnLabel(i));
+                        break;
+                    default:
+                        rs.getString(metaData.getColumnLabel(i));
+                        break;
+                }
+
+                for (Appointment column : adhocData) {
+                    rs.getString(metaData.getColumnLabel(i).toString());
+               }
+            }
+
+                //Appointment appointment = getApptData(rs);
+               // stringData.add(appointment);
+            //}
+            return adhocData;
         }
         catch(SQLException e) {
             e.printStackTrace();
             e.getCause();
         }
-        return wcAppointments;
+        return adhocData;
     }
 
     @Override
@@ -260,7 +329,7 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     }
 
     @Override
-    public ObservableList<Appointment> getApptByCstnUser(int cstId, LocalDate startDt) throws SQLException{
+    public ObservableList<Appointment> getApptByCst(int cstId, LocalDate startDt) throws SQLException{
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         try {
@@ -326,50 +395,6 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
     }
 
     @Override
-    public Appointment getByType(String name) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public ObservableList<Appointment> getByMonth() throws SQLException {
-        ObservableList<Appointment> allApptMonthly = FXCollections.observableArrayList();
-
-        try{
-            String sqlStmt = "SELECT Appointment_ID" +
-                ", Title" +
-                ", Description" +
-                ", Location" +
-                ", Contact_ID" +
-                ", Type" +
-                ", Start" +
-                ", End" +
-                ", Customer_ID" +
-                ", User_ID" +
-                " FROM appointments" +
-                " WHERE MONTH(Start) = MONTH(NOW())" +
-                " ORDER BY End";
-            prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
-
-            // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
-
-            // Extract the ResultSet to a class object.
-            System.out.println("Building Appt. Monthly List");
-            while (rs.next()) {
-                Appointment appointment = getApptData(rs);
-                allApptMonthly.add(appointment);
-            }
-            return allApptMonthly;
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return allApptMonthly;
-    }
-
-    @Override
     public ObservableList<Appointment> getByWeekly() throws SQLException {
         ObservableList<Appointment> allApptWeekly = FXCollections.observableArrayList();
 
@@ -408,22 +433,103 @@ public class AppointmentDaoImpl implements AppointmentDAO, TimeMachine {
         return allApptWeekly;
     }
 
-    public int deleteAllCstAppts(int id) {
-        String sqlStmt = "DELETE FROM appointments" +
-                " WHERE Customer_ID = ?";
-        try {
+    @Override
+    public ObservableList<Appointment> getByMonth() throws SQLException {
+        ObservableList<Appointment> allApptMonthly = FXCollections.observableArrayList();
+
+        try{
+            String sqlStmt = "SELECT Appointment_ID" +
+                    ", Title" +
+                    ", Description" +
+                    ", Location" +
+                    ", Contact_ID" +
+                    ", Type" +
+                    ", Start" +
+                    ", End" +
+                    ", Customer_ID" +
+                    ", User_ID" +
+                    " FROM appointments" +
+                    " WHERE MONTH(Start) = MONTH(NOW())" +
+                    " ORDER BY End";
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            prepStmt.setInt(1, id);
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Appt. Monthly List");
+            while (rs.next()) {
+                Appointment appointment = getApptData(rs);
+                allApptMonthly.add(appointment);
+            }
+            return allApptMonthly;
         }
-        catch (SQLException e) {
+        catch(SQLException e) {
             e.printStackTrace();
+            e.getCause();
         }
-        return rowsAffected;
+        return allApptMonthly;
     }
 
     @Override
-    public LocalDateTime makeLDT() {
-        return null;
+    public List<String> getByMonthType(String wcMonth, String wcType, int wc) throws SQLException {
+        String sqlStmt = "SELECT monthname(Start) as Month" +
+                ", Type" +
+                ", count(*) as Count" +
+                " FROM appointments";
+
+        // Create WHERE clause based on params passed
+        switch (wc) {
+            case 3:
+                sqlStmt = sqlStmt.concat(" WHERE monthname(Start) = '" + wcMonth +
+                        "' AND Type = '" + wcType +
+                        "'");
+                break;
+            case 2:
+                sqlStmt = sqlStmt.concat(" WHERE monthname(Start) = '" + wcMonth +
+                        "'");
+                break;
+            case 1:
+                sqlStmt = sqlStmt.concat(" WHERE Type = '" + wcType +
+                        "'");
+                break;
+            default:
+                break;
+        }
+        sqlStmt = sqlStmt.concat(" Group By Month, Type");
+
+        try{
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            List<String> allCstByMoTypeTotal = new ArrayList<>();
+            // Extract the ResultSet to a class object.
+            System.out.println("Building Appointment Count By Month and Type");
+            System.out.println(rs.getMetaData().getColumnLabel(1));
+            System.out.println(rs.getMetaData().getColumnName(1));
+
+/*
+ //            List<String> columns = new ArrayList<>();
+//            for (i = 1; i <= columnCount; i++) {
+//                TableColumn colName = new TableColumn<>(metaData.getColumnLabel(i));
+//                columns.add(colName.getText());
+//            }
+
+            while (rs.next()) {
+                String queryData = DMLUtils.getReportData(rs);
+                allCstByMoTypeTotal.add(queryData);
+            }*/
+            return allCstByMoTypeTotal;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+            return null;
+        }
     }
+
 }
