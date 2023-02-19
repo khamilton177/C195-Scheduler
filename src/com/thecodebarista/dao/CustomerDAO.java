@@ -13,7 +13,7 @@ public interface CustomerDAO extends SchedulerDAO<Customer> {
 
     // ObservableList<Customer> adhocQuery(String wc) throws SQLException;
 
-    public static String CSTVIEW = "SELECT customers.Customer_ID" +
+    String CSTVIEW = "SELECT customers.Customer_ID" +
             " ,customers.Customer_Name" +
             " ,customers.Address" +
             " ,customers.Postal_Code" +
@@ -26,12 +26,5 @@ public interface CustomerDAO extends SchedulerDAO<Customer> {
             " WHERE first_level_divisions.Division_ID = customers.Division_ID" +
             " AND countries.Country_ID = first_level_divisions.Country_ID" +
             " ORDER BY customers.Customer_ID ASC";
-
-
- //@Override
- //   public int getCountry_ID(int division_ID) {
- //       cstWithCoInfo.
- //       return Country_ID;
- //   }
 
 }

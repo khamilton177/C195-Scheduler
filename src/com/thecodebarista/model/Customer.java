@@ -18,7 +18,8 @@ public class Customer {
         Address = address;
         Postal_Code = postal_Code;
         Phone = phone;
-        Division_ID = division_ID;    }
+        Division_ID = division_ID;
+    }
 
     public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID, int country_ID) {
         Customer_ID = customer_ID;

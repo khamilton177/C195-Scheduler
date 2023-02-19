@@ -1,7 +1,11 @@
 package com.thecodebarista.dao;
 
+import com.thecodebarista.controller.MainMenuCtrl;
 import com.thecodebarista.model.*;
+import javafx.collections.FXCollections;
+
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DMLUtils {
@@ -131,30 +135,25 @@ public class DMLUtils {
         return new FirstLevelDivision(division_ID, division, country_ID);
     }
 
-    /*
-
-    public static String getReportData(ResultSet rs) throws SQLException {
+    public static Appointment getReportData(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
+        String Month = (rs.getString(metaData.getColumnLabel(1)));;
+        System.out.println("Got Month? " + Month);
+        String type = (rs.getString(metaData.getColumnLabel(2)));;
+        int Count = (rs.getInt(metaData.getColumnLabel(3)));;
+        Appointment rptRow = new Appointment();
+        rptRow.setMonth(Month);;
+        rptRow.setType(type);;
+        rptRow.setCount(Count);;
 
-        for (i = 1; i <= columnCount; i++) {
-            ReportsTblView.rptCol1.setText(metaData.getColumnLabel(i));
-            rptCol2.setText();
-            rptCol3.setText();
-            TableColumn colName = new TableColumn<>(metaData.getColumnLabel(i));
-            //columns.add(colName.getText());
-        }
-        rptCol1.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
-        rptCol2.setCellValueFactory(new PropertyValueFactory<>("title"));
-        rptCol3.setCellValueFactory(new PropertyValueFactory<>("description"));
-        return new String()
+        return rptRow;
     }
+/*
     public static String getAdhocData(ResultSet rs) throws SQLException {
 
     }
-
-     */
-
+*/
 
 //    public static String getGenericRs(ResultSet rs) throws SQLException {
 //        return String

@@ -5,7 +5,6 @@ import com.thecodebarista.model.Appointment;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
 
 public interface AppointmentDAO extends SchedulerDAO<Appointment> {
 
@@ -23,7 +22,7 @@ public interface AppointmentDAO extends SchedulerDAO<Appointment> {
     ObservableList<Appointment> getApptNowByUser(int id) throws SQLException;
 
 
-    List<String> getByMonthType(String wcMonth, String wcType, int wc) throws SQLException;
+    ObservableList<Appointment> getByMonthType(String[] reportParams) throws SQLException;
     ObservableList<Appointment> getByMonth() throws SQLException;
     ObservableList<Appointment> getByWeekly() throws SQLException;
     int deleteAllCstAppt(int id);

@@ -1,5 +1,10 @@
 package com.thecodebarista.model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.sql.Timestamp;
 
 public class Appointment {
@@ -16,6 +21,18 @@ public class Appointment {
     private int Customer_ID;
     private int User_ID;
     private int Contact_ID;
+    /**
+     * Exist in Object Only field used to capture Report Query Tableviews
+     */
+    //private String Month;
+    private StringProperty month = new SimpleStringProperty();
+
+    //   private int Count;
+    private IntegerProperty count = new SimpleIntegerProperty();
+
+
+    public Appointment() {
+    }
 
     public Appointment(int appointment_ID, String title, String description, String location, String type, Timestamp start, Timestamp end, int customer_ID, int user_ID, int contact_ID) {
         Appointment_ID = appointment_ID;
@@ -108,6 +125,30 @@ public class Appointment {
 
     public void setContact_ID(int contact_ID) {
         Contact_ID = contact_ID;
+    }
+
+    public StringProperty monthProperty() {
+        return month;
+    }
+
+    public String getMonth() {
+        //String Month = getStart().toLocalDateTime().getMonth().toString();
+        return month.get();    }
+
+    public void setMonth(String Month) {
+        this.month.set(Month);
+    }
+
+    public IntegerProperty countProperty() {
+        return count;
+    }
+
+    public int getCount() {
+        return count.get();
+    }
+
+    public void setCount(int Mount) {
+        this.count.set(Mount);
     }
 
     @Override

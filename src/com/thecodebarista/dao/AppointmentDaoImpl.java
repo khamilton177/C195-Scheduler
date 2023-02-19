@@ -1,6 +1,5 @@
 package com.thecodebarista.dao;
 
-import com.thecodebarista.TimeMachine;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.Appointment;
@@ -8,7 +7,6 @@ import javafx.scene.control.TableColumn;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,94 +176,6 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             e.printStackTrace();
         }
         return rowsAffected;
-    }
-
-    @Override
-    public ObservableList<String> genericData(String query) throws SQLException{
-        ObservableList<String> stringData = FXCollections.observableArrayList();
-        int i;
-
-        try{
-            String sqlStmt = query;
-            prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
-
-            // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
-            ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            while (rs.next()) {
-                List<String> rowData = new ArrayList<>();
-                for (i = 1; i <= columnCount; i++) {
-                    rowData.add(rs.getString(metaData.getColumnLabel(i)));
-                }
-                stringData.addAll(rowData);
-            }
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return stringData;
-    }
-
-    @Override
-    public ObservableList<String> getDataDistinct(String unique, String columns, String wc) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public ObservableList<Appointment> adhocQuery(String query) throws SQLException{
-        ObservableList<Appointment> adhocData = FXCollections.observableArrayList();
-        int i = 1;
-
-        try{
-            String sqlStmt = query;
-            prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
-
-            // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
-
-            // Extract the ResultSet to a class object.
-            System.out.println("Return Adhoc query results");
-            ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            //TableColumn[] colName = new TableColumn[columnCount];
-            for (i = 1; i <= columnCount; i++) {
-                TableColumn colName = new TableColumn<>(metaData.getColumnLabel(i));
-                //columns.add(colName.getText());
-            }
-            while (rs.next()) {
-                switch (metaData.getColumnTypeName(i)) {
-                    case "int":
-                        rs.getInt(metaData.getColumnLabel(i));
-                        break;
-                    case "timestamp":
-                    case "datetime":
-                        rs.getTimestamp(metaData.getColumnLabel(i));
-                        break;
-                    default:
-                        rs.getString(metaData.getColumnLabel(i));
-                        break;
-                }
-
-                for (Appointment column : adhocData) {
-                    rs.getString(metaData.getColumnLabel(i).toString());
-               }
-            }
-
-                //Appointment appointment = getApptData(rs);
-               // stringData.add(appointment);
-            //}
-            return adhocData;
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return adhocData;
     }
 
     @Override
@@ -473,63 +383,146 @@ public class AppointmentDaoImpl implements AppointmentDAO {
     }
 
     @Override
-    public List<String> getByMonthType(String wcMonth, String wcType, int wc) throws SQLException {
-        String sqlStmt = "SELECT monthname(Start) as Month" +
+    public ObservableList<String> genericData(String query) throws SQLException{
+        ObservableList<String> stringData = FXCollections.observableArrayList();
+        int i;
+
+        try{
+            String sqlStmt = query;
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            while (rs.next()) {
+                List<String> rowData = new ArrayList<>();
+                for (i = 1; i <= columnCount; i++) {
+                    rowData.add(rs.getString(metaData.getColumnLabel(i)));
+                }
+                stringData.addAll(rowData);
+            }
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return stringData;
+    }
+
+    @Override
+    public ObservableList<String> getDataDistinct(String unique, String columns, String wc) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public ObservableList<Appointment> getByMonthType(String[] reportParams) throws SQLException {
+        ObservableList<Appointment> allCstByMoTypeTotal = FXCollections.observableArrayList();
+        String wcMonth = reportParams[0];
+        String wcType = reportParams[1];
+        int wc = Integer.parseInt(reportParams[2]);
+        StringBuilder sqlStmt = new StringBuilder("SELECT monthname(Start) as Month" +
                 ", Type" +
                 ", count(*) as Count" +
-                " FROM appointments";
+                " FROM appointments");
 
         // Create WHERE clause based on params passed
         switch (wc) {
             case 3:
-                sqlStmt = sqlStmt.concat(" WHERE monthname(Start) = '" + wcMonth +
+                sqlStmt.append(" WHERE monthname(Start) = '" + wcMonth +
                         "' AND Type = '" + wcType +
                         "'");
                 break;
             case 2:
-                sqlStmt = sqlStmt.concat(" WHERE monthname(Start) = '" + wcMonth +
+                sqlStmt.append(" WHERE monthname(Start) = '" + wcMonth +
                         "'");
                 break;
             case 1:
-                sqlStmt = sqlStmt.concat(" WHERE Type = '" + wcType +
+                sqlStmt.append(" WHERE Type = '" + wcType +
                         "'");
                 break;
             default:
                 break;
         }
-        sqlStmt = sqlStmt.concat(" Group By Month, Type");
+        sqlStmt.append(" Group By Month, Type");
 
         try{
+            prepStmt = useConnection().prepareStatement(sqlStmt.toString());
+            DMLUtils.doDMLv2(prepStmt, sqlStmt.toString());
+
+            // Get the ResultSet and ResultSet metadata of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            System.out.println("Building Appointment Count By Month and Type");
+            // Extract the ResultSet to a class object.
+            while (rs.next()) {
+                Appointment rptRows = DMLUtils.getReportData(rs);
+                allCstByMoTypeTotal.add(rptRows);
+            }
+            return allCstByMoTypeTotal;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return allCstByMoTypeTotal;
+    }
+
+    @Override
+    public ObservableList<Appointment> adhocQuery(String query) throws SQLException{
+        ObservableList<Appointment> adhocData = FXCollections.observableArrayList();
+        int i = 1;
+
+        try{
+            String sqlStmt = query;
             prepStmt = useConnection().prepareStatement(sqlStmt);
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
             ResultSet rs = DMLUtils.getResult();
 
-            List<String> allCstByMoTypeTotal = new ArrayList<>();
             // Extract the ResultSet to a class object.
-            System.out.println("Building Appointment Count By Month and Type");
-            System.out.println(rs.getMetaData().getColumnLabel(1));
-            System.out.println(rs.getMetaData().getColumnName(1));
-
-/*
- //            List<String> columns = new ArrayList<>();
-//            for (i = 1; i <= columnCount; i++) {
-//                TableColumn colName = new TableColumn<>(metaData.getColumnLabel(i));
-//                columns.add(colName.getText());
-//            }
-
+            System.out.println("Return Adhoc query results");
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            //TableColumn[] colName = new TableColumn[columnCount];
+            for (i = 1; i <= columnCount; i++) {
+                TableColumn colName = new TableColumn<>(metaData.getColumnLabel(i));
+                //columns.add(colName.getText());
+            }
             while (rs.next()) {
-                String queryData = DMLUtils.getReportData(rs);
-                allCstByMoTypeTotal.add(queryData);
-            }*/
-            return allCstByMoTypeTotal;
+                switch (metaData.getColumnTypeName(i)) {
+                    case "int":
+                        rs.getInt(metaData.getColumnLabel(i));
+                        break;
+                    case "timestamp":
+                    case "datetime":
+                        rs.getTimestamp(metaData.getColumnLabel(i));
+                        break;
+                    default:
+                        rs.getString(metaData.getColumnLabel(i));
+                        break;
+                }
+
+                for (Appointment column : adhocData) {
+                    rs.getString(metaData.getColumnLabel(i).toString());
+                }
+            }
+
+            //Appointment appointment = getApptData(rs);
+            // stringData.add(appointment);
+            //}
+            return adhocData;
         }
         catch(SQLException e) {
             e.printStackTrace();
             e.getCause();
-            return null;
         }
+        return adhocData;
     }
 
 }

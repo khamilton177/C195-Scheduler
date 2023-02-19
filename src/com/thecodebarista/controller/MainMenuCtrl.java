@@ -129,8 +129,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     private ComboBox<String> TypeCB;
     @javafx.fxml.FXML
-    private TextArea reportTextArea;
-    @javafx.fxml.FXML
     private MenuItem CstMonthTypePaneMenuItem;
     @javafx.fxml.FXML
     private MenuItem CntSchedulePaneMenuItem;
@@ -155,21 +153,45 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     private Button CstMonthTypeClearBtn;
     @javafx.fxml.FXML
-    protected TableView<String> ReportsTblView;
+    protected TableView<Appointment> ReportsTblView;
     @javafx.fxml.FXML
-    protected TableColumn rptCol1;
+    protected TableColumn<Appointment, String> rptMonth;
     @javafx.fxml.FXML
-    protected TableColumn rptCol2;
+    protected TableColumn<Appointment, String> rptType;
     @javafx.fxml.FXML
-    protected TableColumn rptCol3;
+    protected TableColumn<Appointment, Integer> rptCount;
     @javafx.fxml.FXML
-    protected TableColumn rptCol4;
+    private TableView ReportsTblView1;
     @javafx.fxml.FXML
-    protected TableColumn rptCol5;
+    private TableColumn rptCol11;
     @javafx.fxml.FXML
-    protected TableColumn rptCol6;
+    private TableColumn rptCol21;
     @javafx.fxml.FXML
-    protected TableColumn rptCol7;
+    private TableColumn rptCol31;
+    @javafx.fxml.FXML
+    private TableColumn rptCol41;
+    @javafx.fxml.FXML
+    private TableColumn rptCol51;
+    @javafx.fxml.FXML
+    private TableColumn rptCol61;
+    @javafx.fxml.FXML
+    private TableColumn rptCol71;
+    @javafx.fxml.FXML
+    private TableView ReportsTblView11;
+    @javafx.fxml.FXML
+    private StackPane TblViewStackPane;
+    @javafx.fxml.FXML
+    private TableColumn rptAppt;
+    @javafx.fxml.FXML
+    private TableColumn rptTitle;
+    @javafx.fxml.FXML
+    private TableColumn rptDesc;
+    @javafx.fxml.FXML
+    private TableColumn rptStart;
+    @javafx.fxml.FXML
+    private TableColumn rptEnd;
+    @javafx.fxml.FXML
+    private TableColumn rptCnt;
 
     /**
      * Alert user of appointment happening within the next 15 minutes.
@@ -331,8 +353,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         description_Col.setCellValueFactory(new PropertyValueFactory<>("description"));
         location_Col.setCellValueFactory(new PropertyValueFactory<>("location"));
         type_Col.setCellValueFactory(new PropertyValueFactory<>("type"));
-        //Timestamp rawStart = new PropertyValueFactory<>("Start").getProperty().t;
-        System.out.println("WHAT'S IT LOOK LIKE RAW: " + new PropertyValueFactory<>("Start").getProperty().toString());
         start_Col.setCellValueFactory(new PropertyValueFactory<>("Start"));
         end_Col.setCellValueFactory(new PropertyValueFactory<>("End"));
         customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
@@ -343,15 +363,34 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         ApptTblView.setItems(allApptAppointments);
     }
 
-    public void displayReportQuery(String reportParams) throws SQLException {
-        List<String> reportQueryData = new ArrayList<>();
-        rptCol1.setText("Month");
-        rptCol2.setText("Type");
-        rptCol3.setText("Count");
-        ReportsTblView.getColumns();
-        rptCol1.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
-        rptCol2.setCellValueFactory(new PropertyValueFactory<>("title"));
-        rptCol3.setCellValueFactory(new PropertyValueFactory<>("description"));
+    public void displayReportQuery(String btnTxt) throws SQLException {
+        ObservableList<Appointment> reportQuery = FXCollections.observableArrayList();
+        int wc = 0;
+
+        if(btnTxt.equals("CstMonthType")) {
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            String wcMonth = "";
+            String wcType = "";
+
+            if (moFilter) {
+                wcMonth = MonthCB.getValue();
+                wc = 2;
+            }
+
+            if (typeFilter) {
+                wcType = TypeCB.getValue();
+                wc++;
+            }
+
+            String[] reportParams = {wcMonth, wcType, String.valueOf(wc)};
+
+            rptMonth.setCellValueFactory(new PropertyValueFactory<>("Month"));
+            rptType.setCellValueFactory(new PropertyValueFactory<>("Type"));
+            rptCount.setCellValueFactory(new PropertyValueFactory<>("Count"));
+            reportQuery.addAll(apptDao.getByMonthType(reportParams));
+            ReportsTblView.setItems(reportQuery);
+        }
+
     }
 
     protected Boolean delCstRow(Customer selectedCst) throws SQLException {
@@ -484,40 +523,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         return busCloseTime;
     }
 
-    private void convertBusinessHrs() {
-        int locHrsOpen;
-        int locHrsClose;
-
-        LocalDateTime busNowLdt = LocalDateTime.now(ZoneId.of("US/Eastern")).withSecond(0).withNano(0);
-        System.out.println("Headquarters Time Now: " + busNowLdt);
-
-        LocalDateTime ldt = LocalDateTime.now();
-        System.out.println("Local Date Time: " + ldt);
-        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
-
-        System.out.println("businessHrs  Sys Static: " + locZdt);
-        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
-
-        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
-
-        //System.out.println("Local business Hrs: " + locHrsOpen + "am - " + locHrsClose + "pm");
-/*
-
-        LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
-        System.out.println("UTC Date NOW: " + UtcNowLdt);
-        LocalDate UtcCurDt = UtcNowLdt.toLocalDate();
-        LocalTime UtcCurTime = UtcNowLdt.toLocalTime();
-*/
-
-
-    }
-
     /**
      * Fills the MonthCB ComboBox with the months of the year. Used on Reports tab.
      */
     private void buildMonths() {
         String[] months = new DateFormatSymbols().getInstance().getMonths();
-        monthsItems.addAll(Arrays.stream(months).filter((m) -> (!m.isEmpty())).toList());
+        monthsItems.addAll(Arrays.stream(months).filter((mo) -> (!mo.isEmpty())).toList());
         MonthCB.setItems(monthsItems);
     }
 
@@ -531,6 +542,22 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         typeItems.addAll(Arrays.stream(types).sorted().toList());
         TypeCB.setItems(typeItems);
     }
+
+/*    protected void buildReport(String[] reportParams) throws SQLException {
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+        ObservableList<Appointment> reportQuery = FXCollections.observableArrayList(apptDao.getByMonthType(reportParams));
+        reportQuery.addAll(reportQuery.stream().sorted().toList());
+        ReportsTblView.setItems(reportQuery);
+
+        rptMonthCol.setText("Month");
+        rptMonthCol.setCellValueFactory(new PropertyValueFactory<>("Month"));
+        rptCol2.setText("Type");
+        rptCol2.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        rptCol3.setText("Count");
+        rptCol3.setCellValueFactory(new PropertyValueFactory<>("Count"));
+        reportQuery.addAll(apptDao.getByMonthType(wcMonth, wcType, wc));
+        ReportsTblView.setItems(reportQuery);
+    }*/
 
     /**
      * Seed Data for appointment Alert and Update testing; it is not validated for Business Hour Constraints.
@@ -561,27 +588,15 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         try {
-            //test seed data
+            //For seed data testing. TODO: Don't forget to comment.
             //appointmentSeed();
 
-            System.out.println("On init newLogin: " + isNewLogin);
             displayApptTblViewData();
-
             //displayCstTblViewData();
             displayCstWithCoInfo();
-            buildMonths();
-
             setCurrentUserid(sessionUserId);
-
-            if (isNewLogin) {
-                //appointmentSeed();
-
-                System.out.println("Made it to newLogin Test");
-                System.out.println("Made it to newLogin Test - id: " + sessionUserId);
-                System.out.println("Made it to newLogin Test - name: " + CurrentUserNameLbl.getText());
-            }
-            // convertBusinessHrs();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -783,6 +798,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         String menuItemId = ((MenuItem) actionEvent.getSource()).getId().replace("MenuItem", "");
         String menuItem = ((MenuItem) actionEvent.getSource()).getText();
         if (menuItemId.equals("CstMonthTypePane")){
+            buildMonths();
             buildTypes();
         }
         ReportTitlePane.setText(menuItem);
@@ -810,40 +826,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
     @javafx.fxml.FXML
     public void onActionDoQuery(ActionEvent actionEvent) {
-        btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
+        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
         String reportParams = "";
-        int wc = 0;
 
-        if(btnTxt.equals("CstMonthType")) {
-            System.out.println("Running report- " + btnTxt);
-            ObservableList<String> reportQuery = FXCollections.observableArrayList();
-            AppointmentDAO apptDao = new AppointmentDaoImpl();
-            String wcMonth = "";
-            String wcType = "";
-
-            if (moFilter) {
-                wcMonth = MonthCB.getValue();
-                wc = 2;
-            }
-
-            if (typeFilter) {
-                wcType = TypeCB.getValue();
-                wc++;
-            }
-
-            reportParams = "wcMonth, wcType, wc";
-            try {
-
-
-                reportQuery.addAll(apptDao.getByMonthType(wcMonth, wcType, wc));
-                ReportsTblView.setItems(reportQuery);
-            }
-            catch (SQLException e) {
-            }
-        }
         try {
-            displayReportQuery(reportParams);
+            displayReportQuery(btnTxt);
         }
         catch (SQLException e) {
             e.printStackTrace();
