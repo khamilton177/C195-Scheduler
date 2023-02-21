@@ -1,7 +1,6 @@
 package com.thecodebarista.dao;
 
 import javafx.collections.ObservableList;
-
 import java.sql.SQLException;
 import java.util.List;
 

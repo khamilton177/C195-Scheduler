@@ -24,12 +24,11 @@ public class Appointment {
     /**
      * Exist in Object Only field used to capture Report Query Tableviews
      */
-    //private String Month;
     private StringProperty month = new SimpleStringProperty();
-
-    //   private int Count;
+    /**
+     * Exist in Object Only field used to capture Report Query Tableviews
+     */
     private IntegerProperty count = new SimpleIntegerProperty();
-
 
     public Appointment() {
     }
@@ -132,7 +131,6 @@ public class Appointment {
     }
 
     public String getMonth() {
-        //String Month = getStart().toLocalDateTime().getMonth().toString();
         return month.get();    }
 
     public void setMonth(String Month) {

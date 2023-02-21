@@ -48,15 +48,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     ContactDaoImpl cntLVItems = new ContactDaoImpl();
     UserDaoImpl userLVItems = new UserDaoImpl();
 
-    Customer selectedCstLVItem;
-    Contact selectedCntLVItem;
-    User selectedUserLVItem;
     int selectedCstId;
-    int selectedCstIndex;
     int selectedCntId;
-    int selectedCntIndex;
     int selectedUserId;
-    int selectedUserIndex;
 
     LocalDateTime StartTime;
     LocalDateTime EndTime;
@@ -67,8 +61,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private Boolean hrSet = false;
     private Boolean minSet = false;
 
-    @javafx.fxml.FXML
-    private Label apptAlertBoxLbl;
     @javafx.fxml.FXML
     private TextField appointment_ID_TxtFld;
     @javafx.fxml.FXML
@@ -83,14 +75,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private ComboBox<Long> DurationCB;
     @javafx.fxml.FXML
     private DatePicker ApptStart_DatePick;
-    @javafx.fxml.FXML
-    private ListView<Customer> customer_ID_ListView;
-    @javafx.fxml.FXML
-    private ListView<User> user_ID_ListView;
-    @javafx.fxml.FXML
-    private TextField customer_ID_TxtFld;
-    @javafx.fxml.FXML
-    private TextField user_ID_TxtFld;
     @javafx.fxml.FXML
     private Button ApptSaveBtn;
     @javafx.fxml.FXML
@@ -145,44 +129,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         DurationCB.setItems(durations);
     }
 
-    private int getCstByIndex(int id) {
-        int index = -1;
-
-        for (Customer customer : customer_ID_ListView.getItems()) {
-            index++;
-
-            if (customer.getCustomer_ID() == id)
-                return index;
-        }
-        return -1;
-    }
-/*
-
-    private int getCntByIndex(int id) {
-        int index = -1;
-
-        for (Contact contact : contact_ID_ListView.getItems()) {
-            index++;
-
-            if (contact.getContact_ID() == id)
-                return index;
-        }
-        return -1;
-    }
-*/
-
-    private int getUserByIndex(int id) {
-        int index = -1;
-
-        for (User user : user_ID_ListView.getItems()) {
-            index++;
-
-            if (user.getUser_ID() == id)
-                return index;
-        }
-        return -1;
-    }
-
     /**
      * Calculate and sets the DurationCB ComboBox in the Update Appointment form. The duration is not persisted in DB.
      * @param selectedAppt
@@ -214,6 +160,11 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         }
     }
 
+    /**
+     * Method populates the Update Form with the Appointment data from database
+     * @param selectedAppt
+     * @throws SQLException
+     */
     protected void sendApptModifyData(Appointment selectedAppt) throws SQLException {
         selectedAppt = apptDao.extract(selectedAppt.getAppointment_ID());
         System.out.println("1 Setting fields");
@@ -250,14 +201,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         user_ID_CBox.setValue(selectedUser);
 
         System.out.println("Finished Setting fields");
-    }
-
-    public LocalTime ltInput(int hrs, int mins) {
-        return LocalTime.of(hrs, mins);
-    }
-
-    public LocalDateTime getLDT(LocalDate ldt, LocalTime lt) {
-        return LocalDateTime.of(ldt, lt);
     }
 
     private LocalDateTime calculateStartLdt() {
@@ -368,9 +311,10 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         TextField[] formFields = {title_TxtFld, description_TxtFld, location_TxtFld, type_TxtFld, start_TxtFld, end_TxtFld};
         for (TextField field : formFields) {
             if (field.getText() == null || field.getText().isEmpty()) {
+                System.out.println(field.getId() + ": " + field.getText());
                 if (field.getId().equals("start_TxtFld")) {
                     if (ApptStart_DatePick.getValue() != null && StartTimeHrs.getValue() != null && StartTimeMins.getValue() != null) {
-                        calculateStartLdt();
+                        calculateEndLdt();
                     }
                     validateMsg = "";
 

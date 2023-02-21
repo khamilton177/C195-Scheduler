@@ -1,6 +1,5 @@
 package com.thecodebarista.dao;
 
-import com.thecodebarista.TimeMachine;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.*;
@@ -94,7 +93,6 @@ public class UserDaoImpl implements UnmanagedDAO{
         }
         return allUsers;
     }
-
 
     @Override
     public User getByName(String name) throws SQLException{

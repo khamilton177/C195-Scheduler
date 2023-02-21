@@ -9,6 +9,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import com.thecodebarista.TimeMachine;
 import com.thecodebarista.dao.*;
 import com.thecodebarista.model.Appointment;
 import com.thecodebarista.model.Contact;
@@ -30,11 +31,9 @@ import javafx.stage.Stage;
 import static java.lang.Math.addExact;
 import static java.lang.Math.subtractExact;
 
-public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
-    public final int busHrsOpen = 8;
-    public final int totalBusHrs = 14;
-    public static Label static_AddUpdateLabel;
+public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMachine {
 
+    public static Label static_AddUpdateLabel;
     public Appointment selectedAppt;
     Customer selectedCst;
     Alert alert;
@@ -413,41 +412,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         }
     }
 
-/*
-    public void displayReportQuery(String btnTxt) throws SQLException {
-        ObservableList<Appointment> reportQuery = FXCollections.observableArrayList();
-        int wc = 0;
-
-        try {
-            if(btnTxt.equals("CstMonthType")) {
-                AppointmentDAO apptDao = new AppointmentDaoImpl();
-                String wcMonth = "";
-                String wcType = "";
-
-                if (moFilter) {
-                    wcMonth = MonthCB.getValue();
-                    wc = 2;
-                }
-
-                if (typeFilter) {
-                    wcType = TypeCB.getValue();
-                    wc++;
-                }
-
-                String[] reportParams = {wcMonth, wcType, String.valueOf(wc)};
-                rptMonth.setCellValueFactory(new PropertyValueFactory<>("Month"));
-                rptType.setCellValueFactory(new PropertyValueFactory<>("Type"));
-                rptCount.setCellValueFactory(new PropertyValueFactory<>("Count"));
-                reportQuery.addAll(apptDao.getByMonthType(reportParams));
-            }
-            CstMonthTypeTblView.setItems(reportQuery);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-*/
-
     protected Boolean delCstRow(Customer selectedCst) throws SQLException {
         boolean deleted = false;
         int result = -1;
@@ -534,48 +498,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         catch (SQLException e){
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Get the Local Open hr. for the Appointments Business Hours.
-     * @param ldt
-     * @return the int representing the local start hr for Appointments.
-     */
-    protected int getLocOpenHr(LocalDateTime ldt) {
-        int openHr;
-
-        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
-        System.out.println("businessHrs  Sys Static: " + locZdt);
-
-        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
-        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
-
-        int localOffset = businessZdt.getOffset().compareTo(locZdt.getOffset())/60/60;
-        System.out.println("businessHrs Sys Compare business to local: " + localOffset);
-
-        if (localOffset < 0) {
-            openHr = addExact(busHrsOpen, localOffset);
-        }
-        else if (localOffset > 0){
-            openHr = subtractExact(busHrsOpen, localOffset);
-        }
-        else {
-            openHr = busHrsOpen;
-        }
-        return openHr;
-    }
-
-    /**
-     * Get the Local Close hr. for the Appointments Business Hours.
-     * @param ldt
-     * @return the int representing the local end hr for Appointments.
-     */
-    protected LocalTime getLocCloseTime(LocalDateTime ldt) {
-        int locHrsOpen = getLocOpenHr(ldt);
-        int closeHr = locHrsOpen + totalBusHrs;
-        LocalTime busCloseTime = ldt.withHour(closeHr).withMinute(0).withSecond(0).withNano(0).toLocalTime();
-        System.out.println(busCloseTime);
-        return busCloseTime;
     }
 
     /**
@@ -990,5 +912,18 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             System.out.println(e.getCause());
         }
     }
+
+    @Override
+    public <T> void timeConverter() {
+
+    }
+
+/*
+
+    @Override
+    public LocalDateTime makeLDT() {
+        return null;
+    }
+*/
 
 }
