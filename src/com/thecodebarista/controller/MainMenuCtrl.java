@@ -11,6 +11,7 @@ import java.util.*;
 
 import com.thecodebarista.dao.*;
 import com.thecodebarista.model.Appointment;
+import com.thecodebarista.model.Contact;
 import com.thecodebarista.model.Customer;
 import com.thecodebarista.model.FirstLevelDivision;
 import javafx.collections.FXCollections;
@@ -41,12 +42,15 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     Optional<ButtonType> confirm;
     Tab currentTab;
 
-    FirstLevelDivisionDAOImpl divCBItems = new FirstLevelDivisionDAOImpl();
     ObservableList<String> monthsItems = FXCollections.observableArrayList();
     ObservableList<String> typeItems = FXCollections.observableArrayList();
 
     private Boolean moFilter = false;
     private Boolean typeFilter = false;
+    private Boolean cntFilter = false;
+    private Boolean cntMoFilter = false;
+    private Boolean cntWkFilter = false;
+
 
     @javafx.fxml.FXML
     protected ApptTableMonthlyCtrl includeApptMoController;
@@ -133,35 +137,17 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     private MenuItem CntSchedulePaneMenuItem;
     @javafx.fxml.FXML
-    private MenuItem ThirdReportMenuItem;
-    @javafx.fxml.FXML
     private Pane CntSchedulePane;
-    @javafx.fxml.FXML
-    private ComboBox MonthCbox1;
-    @javafx.fxml.FXML
-    private Pane ThirdReport;
-    @javafx.fxml.FXML
-    private ComboBox MonthCbox11;
-    @javafx.fxml.FXML
-    private ComboBox TypeCbox11;
     @javafx.fxml.FXML
     private StackPane reportFilterStackPane;
     @javafx.fxml.FXML
-    private ButtonBar CstMonthTypeBtnBar;
-    @javafx.fxml.FXML
-    private Button CstMonthTypeSearchBtn;
-    @javafx.fxml.FXML
-    private Button CstMonthTypeClearBtn;
-    @javafx.fxml.FXML
-    protected TableView<Appointment> ReportsTblView;
+    protected TableView<Appointment> CstMonthTypeTblView;
     @javafx.fxml.FXML
     protected TableColumn<Appointment, String> rptMonth;
     @javafx.fxml.FXML
     protected TableColumn<Appointment, String> rptType;
     @javafx.fxml.FXML
     protected TableColumn<Appointment, Integer> rptCount;
-    @javafx.fxml.FXML
-    private TableView ReportsTblView1;
     @javafx.fxml.FXML
     private TableColumn rptCol11;
     @javafx.fxml.FXML
@@ -177,21 +163,60 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     @javafx.fxml.FXML
     private TableColumn rptCol71;
     @javafx.fxml.FXML
-    private TableView ReportsTblView11;
+    private TableView<Appointment> CntScheduleTblView;
     @javafx.fxml.FXML
     private StackPane TblViewStackPane;
     @javafx.fxml.FXML
-    private TableColumn rptAppt;
+    private TableColumn<Appointment, Integer> rptAppt;
     @javafx.fxml.FXML
-    private TableColumn rptTitle;
+    private TableColumn<Appointment, String> rptTitle;
     @javafx.fxml.FXML
-    private TableColumn rptDesc;
+    private TableColumn<Appointment, String> rptDesc;
     @javafx.fxml.FXML
-    private TableColumn rptStart;
+    private TableColumn<Appointment, Timestamp> rptStart;
     @javafx.fxml.FXML
-    private TableColumn rptEnd;
+    private TableColumn<Appointment, Timestamp> rptEnd;
     @javafx.fxml.FXML
-    private TableColumn rptCnt;
+    private TableColumn<Appointment, Integer> rptCnt;
+    @javafx.fxml.FXML
+    private ComboBox<Contact> CntScheduleSearchCB;
+    @javafx.fxml.FXML
+    private ToggleGroup CntApptPeriodRadioGrp;
+    @javafx.fxml.FXML
+    private RadioButton CntScheduleWkRadio;
+    @javafx.fxml.FXML
+    private RadioButton CntScheduleMoRadio;
+    @javafx.fxml.FXML
+    private ButtonBar CstMonthTypeBtnBar;
+    @javafx.fxml.FXML
+    private Button CstMonthTypeSearchBtn;
+    @javafx.fxml.FXML
+    private Button CstMonthTypeClearBtn;
+    @javafx.fxml.FXML
+    private ComboBox CstSearchCB1;
+    @javafx.fxml.FXML
+    private RadioButton cstTopWkRadio;
+    @javafx.fxml.FXML
+    private ToggleGroup topCstRadioGrp;
+    @javafx.fxml.FXML
+    private RadioButton cntMoRadio1;
+    @javafx.fxml.FXML
+    private ButtonBar CntScheduleBtnBar1;
+    @javafx.fxml.FXML
+    private Button CntScheduleSearchBtn1;
+    @javafx.fxml.FXML
+    private Button CntScheduleClearBtn1;
+    @javafx.fxml.FXML
+    private TableColumn rptType2;
+    @javafx.fxml.FXML
+    private TextArea rptTextArea;
+    @javafx.fxml.FXML
+    private Pane CstMostActivePane;
+    @javafx.fxml.FXML
+    private TableView CstMostActiveTblView;
+    @javafx.fxml.FXML
+    private MenuItem CstMostActivePaneMenuItem;
+
 
     /**
      * Alert user of appointment happening within the next 15 minutes.
@@ -206,16 +231,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         try{
             ObservableList<Appointment> userAppt = apptDao.getApptNowByUser(sessionUserId);
             int userApptSize = userAppt.size();
-            System.out.println("Doing loginAppt Alert #3 - count: " + userAppt);
+            System.out.println("Doing loginAppt Alert #3 - count: " + userApptSize);
 
             if(userApptSize > 0) {
-                //For testing. TODO: Don't forget to comment out and use now
+                //For testing. TODO: Don't forget to comment out and use now()
                 //LocalDateTime ldt = LocalDateTime.of(2023, 02, 04, 19, 15);
                 LocalDateTime ldt = LocalDateTime.now();
-                LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
-                System.out.println("UTC Date NOW: " + UtcNowLdt);
-                Timestamp TsUtcNow = Timestamp.valueOf(UtcNowLdt);
-                System.out.println("TS Date NOW: " + TsUtcNow);
 
                 for (Appointment appt : userAppt) {
                     LocalDateTime apptStart = appt.getStart().toLocalDateTime();
@@ -224,7 +245,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
                         if(apptStart.toLocalTime().isAfter(ldt.toLocalTime())) {
                             Long minsTill = ChronoUnit.MINUTES.between(ldt, apptStart);
                             System.out.println("Minutes until appointment: " + minsTill);
-                            if (minsTill < 16L){
+                            if (minsTill <= 16L){
                                 msgCtx = String.format("Hi %s,%nYou have Appointment ID #%d soon!%n%tD at %tR",
                                         CurrentUserNameLbl.getText(), appt.getAppointment_ID(), apptStart.toLocalDate(), apptStart.toLocalTime());
                                 alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
@@ -237,7 +258,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
                 System.out.println("Doing loginAppt Alert #4");
 
                 msgCtx = String.format("Hi %s. Relax! You don't have any appoints within the next 15 minutes.",
-                            CurrentUserNameLbl.getText());
+                        CurrentUserNameLbl.getText());
                 alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
                 confirm = alert.showAndWait();
             }
@@ -255,7 +276,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
     protected void setCurrentUserNameInfo(String setCurrentUserName) {
         CurrentUserNameLbl.setText(setCurrentUserName);
-        currentUserName = setCurrentUserName;
+        sessionUserName = setCurrentUserName;
     }
 
     /**
@@ -270,11 +291,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
         try{
             alert = new Alert(alertType);
-            //alert.setAlertType(alertType);
             String alertEnum = alertType.toString();
 
             switch(alertType){
-                //switch(alertEnum){
                 case CONFIRMATION:
                     header = alertEnum + " REQUIRED:";
                     break;
@@ -302,13 +321,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     }
 
     /**
-     * Displays the Customer ObservableList data in the TableView.
+     * Displays the Customer ObservableList data in the TableView with the Country Info.
      */
     public void displayCstWithCoInfo() throws SQLException {
         ObservableList<Customer> cstWithCoInfo = FXCollections.observableArrayList();
         CustomerDAO cstDao = new CustomerDaoImpl();
 
-        // Set the cell to the property value for the specified column name in string
         CstIdCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
         CstNameCol.setCellValueFactory(new PropertyValueFactory<>("customer_Name"));
         CstAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -328,7 +346,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
         CustomerDAO cstDao = new CustomerDaoImpl();
 
-        // Set the cell to the property value for the specified column name in string
         CstIdCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
         CstNameCol.setCellValueFactory(new PropertyValueFactory<>("customer_Name"));
         CstAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -363,35 +380,73 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         ApptTblView.setItems(allApptAppointments);
     }
 
+    public void displayReportQuery(String btnTxt, String[] reportParams) throws SQLException {
+        ObservableList<Appointment> reportQuery = FXCollections.observableArrayList();
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+
+        try {
+            switch(btnTxt) {
+                case "CstMonthType":
+                    rptMonth.setCellValueFactory(new PropertyValueFactory<>("Month"));
+                    rptType.setCellValueFactory(new PropertyValueFactory<>("Type"));
+                    rptCount.setCellValueFactory(new PropertyValueFactory<>("Count"));
+                    reportQuery.addAll(apptDao.getByMonthType(reportParams));
+                    CstMonthTypeTblView.setItems(reportQuery);
+                    break;
+                case "CntSchedule":
+                    rptAppt.setCellValueFactory(new PropertyValueFactory<>("Appointment_ID"));
+                    rptTitle.setCellValueFactory(new PropertyValueFactory<>("Title"));
+                    rptType2.setCellValueFactory(new PropertyValueFactory<>("Type"));
+                    rptDesc.setCellValueFactory(new PropertyValueFactory<>("Description"));
+                    rptStart.setCellValueFactory(new PropertyValueFactory<>("Start"));
+                    rptEnd.setCellValueFactory(new PropertyValueFactory<>("End"));
+                    rptCnt.setCellValueFactory(new PropertyValueFactory<>("Customer_ID"));
+                    reportQuery.addAll(apptDao.getApptCntByPeriod(reportParams));
+                    CntScheduleTblView.setItems(reportQuery);
+                    break;
+                case "":
+                    break;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+/*
     public void displayReportQuery(String btnTxt) throws SQLException {
         ObservableList<Appointment> reportQuery = FXCollections.observableArrayList();
         int wc = 0;
 
-        if(btnTxt.equals("CstMonthType")) {
-            AppointmentDAO apptDao = new AppointmentDaoImpl();
-            String wcMonth = "";
-            String wcType = "";
+        try {
+            if(btnTxt.equals("CstMonthType")) {
+                AppointmentDAO apptDao = new AppointmentDaoImpl();
+                String wcMonth = "";
+                String wcType = "";
 
-            if (moFilter) {
-                wcMonth = MonthCB.getValue();
-                wc = 2;
+                if (moFilter) {
+                    wcMonth = MonthCB.getValue();
+                    wc = 2;
+                }
+
+                if (typeFilter) {
+                    wcType = TypeCB.getValue();
+                    wc++;
+                }
+
+                String[] reportParams = {wcMonth, wcType, String.valueOf(wc)};
+                rptMonth.setCellValueFactory(new PropertyValueFactory<>("Month"));
+                rptType.setCellValueFactory(new PropertyValueFactory<>("Type"));
+                rptCount.setCellValueFactory(new PropertyValueFactory<>("Count"));
+                reportQuery.addAll(apptDao.getByMonthType(reportParams));
             }
-
-            if (typeFilter) {
-                wcType = TypeCB.getValue();
-                wc++;
-            }
-
-            String[] reportParams = {wcMonth, wcType, String.valueOf(wc)};
-
-            rptMonth.setCellValueFactory(new PropertyValueFactory<>("Month"));
-            rptType.setCellValueFactory(new PropertyValueFactory<>("Type"));
-            rptCount.setCellValueFactory(new PropertyValueFactory<>("Count"));
-            reportQuery.addAll(apptDao.getByMonthType(reportParams));
-            ReportsTblView.setItems(reportQuery);
+            CstMonthTypeTblView.setItems(reportQuery);
         }
-
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+*/
 
     protected Boolean delCstRow(Customer selectedCst) throws SQLException {
         boolean deleted = false;
@@ -442,7 +497,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
                     }
                 }
                 catch(SQLException e){
-                        e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         }
@@ -543,22 +598,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         TypeCB.setItems(typeItems);
     }
 
-/*    protected void buildReport(String[] reportParams) throws SQLException {
-        AppointmentDAO apptDao = new AppointmentDaoImpl();
-        ObservableList<Appointment> reportQuery = FXCollections.observableArrayList(apptDao.getByMonthType(reportParams));
-        reportQuery.addAll(reportQuery.stream().sorted().toList());
-        ReportsTblView.setItems(reportQuery);
-
-        rptMonthCol.setText("Month");
-        rptMonthCol.setCellValueFactory(new PropertyValueFactory<>("Month"));
-        rptCol2.setText("Type");
-        rptCol2.setCellValueFactory(new PropertyValueFactory<>("Type"));
-        rptCol3.setText("Count");
-        rptCol3.setCellValueFactory(new PropertyValueFactory<>("Count"));
-        reportQuery.addAll(apptDao.getByMonthType(wcMonth, wcType, wc));
-        ReportsTblView.setItems(reportQuery);
-    }*/
-
     /**
      * Seed Data for appointment Alert and Update testing; it is not validated for Business Hour Constraints.
      * @throws SQLException
@@ -588,7 +627,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         try {
-            //For seed data testing. TODO: Don't forget to comment.
+            // For seed data testing. TODO: Don't forget to comment.
             //appointmentSeed();
 
             displayApptTblViewData();
@@ -604,12 +643,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     /**
      * Loads the ApptAddUpdateFormCtrl to create appointments in the appt-add-update-form view.
      * @param actionEvent New form button, ApptAddBtn, clicked.
-     * @throws IOException java.io.IOException - captures name exception: NullPointerException.
-     * <BR>Present alert error dialog when no selection made.
      */
     @javafx.fxml.FXML
-    private void onActionApptNew(ActionEvent actionEvent) throws IOException {
-        String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
+    private void onActionApptNew(ActionEvent actionEvent) {
         System.out.println("New Appointment Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
         try{
@@ -617,10 +653,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             loader.setLocation(Objects.requireNonNull(getClass().getResource("/com/thecodebarista/view/appt-add-update-form.fxml")));
             scene = loader.load();
 
-            // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             static_AddUpdateLabel.setText("New Appointment");
             stage.setScene(new Scene(scene));
+            ApptAddUpdateFormCtrl modelCtrl = loader.getController();
+            modelCtrl.setDefaultUserOnNew();
             stage.show();
         }
         catch(Exception e) {
@@ -679,7 +716,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
 
         try {
             tableItemSelector();
-            String msgCtx = "Please confirm deletion of " + "Appointment ID: " + selectedAppt.getAppointment_ID();
+            String msgCtx = "Please confirm deletion of " + "Appointment ID: " + selectedAppt.getAppointment_ID() +
+                    System.getProperty("line.separator") + "Type: " + selectedAppt.getType();
             confirmDelete(selectedAppt, btnTxt, msgCtx);
         } catch (NullPointerException e) {
             String errorMsg = "Error: No Appointment Selected!";
@@ -789,29 +827,54 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
     }
 
     /**
-     * Show pane with filter options for selected report.
-     * LAMBDA USAGE - Lambda used to find all visible Panes and set to invisible.
+     * Show pane with filter options for selected Report Menu's.
+     * LAMBDA USAGE - Lambdas used to filter for all visible Panes and set to invisible.\n
+     * Filter children by ID, set to visible if needed and bring to front of StackPanes.
      * @param actionEvent
      */
     @javafx.fxml.FXML
     public void showFilterPane(ActionEvent actionEvent) throws SQLException {
         String menuItemId = ((MenuItem) actionEvent.getSource()).getId().replace("MenuItem", "");
         String menuItem = ((MenuItem) actionEvent.getSource()).getText();
+        String tblView = menuItemId.replace("Pane", "TblView");
+        System.out.println("Name of TblView- " + tblView);
         if (menuItemId.equals("CstMonthTypePane")){
             buildMonths();
             buildTypes();
         }
+        if (menuItemId.equals("CntSchedulePane")){
+            UnmanagedDAO cntCb = new ContactDaoImpl();
+            CntScheduleSearchCB.setItems(cntCb.extractAll());
+        }
+
+        if (menuItemId.equals("CstMostActivePane")) {
+
+        }
+
         ReportTitlePane.setText(menuItem);
         reportFilterStackPane.getChildren().stream().filter((v) -> v.isVisible())
                 .forEach((v) -> v.setVisible(false));
         Node paneNode = reportFilterStackPane.getChildren().stream().filter((p) -> p.getId().equals(menuItemId)).findFirst().get();
         paneNode.setVisible(true);
         paneNode.toFront();
+        System.out.println("CHILDREN: " + TblViewStackPane.getChildren().stream().toList());
+        Node tblViewNode = TblViewStackPane.getChildren().stream().filter((p) -> p.getId().equals(tblView)).findFirst().get();
+        tblViewNode.toFront();
     }
 
     @javafx.fxml.FXML
-    public void onReportFilterUpd(ActionEvent actionEvent) {
-        btnTxt = ((ComboBox)actionEvent.getSource()).getId();
+    public void onReportFilterUpd(ActionEvent actionEvent) throws SQLException {
+        System.out.println("Button Clicked: " + actionEvent.getSource().toString());
+        String btnTxt = "";
+        if (actionEvent.getSource().toString().contains("ComboBox")){
+            btnTxt = ((ComboBox) actionEvent.getSource()).getId();
+        }
+        else if (actionEvent.getSource().toString().contains("RadioButton")){
+            btnTxt = ((RadioButton) actionEvent.getSource()).getId();
+        }
+        else{
+            btnTxt = ((Button) actionEvent.getSource()).getId();
+        }
 
         if (btnTxt.equals("MonthCB")) {
             moFilter = true;
@@ -822,16 +885,68 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
             typeFilter = true;
             return;
         }
+/*
+        if (btnTxt.equals("CntSearchCB")) {
+            cntFilter = true;
+        }
+
+        if (btnTxt.equals("CntWkRadio")) {
+            cntWkFilter = true;
+        }
+
+        if (btnTxt.equals("CntMoRadio")) {
+            cntMoFilter = true;
+        }*/
     }
 
     @javafx.fxml.FXML
     public void onActionDoQuery(ActionEvent actionEvent) {
-        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
-        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
-        String reportParams = "";
+        System.out.println("Button Clicked: " + actionEvent.getSource().toString());
+        String btnTxt = "";
+        int wc = 0;
+        String[] reportParams = new String[3];
 
+        if (actionEvent.getSource().toString().contains("ComboBox")){
+            btnTxt = ((ComboBox) actionEvent.getSource()).getId().replace("SearchCB", "");
+        }
+        else if (actionEvent.getSource().toString().contains("RadioButton")){
+            btnTxt = ((RadioButton) actionEvent.getSource()).getId();
+        }
+        else{
+            btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
+        }
         try {
-            displayReportQuery(btnTxt);
+            if(btnTxt.equals("CstMonthType")) {
+                String wcMonth = "";
+                String wcType = "";
+
+                if (moFilter) {
+                    wcMonth = MonthCB.getValue();
+                    wc = 2;
+                }
+
+                if (typeFilter) {
+                    wcType = TypeCB.getValue();
+                    wc++;
+                }
+
+                reportParams[0] = wcMonth;
+                reportParams[1] = wcType;
+                reportParams[2] = String.valueOf(wc);
+            }
+
+            if (btnTxt.contains("CntSchedule")) {
+                String wcContact = String.valueOf(CntScheduleSearchCB.getValue().getContact_ID());
+                String wcPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
+                if (CntScheduleMoRadio.isSelected()) {
+                    wc = 1;
+                }
+                reportParams[0] = wcContact;
+                reportParams[1] = wcPeriod;
+                reportParams[2] = String.valueOf(wc);
+            }
+
+            displayReportQuery(btnTxt, reportParams);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -843,12 +958,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable {
         btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
-        if(moFilter) {
+        if (moFilter) {
             MonthCB.getSelectionModel().clearSelection();
             moFilter = false;
         }
 
-        if(typeFilter) {
+        if (typeFilter) {
             TypeCB.getSelectionModel().clearSelection();
             typeFilter = false;
         }

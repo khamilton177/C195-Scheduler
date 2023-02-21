@@ -28,7 +28,6 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, appointment_id);
             System.out.println("made it here 1");
-            // Pass the preparedStatement to be executed.
 
             // Pass the preparedStatement to be executed.
             DMLUtils.doDMLv2(prepStmt, sqlStmt);
@@ -208,7 +207,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
     }
 
     @Override
-    public ObservableList<Appointment> getCstApptByFK(String fk, int id) throws SQLException{
+    public ObservableList<Appointment> getApptByFK(String fk, int id) throws SQLException{
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         String fkID = fk;
@@ -281,6 +280,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             String sqlStmt = "SELECT * FROM appointments" +
                 " WHERE User_ID = " +
                 qID +
+                " AND DATE(Start) >= CURDATE()-2 AND DATE(Start) <= CURDATE()+2" +
                 " ORDER BY Start";
 
             prepStmt = useConnection().prepareStatement(sqlStmt);
@@ -385,7 +385,6 @@ public class AppointmentDaoImpl implements AppointmentDAO {
     @Override
     public ObservableList<String> genericData(String query) throws SQLException{
         ObservableList<String> stringData = FXCollections.observableArrayList();
-        int i;
 
         try{
             String sqlStmt = query;
@@ -399,7 +398,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
 
             while (rs.next()) {
                 List<String> rowData = new ArrayList<>();
-                for (i = 1; i <= columnCount; i++) {
+                for (int i = 1; i <= columnCount; i++) {
                     rowData.add(rs.getString(metaData.getColumnLabel(i)));
                 }
                 stringData.addAll(rowData);
@@ -447,6 +446,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
                 break;
         }
         sqlStmt.append(" Group By Month, Type");
+        sqlStmt.append(" ORDER BY MONTH(Start)");
 
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt.toString());
@@ -470,6 +470,56 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             e.getCause();
         }
         return allCstByMoTypeTotal;
+    }
+
+    @Override
+    public ObservableList<Appointment> getApptCntByPeriod(String[] reportParams) throws SQLException {
+        ObservableList<Appointment> apptCntSched = FXCollections.observableArrayList();
+        int wcCnt = Integer.parseInt(reportParams[0]);
+        String wcPeriod = reportParams[1];
+        int wc = Integer.parseInt(reportParams[2]);
+        StringBuilder sqlStmt = new StringBuilder("SELECT Appointment_ID" +
+                ", Title" +
+                ", Type" +
+                ", Description" +
+                ", Start" +
+                ", End" +
+                ", Customer_ID" +
+                " FROM appointments" +
+                " WHERE Contact_ID = '" + wcCnt +
+                "'");
+
+        // Create WHERE clause based on params passed
+        switch (wc) {
+            case 1:
+                sqlStmt.append(" AND MONTH(Start)  = MONTH(NOW())");
+                break;
+            default:
+                sqlStmt.append(" AND WEEK(Start)  = WEEK(NOW())");
+                break;
+        }
+        sqlStmt.append(" ORDER BY Start");
+
+        try{
+            prepStmt = useConnection().prepareStatement(sqlStmt.toString());
+            DMLUtils.doDMLv2(prepStmt, sqlStmt.toString());
+
+            // Get the ResultSet and ResultSet metadata of the executed query.
+            ResultSet rs = DMLUtils.getResult();
+
+            System.out.println("Building Contact Appointment By Month/week");
+            // Extract the ResultSet to a class object.
+            while (rs.next()) {
+                Appointment rptRows = DMLUtils.getApptCntByPeriodData(rs);
+                apptCntSched.add(rptRows);
+            }
+            return apptCntSched;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return apptCntSched;
     }
 
     @Override

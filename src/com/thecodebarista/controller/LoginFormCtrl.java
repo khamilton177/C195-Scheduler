@@ -36,6 +36,11 @@ public class LoginFormCtrl implements Initializable {
     Parent scene;
 
     /**
+     * Obtains user information from users table for Login Attempt User.
+     */
+    User notLoginUser;
+
+    /**
      * Logger to track application login attempts.
      */
     public static Logger actLog;
@@ -51,20 +56,14 @@ public class LoginFormCtrl implements Initializable {
     public static String static_ZoneId;
 
     /**
-     * Obtains current user's information from users table.
-     */
-    User currentUser;
-
-
-    public Boolean isNewLogin = true;
-
-    /**
-     * Static int used to retain the current user's ID information in the form Label- ZoneIdLbl.
+     * Static int used to retain the Login user's ID information.
      */
     public static int sessionUserId;
 
-    String currentUserName;
-
+    /**
+     * Static int used to retain the Login user's name information.
+     */
+    public static String sessionUserName;
 
     @javafx.fxml.FXML
     private Label LoginMsgTxt;
@@ -142,7 +141,60 @@ public class LoginFormCtrl implements Initializable {
     }
 
     /**
-     * Sets the Login Form error messages in current users locale while writing the message to the logger in English.<>BR</>REQ. B: Improved switch statement with lamba expression.
+     * Sets the Login Form error messages in current user'
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * s locale while writing the message to the logger in English.<>BR</>REQ. B: Improved switch statement with lamba expression.
      * @param msg
      * @return
      */
@@ -154,7 +206,7 @@ public class LoginFormCtrl implements Initializable {
         logMsg.append(System.getProperty("line.separator"));
         logMsg.append("Reason: ");
 
-        // Using lamda to enhance code.
+        // Used lamda suggestion to enhance code. No parameter
         switch (msg) {
             case "Success" -> logMsg.append(enRb.getString("Success"));
 
@@ -238,11 +290,11 @@ public class LoginFormCtrl implements Initializable {
             String credentials = login();
 
             if(!credentials.isEmpty()) {
-                currentUser = UserDaoImpl.userLogin(credentials);
+                notLoginUser = UserDaoImpl.userLogin(credentials);
                 int getCurrentUserid;
 
                 try{
-                    getCurrentUserid = Objects.requireNonNull(currentUser).getUser_ID();
+                    getCurrentUserid = Objects.requireNonNull(notLoginUser).getUser_ID();
                     if (getCurrentUserid > 0){
                         System.out.println("Valid Login: " + getCurrentUserid);
                         setLoginErrMsg("Success");
@@ -252,14 +304,14 @@ public class LoginFormCtrl implements Initializable {
                         setCurrentUserid(getCurrentUserid);
 
 
-                        currentUserName = currentUser.getUser_Name();
+                        sessionUserName = notLoginUser.getUser_Name();
 
                         FXMLLoader loader = new FXMLLoader();
                         loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                         scene = loader.load();
                         MainMenuCtrl formController = loader.getController();
                         formController.setCurrentUserIdInfo(sessionUserId);
-                        formController.setCurrentUserNameInfo(currentUserName);
+                        formController.setCurrentUserNameInfo(sessionUserName);
 
 
                         formController.loginAppointAlert();

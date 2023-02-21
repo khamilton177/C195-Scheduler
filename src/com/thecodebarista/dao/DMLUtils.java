@@ -139,25 +139,27 @@ public class DMLUtils {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
         String Month = (rs.getString(metaData.getColumnLabel(1)));;
-        System.out.println("Got Month? " + Month);
+        //System.out.println("Got Month? " + Month);
         String type = (rs.getString(metaData.getColumnLabel(2)));;
         int Count = (rs.getInt(metaData.getColumnLabel(3)));;
         Appointment rptRow = new Appointment();
         rptRow.setMonth(Month);;
         rptRow.setType(type);;
         rptRow.setCount(Count);;
-
         return rptRow;
     }
-/*
-    public static String getAdhocData(ResultSet rs) throws SQLException {
 
+    public static Appointment getApptCntByPeriodData(ResultSet rs) throws SQLException {
+        Appointment rptRow = new Appointment();
+        rptRow.setAppointment_ID(rs.getInt("Appointment_ID"));
+        rptRow.setTitle(rs.getString("Title"));;
+        rptRow.setType(rs.getString("Type"));
+        rptRow.setDescription(rs.getString("Description"));
+        rptRow.setStart(rs.getTimestamp("Start"));
+        rptRow.setEnd(rs.getTimestamp("End"));
+        rptRow.setCustomer_ID(rs.getInt("Customer_ID"));
+        return rptRow;
     }
-*/
-
-//    public static String getGenericRs(ResultSet rs) throws SQLException {
-//        return String
-//    }
 
 }
 

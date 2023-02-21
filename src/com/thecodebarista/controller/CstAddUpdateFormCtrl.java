@@ -167,11 +167,9 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         static_AddUpdateLabel = AddUpdateCstLabel;
-        //CountryDaoImpl coCBItems = new CountryDaoImpl();
 
         try {
             country_ID_CBox.setItems(coCBItems.extractAll());
-            //division_ID_CBox.setItems(divCBItems.extractAll().stream().filter(coItem -> coItem.equals(selectedCoCBItem)).sorted());
         } catch (SQLException e) {
             e.printStackTrace();
         }

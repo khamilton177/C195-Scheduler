@@ -57,8 +57,7 @@
             <VBox layoutX="257.0" layoutY="187.0">
                <children>
                   <Label text="Contact ID#" />
-                  <TextField fx:id="contact_ID_TxtFld" />
-                  <ListView fx:id="contact_ID_ListView" prefHeight="89.0" prefWidth="200.0" />
+                  <ComboBox fx:id="contact_ID_CBox" prefWidth="150.0" />
                </children>
             </VBox>
             <VBox layoutX="483.0" layoutY="187.0">

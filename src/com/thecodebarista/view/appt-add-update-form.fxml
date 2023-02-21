@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="573.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.ApptAddUpdateFormCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="573.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.ApptAddUpdateFormCtrl">
    <children>
       <Pane prefHeight="82.0" prefWidth="800.0">
          <children>
@@ -50,8 +41,7 @@
             <VBox layoutX="44.0" layoutY="187.0">
                <children>
                   <Label text="Customer ID#" />
-                  <TextField fx:id="customer_ID_TxtFld" />
-                  <ListView fx:id="customer_ID_ListView" prefHeight="89.0" prefWidth="200.0" />
+                  <ComboBox fx:id="customer_ID_CBox" prefWidth="150.0" />
                </children>
             </VBox>
             <VBox layoutX="257.0" layoutY="187.0">
@@ -63,8 +53,7 @@
             <VBox layoutX="483.0" layoutY="187.0">
                <children>
                   <Label text="User ID#" />
-                  <TextField fx:id="user_ID_TxtFld" />
-                  <ListView fx:id="user_ID_ListView" prefHeight="89.0" prefWidth="200.0" />
+                  <ComboBox fx:id="user_ID_CBox" prefWidth="150.0" />
                </children>
             </VBox>
             <Label layoutX="439.0" layoutY="116.0" text="End Date and Time" />

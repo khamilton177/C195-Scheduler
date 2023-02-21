@@ -1,8 +1,8 @@
 package com.thecodebarista;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
+
+import static com.thecodebarista.controller.LoginFormCtrl.static_ZoneId;
 
 /**
  * Generic Functional Interface - Utilized by lambda expressions to calculate time conversion for scheduler.
@@ -34,4 +34,31 @@ public interface TimeMachine {
                     Timestamp tsEnd = Timestamp.valueOf(EndTime);
                     String tsEndFormatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(tsEnd);
                     end_TxtFld.setText(tsEndFormatted);*/
+
+        default void convertBusinessHrs() {
+        int locHrsOpen;
+        int locHrsClose;
+
+        LocalDateTime busNowLdt = LocalDateTime.now(ZoneId.of("US/Eastern")).withSecond(0).withNano(0);
+        System.out.println("Headquarters Time Now: " + busNowLdt);
+
+        LocalDateTime ldt = LocalDateTime.now();
+        System.out.println("Local Date Time: " + ldt);
+        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
+
+        System.out.println("businessHrs  Sys Static: " + locZdt);
+        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
+
+        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
+
+        //System.out.println("Local business Hrs: " + locHrsOpen + "am - " + locHrsClose + "pm");
+    /*
+            LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
+            System.out.println("UTC Date NOW: " + UtcNowLdt);
+            LocalDate UtcCurDt = UtcNowLdt.toLocalDate();
+            LocalTime UtcCurTime = UtcNowLdt.toLocalTime();
+    */
+
+
+    }
 }
