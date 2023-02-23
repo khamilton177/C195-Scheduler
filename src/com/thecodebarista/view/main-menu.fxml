@@ -217,7 +217,7 @@
                                                   <items>
                                                     <MenuItem fx:id="CstMonthTypePaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="Total Customer Appointments by Month/Type" />
                                                     <MenuItem fx:id="CntSchedulePaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="Contact Schedules" />
-                                                      <MenuItem fx:id="CstMostActivePaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="NEED THIRD REPORT" />
+                                                      <MenuItem fx:id="ApptDurationPaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="Total Appoint  Duration Average" />
                                                   </items>
                                                 </MenuButton>
                                                 <StackPane fx:id="reportFilterStackPane">
@@ -269,44 +269,9 @@
                                                             </VBox>
                                                          </children>
                                                       </Pane>
-                                                      <Pane fx:id="CstMostActivePane" prefHeight="134.0" prefWidth="200.0" visible="false">
+                                                      <Pane fx:id="ApptDurationPane" prefHeight="134.0" prefWidth="200.0" visible="false">
                                                          <children>
-                                                            <VBox alignment="CENTER_LEFT" prefHeight="168.0" prefWidth="190.0">
-                                                               <children>
-                                                                  <Label text="Customer">
-                                                                     <padding>
-                                                                        <Insets left="10.0" />
-                                                                     </padding>
-                                                                  </Label>
-                                                                  <ComboBox fx:id="CstSearchCB1" onAction="#onActionDoQuery" prefWidth="150.0">
-                                                                     <VBox.margin>
-                                                                        <Insets left="10.0" />
-                                                                     </VBox.margin>
-                                                                  </ComboBox>
-                                                                  <RadioButton fx:id="cstTopWkRadio" mnemonicParsing="false" onAction="#onReportFilterUpd" selected="true" text="by Week">
-                                                                     <VBox.margin>
-                                                                        <Insets left="10.0" top="10.0" />
-                                                                     </VBox.margin>
-                                                                     <toggleGroup>
-                                                                        <ToggleGroup fx:id="topCstRadioGrp" />
-                                                                     </toggleGroup>
-                                                                  </RadioButton>
-                                                                  <RadioButton fx:id="cntMoRadio1" layoutX="10.0" layoutY="52.0" mnemonicParsing="false" onAction="#onReportFilterUpd" text="by Month" toggleGroup="$topCstRadioGrp">
-                                                                     <VBox.margin>
-                                                                        <Insets left="10.0" top="10.0" />
-                                                                     </VBox.margin>
-                                                                  </RadioButton>
-                                                                  <ButtonBar fx:id="CntScheduleBtnBar1" prefHeight="40.0" prefWidth="200.0">
-                                                                     <buttons>
-                                                                        <Button fx:id="CntScheduleSearchBtn1" mnemonicParsing="false" onAction="#onActionDoQuery" prefHeight="25.0" prefWidth="101.0" text="Search" />
-                                                                        <Button fx:id="CntScheduleClearBtn1" layoutX="140.0" layoutY="18.0" mnemonicParsing="false" onAction="#onActionClearFilter" text="Clear" />
-                                                                     </buttons>
-                                                                     <VBox.margin>
-                                                                        <Insets top="10.0" />
-                                                                     </VBox.margin>
-                                                                  </ButtonBar>
-                                                               </children>
-                                                            </VBox>
+                                                            <VBox alignment="CENTER_LEFT" prefHeight="168.0" prefWidth="190.0" />
                                                          </children>
                                                       </Pane>
                                                    </children>
@@ -336,7 +301,6 @@
                                                                         <TableColumn fx:id="rptCol71" prefWidth="75.0" />
                                                                      </columns>
                                                                   </TableView>
-                                                                  <TextArea fx:id="rptTextArea" prefHeight="200.0" prefWidth="200.0" />
                                                                   <TableView fx:id="CstMonthTypeTblView" prefHeight="750.0" prefWidth="875.0">
                                                                     <columns>
                                                                       <TableColumn fx:id="rptMonth" prefWidth="75.0" text="Month">
@@ -363,6 +327,7 @@
                                                                         <TableColumn fx:id="rptCnt" prefWidth="75.0" text="Customer ID" />
                                                                      </columns>
                                                                   </TableView>
+                                                                  <TextArea fx:id="ApptDurationTblView" prefHeight="200.0" prefWidth="200.0" />
                                                                </children>
                                                             </StackPane>
                                                          </children>

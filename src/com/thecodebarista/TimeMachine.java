@@ -1,5 +1,7 @@
 package com.thecodebarista;
 
+import com.thecodebarista.model.Appointment;
+
 import java.time.*;
 
 import static com.thecodebarista.controller.LoginFormCtrl.static_ZoneId;
@@ -7,7 +9,7 @@ import static java.lang.Math.addExact;
 import static java.lang.Math.subtractExact;
 
 /**
- * Generic Functional Interface - Utilized by lambda expressions to calculate time conversion for scheduler.
+ * Functional Interface - Contains one abstract method utilized by lambda expression.<>BR</> Addition default method used to perform various time conversions for scheduler.
  *
  */
 @FunctionalInterface
@@ -16,35 +18,7 @@ public interface TimeMachine {
     int busHrsOpen = 8; // Business Open in Est hours.
     int totalBusHrs = 14;
 
-    <T> void timeConverter();
-    // LocalDateTime makeLDT();
-
-    default void convertBusinessHrs() {
-        LocalDateTime busNowLdt = LocalDateTime.now(ZoneId.of("US/Eastern")).withSecond(0).withNano(0);
-        System.out.println("Headquarters Time Now: " + busNowLdt);
-
-        LocalDateTime ldt = LocalDateTime.now();
-        System.out.println("Local Date Time: " + ldt);
-
-        ZonedDateTime locZdt = ZonedDateTime.of(ldt, ZoneId.of(static_ZoneId));
-        System.out.println("businessHrs  Sys Static: " + locZdt);
-
-        ZonedDateTime businessZdt = locZdt.withZoneSameInstant(ZoneId.of("US/Eastern"));
-        System.out.println("businessHrs  Sys Business (EST): " + businessZdt);
-
-        LocalDateTime UtcNowLdt = LocalDateTime.now(ZoneId.of("UTC"));
-        System.out.println("UTC Date NOW: " + UtcNowLdt);
-        LocalDate UtcCurDt = UtcNowLdt.toLocalDate();
-        LocalTime UtcCurTime = UtcNowLdt.toLocalTime();
-    }
-
-    default LocalDateTime getLDT(LocalDate ldt, LocalTime lt) {
-        return LocalDateTime.of(ldt, lt);
-    }
-
-    default LocalTime ltInput(int hrs, int mins) {
-        return LocalTime.of(hrs, mins);
-    }
+    Long getDurationMins(Appointment appointment); //Abstract method used in lambda
 
     /**
      * Get the Local Open hr. for the Appointments Business Hours.

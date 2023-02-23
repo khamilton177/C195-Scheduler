@@ -5,16 +5,14 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.thecodebarista.TimeMachine;
 import com.thecodebarista.dao.*;
-import com.thecodebarista.model.Appointment;
-import com.thecodebarista.model.Contact;
-import com.thecodebarista.model.Customer;
-import com.thecodebarista.model.FirstLevelDivision;
+import com.thecodebarista.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -35,12 +33,15 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     public static Label static_AddUpdateLabel;
     public Appointment selectedAppt;
+
     Customer selectedCst;
     Alert alert;
     String btnTxt;
-    Optional<ButtonType> confirm;
     Tab currentTab;
-
+    LocalDateTime StartTime;
+    LocalDateTime EndTime;
+    Optional<ButtonType> confirm;
+    SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     ObservableList<String> monthsItems = FXCollections.observableArrayList();
     ObservableList<String> typeItems = FXCollections.observableArrayList();
 
@@ -50,12 +51,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     private Boolean cntMoFilter = false;
     private Boolean cntWkFilter = false;
 
-
     @javafx.fxml.FXML
     protected ApptTableMonthlyCtrl includeApptMoController;
     @javafx.fxml.FXML
     protected ApptTableWeeklyCtrl includeApptWkController;
-
     @javafx.fxml.FXML
     protected TableView<Appointment> ApptTblView;
     @javafx.fxml.FXML
@@ -208,14 +207,65 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     @javafx.fxml.FXML
     private TableColumn rptType2;
     @javafx.fxml.FXML
-    private TextArea rptTextArea;
-    @javafx.fxml.FXML
     private Pane CstMostActivePane;
     @javafx.fxml.FXML
     private TableView CstMostActiveTblView;
     @javafx.fxml.FXML
-    private MenuItem CstMostActivePaneMenuItem;
+    private MenuItem ApptDurationPaneMenuItem;
+    @javafx.fxml.FXML
+    private TextArea ApptDurationTblView;
 
+    /*
+     * Appointment Protected FXML Fields Start
+     */
+    @javafx.fxml.FXML
+    protected ComboBox<Long> DurationCB;
+    @javafx.fxml.FXML
+    protected TextField title_TxtFld;
+    @javafx.fxml.FXML
+    protected TextField description_TxtFld;
+    @javafx.fxml.FXML
+    protected TextField location_TxtFld;
+    @javafx.fxml.FXML
+    protected TextField type_TxtFld;
+    @javafx.fxml.FXML
+    protected DatePicker ApptStart_DatePick;
+    @javafx.fxml.FXML
+    protected ComboBox<Integer> StartTimeHrs;
+    @javafx.fxml.FXML
+    protected ComboBox<Integer> StartTimeMins;
+    @javafx.fxml.FXML
+    protected TextField end_TxtFld;
+    @javafx.fxml.FXML
+    protected TextField start_TxtFld;
+    @javafx.fxml.FXML
+    protected ComboBox<Contact> contact_ID_CBox;
+    @javafx.fxml.FXML
+    protected ComboBox<Customer> customer_ID_CBox;
+    @javafx.fxml.FXML
+    protected ComboBox<User> user_ID_CBox;
+    /*
+    Appointment Protected FXML Fields End
+     */
+
+    /*
+    Customer Protected FXML Fields Start
+     */
+    @javafx.fxml.FXML
+    protected TextField phone_TxtFld;
+    @javafx.fxml.FXML
+    protected TextField customer_Name_TxtFld;
+    @javafx.fxml.FXML
+    protected TextField address_TxtFld;
+    @javafx.fxml.FXML
+    protected TextField postal_Code_TxtFld;
+    @javafx.fxml.FXML
+    protected ComboBox<Country> country_ID_CBox;
+    @javafx.fxml.FXML
+    protected ComboBox<FirstLevelDivision> division_ID_CBox;
+    /*
+    Customer Protected FXML Fields End
+     */
 
     /**
      * Alert user of appointment happening within the next 15 minutes.
@@ -241,10 +291,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
                     LocalDateTime apptStart = appt.getStart().toLocalDateTime();
                     System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), apptStart.toString()));
                     if(apptStart.toLocalDate().equals(ldt.toLocalDate())){
-                        if(apptStart.toLocalTime().isAfter(ldt.toLocalTime())) {
+                        if(apptStart.toLocalTime().withSecond(0).withNano(0).isAfter(ldt.toLocalTime().withSecond(0).withNano(0))
+                                || apptStart.toLocalTime().withSecond(0).withNano(0).equals(ldt.toLocalTime().withSecond(0).withNano(0))) {
                             Long minsTill = ChronoUnit.MINUTES.between(ldt, apptStart);
                             System.out.println("Minutes until appointment: " + minsTill);
-                            if (minsTill <= 16L){
+                            if (minsTill >= 0l && minsTill < 16L){
                                 msgCtx = String.format("Hi %s,%nYou have Appointment ID #%d soon!%n%tD at %tR",
                                         CurrentUserNameLbl.getText(), appt.getAppointment_ID(), apptStart.toLocalDate(), apptStart.toLocalTime());
                                 alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
@@ -273,13 +324,17 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         sessionUserId = setCurrentUserId;
     }
 
+    /**
+     *
+     * @param setCurrentUserName
+     */
     protected void setCurrentUserNameInfo(String setCurrentUserName) {
         CurrentUserNameLbl.setText(setCurrentUserName);
         sessionUserName = setCurrentUserName;
     }
 
     /**
-     * Creates an Alert instance.<BR>RUNTIME ERROR:<BR>java.lang.NullPointerException<BR>Caused by: java.lang.NullPointerException<BR>at controller.MainFormController.buildAlert(MainFormController.java:254)<BR>I originally planned to use the switch case statements to set the AlertType using "alert.setAlertType(alertType)."<BR>I realized I had not initialized the alert with the "alert = new (alertType)"<BR>Adding the Alert constructor fixed the issue.<BR>I removed the setAlert function anyway since the Alert constructor was being passed the AlertType directly at that point.
+     * Creates an Alert instance.
      * @param alertType Alert Type to create.
      * @param titleTxt Text for Alert title.
      * @param msgCtx Text for Alert context.
@@ -320,12 +375,36 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Displays the Customer ObservableList data in the TableView with the Country Info.
+     * Method calculates the Start time and set the formatted timestamp in hidden text field
+     * @return
      */
-    public void displayCstWithCoInfo() throws SQLException {
-        ObservableList<Customer> cstWithCoInfo = FXCollections.observableArrayList();
-        CustomerDAO cstDao = new CustomerDaoImpl();
+    protected LocalDateTime calculateStartLdt() {
+        LocalTime lt = LocalTime.of(StartTimeHrs.getValue(), StartTimeMins.getValue());
+        StartTime = lt.atDate(ApptStart_DatePick.getValue());
+        Timestamp tsStart = Timestamp.valueOf(StartTime);
+        start_TxtFld.setText(tsFormat.format(tsStart));
+        System.out.println("Invisible Start Text Field: " + start_TxtFld.getText());
+        return StartTime;
+    }
 
+    /**
+     * Method calculates the End time and set the formatted timestamp in hidden text field
+     * @return
+     */
+    protected LocalDateTime calculateEndLdt() {
+        StartTime = calculateStartLdt();
+        EndTime = StartTime.plusMinutes(DurationCB.getValue());
+        System.out.println("This is end time: " + EndTime);
+        Timestamp tsEnd = Timestamp.valueOf(EndTime);
+        end_TxtFld.setText(tsFormat.format(tsEnd));
+        System.out.println("End Text Field: " + end_TxtFld.getText());
+        return EndTime;
+    }
+
+    /**
+     * Method sets all Customer Constructor fields in a Tableview.
+     */
+    protected void cstSetAllRows() {
         CstIdCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
         CstNameCol.setCellValueFactory(new PropertyValueFactory<>("customer_Name"));
         CstAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -333,7 +412,31 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         CstPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
         CstCountryIdCol.setCellValueFactory(new PropertyValueFactory<>("country_ID"));
         CstDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
+    }
 
+    /**
+     * Method sets all Appointment Constructor fields in a Tableview.
+     */
+    protected void apptSetAllRows() {
+        appointment_ID_Col.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
+        title_Col.setCellValueFactory(new PropertyValueFactory<>("title"));
+        description_Col.setCellValueFactory(new PropertyValueFactory<>("description"));
+        location_Col.setCellValueFactory(new PropertyValueFactory<>("location"));
+        type_Col.setCellValueFactory(new PropertyValueFactory<>("type"));
+        start_Col.setCellValueFactory(new PropertyValueFactory<>("start"));
+        end_Col.setCellValueFactory(new PropertyValueFactory<>("end"));
+        customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
+        user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
+        contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
+    }
+
+    /**
+     * Displays the Customer ObservableList data in the TableView with the Country Info.
+     */
+    public void displayCstWithCoInfo() throws SQLException {
+        ObservableList<Customer> cstWithCoInfo = FXCollections.observableArrayList();
+        CustomerDAO cstDao = new CustomerDaoImpl();
+        cstSetAllRows();
         cstWithCoInfo.addAll(cstDao.customerWithCoInfo());
         CstTblView.setItems(cstWithCoInfo);
     }
@@ -344,15 +447,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     public void displayCstTblViewData() throws SQLException {
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
         CustomerDAO cstDao = new CustomerDaoImpl();
-
-        CstIdCol.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        CstNameCol.setCellValueFactory(new PropertyValueFactory<>("customer_Name"));
-        CstAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
-        CstPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postal_Code"));
-        CstPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        CstCountryIdCol.setCellValueFactory(new PropertyValueFactory<>("country_ID"));
-        CstDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("division_ID"));
-
+        cstSetAllRows();
         allCustomers.addAll(cstDao.extractAll());
         CstTblView.setItems(allCustomers);
     }
@@ -363,22 +458,105 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     public void displayApptTblViewData() throws SQLException {
         ObservableList<Appointment> allApptAppointments = FXCollections.observableArrayList();
         AppointmentDAO apptDao = new AppointmentDaoImpl();
-
-        appointment_ID_Col.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
-        title_Col.setCellValueFactory(new PropertyValueFactory<>("title"));
-        description_Col.setCellValueFactory(new PropertyValueFactory<>("description"));
-        location_Col.setCellValueFactory(new PropertyValueFactory<>("location"));
-        type_Col.setCellValueFactory(new PropertyValueFactory<>("type"));
-        start_Col.setCellValueFactory(new PropertyValueFactory<>("Start"));
-        end_Col.setCellValueFactory(new PropertyValueFactory<>("End"));
-        customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
-        contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
-
+        apptSetAllRows();
         allApptAppointments.addAll(apptDao.extractAll());
         ApptTblView.setItems(allApptAppointments);
     }
 
+    /**
+     * Validates form for missing data before save. Alerts user.
+     * @return True if all fields are populated
+     */
+
+    protected Boolean validateFormFields(String btnTxt) {
+        Boolean isValid = false;
+        StringBuilder validateErrMsg = new StringBuilder();
+        String validateMsg = "";
+        TextField[] formFields;
+        ComboBox[] formCbFields;
+        String startTxtFld = "";
+        String endTxtFld = "";
+
+        if(btnTxt.equals("CstSave")) {
+            formFields = new TextField[]{phone_TxtFld, customer_Name_TxtFld, address_TxtFld, postal_Code_TxtFld};
+        }
+        else {
+            formFields = new TextField[]{title_TxtFld, description_TxtFld, location_TxtFld, type_TxtFld, start_TxtFld, end_TxtFld};
+            startTxtFld = start_TxtFld.getText();
+            //System.out.println("Invisible Start Text Field: " + start);
+            endTxtFld = end_TxtFld.getText();
+            //System.out.println("On Save End Text Field: " + end);
+
+            if (ApptStart_DatePick.getValue() == null) {
+                validateMsg = "Please select a valid Start Date";
+                validateErrMsg.append(validateMsg);
+                validateErrMsg.append(System.getProperty("line.separator"));
+            }
+
+        }
+
+        for (TextField field : formFields) {
+            if (field.getText() == null || field.getText().isEmpty()) {
+                if (field.getId().equals("start_TxtFld")) {
+                    if (ApptStart_DatePick.getValue() != null && StartTimeHrs.getValue() != null && StartTimeMins.getValue() != null) {
+                        calculateStartLdt();
+                    }
+                    validateMsg = "";
+
+                } else if (field.getId().equals("end_TxtFld")) {
+                    validateMsg = "Please select a valid Start Time and Duration";
+                } else {
+                    validateMsg = "Please enter value for field: " + field.getId().replace("_TxtFld", "")
+                            .replace("_ID", " ID#").replace("_", " ").toUpperCase();
+                }
+
+                validateErrMsg.append(validateMsg);
+                if (!validateMsg.isEmpty()) {
+                    validateErrMsg.append(System.getProperty("line.separator"));
+                }
+            }
+        }
+
+        if (btnTxt.equals("CstSave")) {
+            formCbFields = new ComboBox[]{country_ID_CBox, division_ID_CBox};
+        }
+        else {
+            formCbFields = new ComboBox[]{customer_ID_CBox, contact_ID_CBox, user_ID_CBox};
+        }
+        for (ComboBox box : formCbFields) {
+            if (box.getValue() == null || box.getValue().toString().isEmpty()) {
+                validateMsg = "Please select a " + box.getId().toString().replace("_ID_CBox", "").toUpperCase();
+                validateErrMsg.append(validateMsg);
+                validateErrMsg.append(System.getProperty("line.separator"));
+            }
+        }
+
+        if (validateErrMsg.length() > 0) {
+            alert = buildAlert(Alert.AlertType.ERROR, "Form Incomplete", validateErrMsg.toString());
+            confirm = alert.showAndWait();
+        }
+        else {
+            isValid = true;
+
+            if(btnTxt.equals("CstSave")) {
+                return isValid;
+            }
+            else {
+                Timestamp start = Timestamp.valueOf(startTxtFld);
+                System.out.println("Invisible Start Text Field: " + start);
+                Timestamp end = Timestamp.valueOf(endTxtFld);
+                System.out.println("On Save End Text Field: " + end);
+            }
+        }
+        return isValid;
+    }
+
+    /**
+     * Displays the data for the various Reports on the Reports tab.
+     * @param btnTxt
+     * @param reportParams
+     * @throws SQLException
+     */
     public void displayReportQuery(String btnTxt, String[] reportParams) throws SQLException {
         ObservableList<Appointment> reportQuery = FXCollections.observableArrayList();
         AppointmentDAO apptDao = new AppointmentDaoImpl();
@@ -412,6 +590,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
     }
 
+    /**
+     * Method deletes associated appointments then Selected customer.
+     * @param selectedCst
+     * @return
+     * @throws SQLException
+     */
     protected Boolean delCstRow(Customer selectedCst) throws SQLException {
         boolean deleted = false;
         int result = -1;
@@ -467,15 +651,18 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
     }
 
+    /**
+     * Method detects the current tab and utilizes the selector in the fxml Include file Controllers
+     */
     private void tableItemSelector() {
         TableView.TableViewSelectionModel<Appointment> itemSelector;
         switch (currentTab.getId()) {
             case "AppMoTab":
-                itemSelector = includeApptMoController.ApptTblViewMonthly.getSelectionModel();
+                itemSelector = includeApptMoController.ApptTblViewMonthly.getSelectionModel(); // Tab is Include FXML file
                 selectedAppt = itemSelector.getSelectedItem();
                 break;
             case "AppWkTab":
-                itemSelector = includeApptWkController.ApptTblViewWeekly.getSelectionModel();
+                itemSelector = includeApptWkController.ApptTblViewWeekly.getSelectionModel(); // Tab is Include FXML file
                 selectedAppt = itemSelector.getSelectedItem();
                 break;
             default:
@@ -556,6 +743,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             //displayCstTblViewData();
             displayCstWithCoInfo();
             setCurrentUserid(sessionUserId);
+            //test2();
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -608,7 +796,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             System.out.println("Made it here 1");
             modelCtrl.sendApptModifyData(selectedAppt);
 
-            // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(scene));
             static_AddUpdateLabel.setText("Update Appointment");
@@ -664,7 +851,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             loader.setLocation(Objects.requireNonNull(getClass().getResource("/com/thecodebarista/view/cst-add-update-form.fxml")));
             scene = loader.load();
 
-            // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             stage.setTitle("New Customer");
             stage.setScene(new Scene(scene));
@@ -696,7 +882,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             System.out.println("Made it here 1");
             modelCtrl.sendCstModifyData(selectedCst);
 
-            // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(scene));
             static_AddUpdateLabel.setText("Update Customer");
@@ -716,7 +901,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Deletes selected row in Customer table view.  Presents alert confirmation dialog box.
+     * Deletes selected row in Customer table view. Presents alert confirmation dialog box.
      * @param actionEvent Delete form button, CstDeleteBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
      * <BR>Present alert error dialog when no selection made.
@@ -749,8 +934,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Show pane with filter options for selected Report Menu's.
-     * LAMBDA USAGE - Lambdas used to filter for all visible Panes and set to invisible.\n
+     * Show pane with filter options for selected Report Menu's.<>BR</>
+     * LAMBDA USAGE - Lambdas used to filter for all visible Panes and set to invisible.<>BR</>
      * Filter children by ID, set to visible if needed and bring to front of StackPanes.
      * @param actionEvent
      */
@@ -769,8 +954,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             CntScheduleSearchCB.setItems(cntCb.extractAll());
         }
 
-        if (menuItemId.equals("CstMostActivePane")) {
+        if (menuItemId.equals("ApptDurationPane")) {
+            ApptDurationTblView.setText(reportDurationAvg());
+        }
 
+        if (menuItemId.equals("CstMostActivePane")) { // NOT IN USE
         }
 
         ReportTitlePane.setText(menuItem);
@@ -780,12 +968,16 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         paneNode.setVisible(true);
         paneNode.toFront();
         System.out.println("CHILDREN: " + TblViewStackPane.getChildren().stream().toList());
-        Node tblViewNode = TblViewStackPane.getChildren().stream().filter((p) -> p.getId().equals(tblView)).findFirst().get();
+        Node tblViewNode = TblViewStackPane.getChildren().stream().filter((p) -> p.getId().equalsIgnoreCase(tblView)).findFirst().get();
         tblViewNode.toFront();
     }
 
+    /**
+     * On action method set boolean variable for control.
+     * @param actionEvent
+     */
     @javafx.fxml.FXML
-    public void onReportFilterUpd(ActionEvent actionEvent) throws SQLException {
+    public void onReportFilterUpd(ActionEvent actionEvent) {
         System.out.println("Button Clicked: " + actionEvent.getSource().toString());
         String btnTxt = "";
         if (actionEvent.getSource().toString().contains("ComboBox")){
@@ -807,20 +999,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             typeFilter = true;
             return;
         }
-/*
-        if (btnTxt.equals("CntSearchCB")) {
-            cntFilter = true;
-        }
-
-        if (btnTxt.equals("CntWkRadio")) {
-            cntWkFilter = true;
-        }
-
-        if (btnTxt.equals("CntMoRadio")) {
-            cntMoFilter = true;
-        }*/
     }
 
+    /**
+     * On action Method for controls on Report tab. gathers the where clause param data.
+     * @param actionEvent
+     */
     @javafx.fxml.FXML
     public void onActionDoQuery(ActionEvent actionEvent) {
         System.out.println("Button Clicked: " + actionEvent.getSource().toString());
@@ -851,21 +1035,26 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
                     wcType = TypeCB.getValue();
                     wc++;
                 }
-
                 reportParams[0] = wcMonth;
                 reportParams[1] = wcType;
                 reportParams[2] = String.valueOf(wc);
             }
 
             if (btnTxt.contains("CntSchedule")) {
-                String wcContact = String.valueOf(CntScheduleSearchCB.getValue().getContact_ID());
-                String wcPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
-                if (CntScheduleMoRadio.isSelected()) {
-                    wc = 1;
+                if (CntScheduleSearchCB.getValue() == null){
+                    alert = buildAlert(Alert.AlertType.INFORMATION, "Contact Schedules", "Please select a contact");
+                    confirm = alert.showAndWait();
                 }
-                reportParams[0] = wcContact;
-                reportParams[1] = wcPeriod;
-                reportParams[2] = String.valueOf(wc);
+                else {
+                    String wcContact = String.valueOf(CntScheduleSearchCB.getValue().getContact_ID());
+                    String wcPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
+                    if (CntScheduleMoRadio.isSelected()) {
+                        wc = 1;
+                    }
+                    reportParams[0] = wcContact;
+                    reportParams[1] = wcPeriod;
+                    reportParams[2] = String.valueOf(wc);
+                }
             }
 
             displayReportQuery(btnTxt, reportParams);
@@ -875,6 +1064,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
     }
 
+    /**
+     * On action method from Clear button. Clears selections in fields on Report tab
+     * @param actionEvent
+     */
     @javafx.fxml.FXML
     public void onActionClearFilter(ActionEvent actionEvent) {
         btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
@@ -913,17 +1106,46 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
     }
 
-    @Override
-    public <T> void timeConverter() {
-
+    /**
+     * <P><B>LAMBDA USAGE- </B>Method streams appointments then does a Map/Filter/Reduce to produce the average duration of all Appointments.
+     * <>BR</>Additionally the function interface method is used to calculate the appointments durations in the mapToLong lambda.</P>
+     * @return
+     */
+    protected String reportDurationAvg() {
+        String medium = "";
+        try {
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            ObservableList<Appointment> apptByDuration = apptDao.extractAll();
+            OptionalDouble avg = apptByDuration.stream().mapToLong((a) -> getDurationMins(a))
+                    .filter(m -> m >= 15l && m <= 60l).average();
+            medium = avg.isPresent() ? String.format("AVERAGE TIME OF APPOINTMENTS: %s",String.valueOf((long)avg.getAsDouble())) : "NO APPOINTMENT TIMES TO AVERAGE";
+            System.out.println("AVERAGE TIME OF APPOINTMENTS: " + medium);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return medium;
     }
 
 /*
+    protected ObservableList<> test2() throws SQLException {
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+        ObservableList<Long> durations = FXCollections.observableArrayList();
+        ObservableList<Appointment> apptByDuration = apptDao.extractAll();
+        apptByDuration.stream().forEach((a) -> {long duration = getDurationMins(a);
+            durations.add(duration);
+        });
+        CstMostActiveTblView.setItems();
+    }*/
 
+    /**
+     * Override of Function Interface Abstract Method. Calculates appointment duration.
+     * @param appointment
+     * @return
+     */
     @Override
-    public LocalDateTime makeLDT() {
-        return null;
+    public Long getDurationMins(Appointment appointment) {
+        return ChronoUnit.MINUTES.between(appointment.getStart().toLocalDateTime(), appointment.getEnd().toLocalDateTime());
     }
-*/
-
 }

@@ -52,50 +52,27 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     int selectedCntId;
     int selectedUserId;
 
-    LocalDateTime StartTime;
-    LocalDateTime EndTime;
-    SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     LocalDate dpPrevDate;
 
     private Boolean dpSet = false;
     private Boolean hrSet = false;
     private Boolean minSet = false;
 
+    /*
+     * Appointment FXML Private Fields Start
+     */
     @javafx.fxml.FXML
     private TextField appointment_ID_TxtFld;
     @javafx.fxml.FXML
-    private TextField title_TxtFld;
-    @javafx.fxml.FXML
-    private TextField description_TxtFld;
-    @javafx.fxml.FXML
-    private TextField location_TxtFld;
-    @javafx.fxml.FXML
-    private TextField type_TxtFld;
-    @javafx.fxml.FXML
-    private ComboBox<Long> DurationCB;
-    @javafx.fxml.FXML
-    private DatePicker ApptStart_DatePick;
+    private Label AddUpdateApptLabel;
     @javafx.fxml.FXML
     private Button ApptSaveBtn;
     @javafx.fxml.FXML
     private Button ApptCancelBtn;
     @javafx.fxml.FXML
-    private ComboBox<Integer> StartTimeHrs;
-    @javafx.fxml.FXML
-    private ComboBox<Integer> StartTimeMins;
-    @javafx.fxml.FXML
-    private Label AddUpdateApptLabel;
-    @javafx.fxml.FXML
-    private TextField end_TxtFld;
-    @javafx.fxml.FXML
-    private TextField start_TxtFld;
-    @javafx.fxml.FXML
-    private ComboBox<Contact> contact_ID_CBox;
-    @javafx.fxml.FXML
-    private ComboBox<Customer> customer_ID_CBox;
-    @javafx.fxml.FXML
-    private ComboBox<User> user_ID_CBox;
-
+    /*
+     * Appointment FXML Private Fields End
+     */
 
     /**
      * Fills the StartTimeHrs ComboBox with the local business hours for Appointments.
@@ -134,11 +111,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
      * @param selectedAppt
      */
     private void setDuration(Appointment selectedAppt) {
-        // LocaleDateTime from DB timestamp conversion
-        LocalDateTime dbUtcStartLDT = selectedAppt.getStart().toLocalDateTime();
-        LocalDateTime dbUtcEndLDT = selectedAppt.getEnd().toLocalDateTime();
-        //calculate difference between start and end
-        Long durationMins = ChronoUnit.MINUTES.between(dbUtcStartLDT, dbUtcEndLDT);
+        Long durationMins = getDurationMins(selectedAppt);
         DurationCB.setValue(durationMins);
         System.out.println("Duration set to: " + durationMins);
     }
@@ -201,25 +174,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         user_ID_CBox.setValue(selectedUser);
 
         System.out.println("Finished Setting fields");
-    }
-
-    private LocalDateTime calculateStartLdt() {
-        LocalTime lt = ltInput(StartTimeHrs.getValue(), StartTimeMins.getValue());
-        StartTime = lt.atDate(ApptStart_DatePick.getValue());
-        Timestamp tsStart = Timestamp.valueOf(StartTime);
-        start_TxtFld.setText(tsFormat.format(tsStart));
-        System.out.println("Invisible Start Text Field: " + start_TxtFld.getText());
-        return StartTime;
-    }
-
-    private LocalDateTime calculateEndLdt() {
-        StartTime = calculateStartLdt();
-        EndTime = StartTime.plusMinutes(DurationCB.getValue());
-        System.out.println("This is end time: " + EndTime);
-        Timestamp tsEnd = Timestamp.valueOf(EndTime);
-        end_TxtFld.setText(tsFormat.format(tsEnd));
-        System.out.println("End Text Field: " + end_TxtFld.getText());
-        return EndTime;
     }
 
     /**
@@ -292,71 +246,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         return noConflict;
     }
 
-    private Boolean validateFormFields() {
-        Boolean isValid = false;
-        StringBuilder validateErrMsg = new StringBuilder();
-        String validateMsg = "";
-
-        String startTxtFld = start_TxtFld.getText();
-        //System.out.println("Invisible Start Text Field: " + start);
-        String endTxtFld = end_TxtFld.getText();
-        //System.out.println("On Save End Text Field: " + end);
-
-        if (ApptStart_DatePick.getValue() == null) {
-            validateMsg = "Please select a valid Start Date";
-            validateErrMsg.append(validateMsg);
-            validateErrMsg.append(System.getProperty("line.separator"));
-        }
-
-        TextField[] formFields = {title_TxtFld, description_TxtFld, location_TxtFld, type_TxtFld, start_TxtFld, end_TxtFld};
-        for (TextField field : formFields) {
-            if (field.getText() == null || field.getText().isEmpty()) {
-                System.out.println(field.getId() + ": " + field.getText());
-                if (field.getId().equals("start_TxtFld")) {
-                    if (ApptStart_DatePick.getValue() != null && StartTimeHrs.getValue() != null && StartTimeMins.getValue() != null) {
-                        calculateEndLdt();
-                    }
-                    validateMsg = "";
-
-                } else if (field.getId().equals("end_TxtFld")) {
-                    validateMsg = "Please select a valid Start Time and Duration";
-                } else {
-                    validateMsg = "Please enter value for field: " + field.getId().replace("_TxtFld", "").replace("_ID", " ID#").toUpperCase();
-                }
-
-                validateErrMsg.append(validateMsg);
-                if (!validateMsg.isEmpty()) {
-                    validateErrMsg.append(System.getProperty("line.separator"));
-                }
-            }
-        }
-
-        ComboBox[] formCbFields = {customer_ID_CBox, contact_ID_CBox, user_ID_CBox};
-        for (ComboBox box : formCbFields) {
-            if (box.getValue() == null || box.getValue().toString().isEmpty()) {
-                validateMsg = "Please select a " + box.getId().toString().replace("_ID_CBox", "");
-                validateErrMsg.append(validateMsg);
-                validateErrMsg.append(System.getProperty("line.separator"));
-            }
-        }
-
-        if (validateErrMsg.length() > 0) {
-            alert = buildAlert(Alert.AlertType.ERROR, "Form Incomplete", validateErrMsg.toString());
-            confirm = alert.showAndWait();
-        }
-        else {
-            Timestamp start = Timestamp.valueOf(startTxtFld);
-            System.out.println("Invisible Start Text Field: " + start);
-            Timestamp end = Timestamp.valueOf(endTxtFld);
-            System.out.println("On Save End Text Field: " + end);
-            isValid = true;
-        }
-        return isValid;
-    }
-
     /**
-     * Method Validates all fields used in Date, Start time, and End time\n
-     * Alerts user of invalid fields
+     * Method Validates all fields used in Date, Start time, and End time<>BR</>Alerts user of invalid fields
      * @return True if no validation errors
      */
     private Boolean canCalcDuration() {
@@ -426,7 +317,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * Utilized lambda to replace the anonymous function used to create the Callback<DatePicker, DateCell> in the
+     * LAMBDA USAGE - to replace the anonymous function used to create the "Callback<DatePicker, DateCell>" in the
      * setDayCellFactory function to set DataPicker dayCellFactoryProperty date values before current date or empty to disable.
      */
     @Override
@@ -478,7 +369,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * OnAction method for ApptStart_DatePick selection is made. Validates if date choose current or future date.\n
+     * OnAction method for ApptStart_DatePick selection is made. Validates if date choose current or future date.<>BR</>
      * Set the boolean dpSet to true if valid or alerts user if not valid.
      * @param actionEvent
      * @return
@@ -516,8 +407,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * OnAction method for Duration and Start Time hours and minutes ComboBoxes selections.\n
-     * Set the boolean validation variables- hrSet and minSet to true if respective ComboBoxes selected.\n
+     * OnAction method for Duration and Start Time hours and minutes ComboBoxes selections.<>BR</>
+     * Set the boolean validation variables- hrSet and minSet to true if respective ComboBoxes selected.<>BR</>
      * If all three have valid selections End Date and Time field is updated.
      * @param actionEvent
      */
@@ -569,15 +460,16 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * Save new or updated customer appointment.
+     * Save new or updated appointment.
      * @param actionEvent
      */
     @javafx.fxml.FXML
     public void onActionSaveAppt(ActionEvent actionEvent) {
-        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+        String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + btnTxt);
 
         try {
-            boolean validForm = validateFormFields();
+            boolean validForm = validateFormFields(btnTxt);
 
             if (validForm) {
                 boolean noConflict = apptOverlapCheck();

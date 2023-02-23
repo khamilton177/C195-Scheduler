@@ -22,17 +22,33 @@ public class Appointment {
     private int User_ID;
     private int Contact_ID;
     /**
-     * Exist in Object Only field used to capture Report Query Tableviews
+     * Exist in Object Only field used to capture Report Query Tableview field property
      */
     private StringProperty month = new SimpleStringProperty();
     /**
-     * Exist in Object Only field used to capture Report Query Tableviews
+     * Exist in Object Only field used to capture Report Query Tableview field property
      */
     private IntegerProperty count = new SimpleIntegerProperty();
 
+    /**
+     * Default Appointment Constructor
+      */
     public Appointment() {
     }
 
+    /**
+     * All Field Appointment Constructor
+     * @param appointment_ID
+     * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param start
+     * @param end
+     * @param customer_ID
+     * @param user_ID
+     * @param contact_ID
+     */
     public Appointment(int appointment_ID, String title, String description, String location, String type, Timestamp start, Timestamp end, int customer_ID, int user_ID, int contact_ID) {
         Appointment_ID = appointment_ID;
         Title = title;

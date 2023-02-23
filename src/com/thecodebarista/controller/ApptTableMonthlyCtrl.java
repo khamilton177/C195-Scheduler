@@ -41,24 +41,13 @@ public class ApptTableMonthlyCtrl extends MainMenuCtrl implements Initializable 
     protected TableColumn<Appointment, Integer> user_ID_Col;
 
     /**
-     * Display the Appt ObservableList data in the TableView.
+     * Display the Monthly Appt ObservableList data in the TableView.
      */
     public void displayApptTblViewMonthly() throws SQLException {
         ObservableList<Appointment> allApptMonthly = FXCollections.observableArrayList();
-        AppointmentDAO apptdao = new AppointmentDaoImpl();
-
-        appointment_ID_Col.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
-        title_Col.setCellValueFactory(new PropertyValueFactory<>("title"));
-        description_Col.setCellValueFactory(new PropertyValueFactory<>("description"));
-        location_Col.setCellValueFactory(new PropertyValueFactory<>("location"));
-        type_Col.setCellValueFactory(new PropertyValueFactory<>("type"));
-        start_Col.setCellValueFactory(new PropertyValueFactory<>("start"));
-        end_Col.setCellValueFactory(new PropertyValueFactory<>("end"));
-        customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
-        contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
-
-        allApptMonthly.addAll(apptdao.getByMonth());
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+        apptSetAllRows();
+        allApptMonthly.addAll(apptDao.getByMonth());
         ApptTblViewMonthly.setItems(allApptMonthly);
     }
 

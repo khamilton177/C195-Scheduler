@@ -40,24 +40,13 @@ public class ApptTableWeeklyCtrl extends MainMenuCtrl implements Initializable {
     protected TableColumn<Appointment, Integer> user_ID_Col;
 
     /**
-     * Display the Appt ObservableList data in the TableView.
+     * Display the Weekly Appt ObservableList data in the TableView.
      */
     public void displayApptTblViewWeekly() throws SQLException {
         ObservableList<Appointment> allApptWeekly = FXCollections.observableArrayList();
-        AppointmentDAO apptdao = new AppointmentDaoImpl();
-
-        appointment_ID_Col.setCellValueFactory(new PropertyValueFactory<>("appointment_ID"));
-        title_Col.setCellValueFactory(new PropertyValueFactory<>("title"));
-        description_Col.setCellValueFactory(new PropertyValueFactory<>("description"));
-        location_Col.setCellValueFactory(new PropertyValueFactory<>("location"));
-        contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
-        type_Col.setCellValueFactory(new PropertyValueFactory<>("type"));
-        start_Col.setCellValueFactory(new PropertyValueFactory<>("start"));
-        end_Col.setCellValueFactory(new PropertyValueFactory<>("end"));
-        customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
-        user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
-
-        allApptWeekly.addAll(apptdao.getByWeekly());
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+        apptSetAllRows();
+        allApptWeekly.addAll(apptDao.getByWeekly());
         ApptTblViewWeekly.setItems(allApptWeekly);
     }
 
