@@ -7,13 +7,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ResourceBundle;
 
+/**
+ * Appointment Weekly Tab controller.
+ * Corresponding FXML (ApptTblWeeklyView) is Included in main-menu.fxml.
+ */
 public class ApptTableWeeklyCtrl extends MainMenuCtrl implements Initializable {
 
     @javafx.fxml.FXML
@@ -43,13 +45,24 @@ public class ApptTableWeeklyCtrl extends MainMenuCtrl implements Initializable {
      * Display the Weekly Appt ObservableList data in the TableView.
      */
     public void displayApptTblViewWeekly() throws SQLException {
-        ObservableList<Appointment> allApptWeekly = FXCollections.observableArrayList();
-        AppointmentDAO apptDao = new AppointmentDaoImpl();
-        apptSetAllRows();
-        allApptWeekly.addAll(apptDao.getByWeekly());
-        ApptTblViewWeekly.setItems(allApptWeekly);
+        try {
+            ObservableList<Appointment> allApptWeekly = FXCollections.observableArrayList();
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            apptSetAllRows();
+            allApptWeekly.addAll(apptDao.getByWeekly());
+            ApptTblViewWeekly.setItems(allApptWeekly);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Initializes the ApptTableWeeklyCtrl class.
+     * Call the tableview method for Appointment Weekly Tab.
+     * @param url default application URL
+     * @param rb default application ResourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {

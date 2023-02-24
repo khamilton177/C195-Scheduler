@@ -8,13 +8,16 @@ import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ResourceBundle;
 
+/**
+ * Appointment Monthly Tab controller.
+ * Corresponding FXML (ApptTblMonthlyView) is Included in main-menu.fxml.
+ */
 public class ApptTableMonthlyCtrl extends MainMenuCtrl implements Initializable {
 
     @javafx.fxml.FXML
@@ -42,15 +45,27 @@ public class ApptTableMonthlyCtrl extends MainMenuCtrl implements Initializable 
 
     /**
      * Display the Monthly Appt ObservableList data in the TableView.
+     * @throws SQLException catch in printStackTrace
      */
     public void displayApptTblViewMonthly() throws SQLException {
-        ObservableList<Appointment> allApptMonthly = FXCollections.observableArrayList();
-        AppointmentDAO apptDao = new AppointmentDaoImpl();
-        apptSetAllRows();
-        allApptMonthly.addAll(apptDao.getByMonth());
-        ApptTblViewMonthly.setItems(allApptMonthly);
+        try {
+            ObservableList<Appointment> allApptMonthly = FXCollections.observableArrayList();
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            apptSetAllRows();
+            allApptMonthly.addAll(apptDao.getByMonth());
+            ApptTblViewMonthly.setItems(allApptMonthly);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Initializes the ApptTableMonthlyCtrl class.
+     * Call the tableview method for Appointment Monthly Tab.
+     * @param url default application URL
+     * @param rb default application ResourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb){
         try {

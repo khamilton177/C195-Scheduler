@@ -38,7 +38,7 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
     private Button CstCancelBtn;
 
     /**
-     * Method populates the Update Form with the Customer data from database
+     * Method populates the Update Form with the Customer data from database.
      * @param selectedCst
      * @throws SQLException
      */
@@ -62,7 +62,7 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
     }
 
     /**
-     * Method saves form data for New and Updated Customers
+     * Method saves form data for New and Updated Customers.
      * @throws SQLException
      */
     protected void saveCstData() throws SQLException {
@@ -148,6 +148,13 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
         }
     }
 
+    /**
+     * Initializes the CstAddUpdateFormCtrl class.
+     * Sets the label text to the action performed by the view.
+     * <BR>Loads the items in the Country ComboBox.
+     * @param url default application URL
+     * @param resourceBundle default application ResourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

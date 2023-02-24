@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.thecodebarista"},{"l":"com.thecodebarista.controller"},{"l":"com.thecodebarista.dao"},{"l":"com.thecodebarista.model"}];updateSearchResults();

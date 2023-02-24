@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.Appointment;
 import javafx.scene.control.TableColumn;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,11 +12,20 @@ import java.util.List;
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getApptData;
 
+/**
+ * Implements the Abstract methods in the AppointmentDAO class.
+ */
 public class AppointmentDaoImpl implements AppointmentDAO {
     private static final String returnGenKeys = ".RETURN_GENERATED_KEYS";
     private static PreparedStatement prepStmt;
     private int rowsAffected = 0; // Setting to 0. SELECT statements don't return a value so this is a nominal value.
 
+    /**
+     * Select all row data for Appointment of selected Appointment_ID.
+     * @param appointment_id - The Appointment_ID for the query WHERE clause.
+     * @return the Appointment row if found or Null.
+     * @throws SQLException
+     */
     @Override
     public Appointment extract(int appointment_id) throws SQLException {
         Appointment appointment = null;
@@ -37,7 +45,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             System.out.println("made it here 3");
             ResultSet rs = DMLUtils.getResult();
 
-            // If Appointment data found, extract the ResultSet to a Appointment object and return.
+            // If Appointment data found, extract the ResultSet to an Appointment object and return.
             if (rs.next()) {
                 System.out.println("made it here 4");
                 appointment = getApptData(rs);
@@ -51,6 +59,11 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return appointment;
     }
 
+    /**
+     * Select all row data for all Appointments.
+     * @return ObservableList of Appointment rows.
+     * @throws SQLException
+     */
     @Override
     public ObservableList<Appointment> extractAll() throws SQLException {
         ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
@@ -78,6 +91,12 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return allAppointments;
     }
 
+    /**
+     * Insert a new Appointment in DB appointments table.
+     * @param appointment - Appointment constructor data from New Appointment form.
+     * @return - rowsAffected (int)
+     * @throws SQLException
+     */
     @Override
     public int insert(Appointment appointment) throws SQLException {
         String sqlStmt = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID)" +
@@ -112,6 +131,12 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return rowsAffected;
     }
 
+    /**
+     * Updates the selected row in the DB appointments table.
+     * @param appointment - The selected Appointment in the Update Appointment form as the WHERE clause.
+     * @return rowsAffected (int)
+     * @throws SQLException
+     */
     @Override
     public int update(Appointment appointment) throws SQLException {
         String sqlStmt = "UPDATE appointments SET" +
@@ -148,6 +173,11 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return rowsAffected;
     }
 
+    /**
+     * Deletes the selected appointment from the DB appointments table.
+     * @param appointment - The selected Appointment from the Main Menu as the WHERE clause.
+     * @return rowsAffected (int)
+     */
     @Override
     public int delete(Appointment appointment) {
         String sqlStmt = "DELETE FROM appointments" +
@@ -163,6 +193,11 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return rowsAffected;
     }
 
+    /**
+     * Query Method used to Delete all Associated Customer Appointments in Bulk.
+     * @param id - Customer_ID of appointments to be deleted.
+     * @return - rowsAffected ( all rows deleted - int)
+     */
     public int deleteAllCstAppt(int id) {
         String sqlStmt = "DELETE FROM appointments" +
                 " WHERE Customer_ID = ?";
@@ -177,8 +212,13 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return rowsAffected;
     }
 
+    /**
+     * Query Method for all Appointments for the selected customer.
+     * @param id - The Customer_ID for the WHERE clause
+     * @return ObservableList of the customers appointments.
+     */
     @Override
-    public ObservableList<Appointment> getCstAppt(int id) throws SQLException{
+    public ObservableList<Appointment> getCstAppt(int id) {
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         try {
@@ -206,8 +246,14 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return cstAppointments;
     }
 
+    /**
+     * Query Method allows any foreign key field in Appointments to be specified.
+     * @param fk - The field name of the foreign key (i.e. Customer_ID).
+     * @param id - The id of the foreign key (int).
+     * @return ObservableList of the Appointment rows found.
+     */
     @Override
-    public ObservableList<Appointment> getApptByFK(String fk, int id) throws SQLException{
+    public ObservableList<Appointment> getApptByFK(String fk, int id) {
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         String fkID = fk;
@@ -237,8 +283,15 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return cstAppointments;
     }
 
+    /**
+     * Query Method used to identify Appointment overlaps and conflicts.
+     * Narrows date search.
+     * @param cstId - Customer_ID for WHERE Clause.
+     * @param startDt - Date of the appointment being created.
+     * @return ObservableList of return Appointment rows.
+     */
     @Override
-    public ObservableList<Appointment> getApptByCst(int cstId, LocalDate startDt) throws SQLException{
+    public ObservableList<Appointment> getApptByCst(int cstId, LocalDate startDt) {
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
 
         try {
@@ -271,8 +324,13 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return cstAppointments;
     }
 
+    /**
+     * Query Method used to Identify appointments for 15 minute Login User Alert.
+     * @param id - USER_ID of login user.
+     * @return ObservableList of Appointment rows found in WHERE clause date range.
+     */
     @Override
-    public ObservableList<Appointment> getApptNowByUser(int id) throws SQLException{
+    public ObservableList<Appointment> getApptNowByUser(int id) {
         ObservableList<Appointment> cstAppointments = FXCollections.observableArrayList();
         int qID = id;
 
@@ -304,8 +362,12 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return cstAppointments;
     }
 
+    /**
+     * Query Method used to identify Appointments by current Week.
+     * @return ObservableList of Appointments found.
+     */
     @Override
-    public ObservableList<Appointment> getByWeekly() throws SQLException {
+    public ObservableList<Appointment> getByWeekly() {
         ObservableList<Appointment> allApptWeekly = FXCollections.observableArrayList();
 
         try{
@@ -343,8 +405,12 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return allApptWeekly;
     }
 
+    /**
+     * Query Method used to identify Appointments by current Month.
+     * @return ObservableList of Appointments found.
+     */
     @Override
-    public ObservableList<Appointment> getByMonth() throws SQLException {
+    public ObservableList<Appointment> getByMonth() {
         ObservableList<Appointment> allApptMonthly = FXCollections.observableArrayList();
 
         try{
@@ -382,8 +448,14 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return allApptMonthly;
     }
 
+    /**
+     * Query method for any plugged-in select statement.
+     * Method used to build
+     * @param query - The Select query statement to run.
+     * @return - ObservableList of String type of found rows.
+     */
     @Override
-    public ObservableList<String> genericData(String query) throws SQLException{
+    public ObservableList<String> genericData(String query) {
         ObservableList<String> stringData = FXCollections.observableArrayList();
 
         try{
@@ -411,13 +483,13 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return stringData;
     }
 
+    /**
+     * Query Method used to generate the Report Tab- all customer appointments by month and type.
+     * @param reportParams - Array of parameters used in the WHERE clause.
+     * @return ObservableList of Appointment rows found.
+     */
     @Override
-    public ObservableList<String> getDataDistinct(String unique, String columns, String wc) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public ObservableList<Appointment> getByMonthType(String[] reportParams) throws SQLException {
+    public ObservableList<Appointment> getByMonthType(String[] reportParams) {
         ObservableList<Appointment> allCstByMoTypeTotal = FXCollections.observableArrayList();
         String wcMonth = reportParams[0];
         String wcType = reportParams[1];
@@ -472,8 +544,13 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         return allCstByMoTypeTotal;
     }
 
+    /**
+     * Query Method used to generate the Report Tab- contact appointments by current month or week.
+     * @param reportParams - Array of parameters used in the WHERE clause.
+     * @return ObservableList of Appointment rows found.
+     */
     @Override
-    public ObservableList<Appointment> getApptCntByPeriod(String[] reportParams) throws SQLException {
+    public ObservableList<Appointment> getApptCntByPeriod(String[] reportParams) {
         ObservableList<Appointment> apptCntSched = FXCollections.observableArrayList();
         int wcCnt = Integer.parseInt(reportParams[0]);
         String wcPeriod = reportParams[1];
@@ -520,59 +597,6 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             e.getCause();
         }
         return apptCntSched;
-    }
-
-    @Override
-    public ObservableList<Appointment> adhocQuery(String query) throws SQLException{
-        ObservableList<Appointment> adhocData = FXCollections.observableArrayList();
-        int i = 1;
-
-        try{
-            String sqlStmt = query;
-            prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
-
-            // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
-
-            // Extract the ResultSet to a class object.
-            System.out.println("Return Adhoc query results");
-            ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            //TableColumn[] colName = new TableColumn[columnCount];
-            for (i = 1; i <= columnCount; i++) {
-                TableColumn colName = new TableColumn<>(metaData.getColumnLabel(i));
-                //columns.add(colName.getText());
-            }
-            while (rs.next()) {
-                switch (metaData.getColumnTypeName(i)) {
-                    case "int":
-                        rs.getInt(metaData.getColumnLabel(i));
-                        break;
-                    case "timestamp":
-                    case "datetime":
-                        rs.getTimestamp(metaData.getColumnLabel(i));
-                        break;
-                    default:
-                        rs.getString(metaData.getColumnLabel(i));
-                        break;
-                }
-
-                for (Appointment column : adhocData) {
-                    rs.getString(metaData.getColumnLabel(i).toString());
-                }
-            }
-
-            //Appointment appointment = getApptData(rs);
-            // stringData.add(appointment);
-            //}
-            return adhocData;
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return adhocData;
     }
 
 }

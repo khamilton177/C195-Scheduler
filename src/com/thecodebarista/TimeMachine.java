@@ -9,8 +9,8 @@ import static java.lang.Math.addExact;
 import static java.lang.Math.subtractExact;
 
 /**
- * Functional Interface - Contains one abstract method utilized by lambda expression.<>BR</> Addition default method used to perform various time conversions for scheduler.
- *
+ * Functional Interface - Contains one abstract method utilized by lambda expression.
+ * Addition default methods used to perform various time conversions for scheduler.
  */
 @FunctionalInterface
 public interface TimeMachine {
@@ -18,11 +18,16 @@ public interface TimeMachine {
     int busHrsOpen = 8; // Business Open in Est hours.
     int totalBusHrs = 14;
 
+    /**
+     * The one Abstract Method in Functional Interface for calculating the duration minutes; it will be used in lambda.
+     * @param appointment
+     * @return
+     */
     Long getDurationMins(Appointment appointment); //Abstract method used in lambda
 
     /**
      * Get the Local Open hr. for the Appointments Business Hours.
-     * @param ldt
+     * @param ldt LocalDateTime passed in from calling method.
      * @return the int representing the local start hr for Appointments.
      */
     default int getLocOpenHr(LocalDateTime ldt) {
@@ -51,7 +56,7 @@ public interface TimeMachine {
 
     /**
      * Get the Local Close hr. for the Appointments Business Hours.
-     * @param ldt
+     * @param ldt LocalDateTime passed in from calling method.
      * @return the int representing the local end hr for Appointments.
      */
     default LocalTime getLocCloseTime(LocalDateTime ldt) {

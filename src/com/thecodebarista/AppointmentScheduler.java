@@ -10,8 +10,16 @@ import javafx.scene.Scene;
 import java.sql.SQLException;
 import java.util.Locale; //DO NOT DELETE
 
+/**
+ * Main Class for Scheduler Application.
+ */
 public class AppointmentScheduler extends Application {
 
+    /**
+     * Redirect main stage to Log in Form
+     * @param stage application default stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         // TODO: 2/19/2023 Comment out. Used for test Locale ONLY! 
@@ -29,6 +37,11 @@ public class AppointmentScheduler extends Application {
         }
     }
 
+    /**
+     * Connect application to Database and start Logger on Application Launch.
+     * @param args
+     * @throws SQLException
+     */
     public static void main(String[] args) throws SQLException {
         DBConnection.establishConnection();
         LoginFormCtrl.loginLogger();

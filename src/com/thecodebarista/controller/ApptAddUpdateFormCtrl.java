@@ -21,20 +21,21 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
+/**
+ * Appointment controller for New/Update form.
+ */
 public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable {
 
     /**
-     * List values for the hours ComboBox
+     * List values for the hours ComboBox.
      */
     ObservableList<Integer> hours = FXCollections.observableArrayList();
 
     /**
-     * List values for the minutes ComboBox
+     * List values for the minutes ComboBox.
      */
     ObservableList<Integer> minutes = FXCollections.observableArrayList();
 
@@ -58,9 +59,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private Boolean hrSet = false;
     private Boolean minSet = false;
 
-    /*
-     * Appointment FXML Private Fields Start
-     */
+    //
+    //Appointment FXML Private Fields Start
+    //
     @javafx.fxml.FXML
     private TextField appointment_ID_TxtFld;
     @javafx.fxml.FXML
@@ -70,9 +71,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     @javafx.fxml.FXML
     private Button ApptCancelBtn;
     @javafx.fxml.FXML
-    /*
-     * Appointment FXML Private Fields End
-     */
+    //
+    //Appointment FXML Private Fields End
+    //
 
     /**
      * Fills the StartTimeHrs ComboBox with the local business hours for Appointments.
@@ -108,7 +109,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     /**
      * Calculate and sets the DurationCB ComboBox in the Update Appointment form. The duration is not persisted in DB.
-     * @param selectedAppt
+     * @param selectedAppt - Appointment row selected for Update.
      */
     private void setDuration(Appointment selectedAppt) {
         Long durationMins = getDurationMins(selectedAppt);
@@ -117,8 +118,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * Set the User ComboBox to the Session User on New Appointments
-     * @throws SQLException
+     * Set the User ComboBox to the Session User on New Appointments.
      */
     protected void setDefaultUserOnNew() {
         System.out.println("DOING USER DEFAULT");
@@ -135,7 +135,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     /**
      * Method populates the Update Form with the Appointment data from database
-     * @param selectedAppt
+     * @param selectedAppt - Appointment row selected for Update.
      * @throws SQLException
      */
     protected void sendApptModifyData(Appointment selectedAppt) throws SQLException {
@@ -178,9 +178,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     /**
      * Check Appointment conflicts for Customer.
-     * @throws SQLException
+     * @return true if no conflicts.
      */
-    private Boolean apptOverlapCheck() throws SQLException {
+    private Boolean apptOverlapCheck() {
         if(static_AddUpdateLabel.getText().equals("Update Appointment")){
             calculateEndLdt();
         }
@@ -247,7 +247,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * Method Validates all fields used in Date, Start time, and End time<>BR</>Alerts user of invalid fields
+     * Method Validates all fields used in Date, Start time, and End time.
+     * Alerts user of invalid .
      * @return True if no validation errors
      */
     private Boolean canCalcDuration() {
@@ -282,7 +283,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * Method saves form data for New and Updated Appointments
+     * Method saves form data for New and Updated Appointments.
      * @throws SQLException
      */
     protected void saveApptData() throws SQLException {
@@ -317,8 +318,10 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * LAMBDA USAGE - to replace the anonymous function used to create the "Callback<DatePicker, DateCell>" in the
-     * setDayCellFactory function to set DataPicker dayCellFactoryProperty date values before current date or empty to disable.
+     * <b>LAMBDA USAGE - </b> to replace the anonymous function used to create the "Callback DatePicker, DateCell" in the setDayCellFactory function.
+     * Sets DataPicker dayCellFactoryProperty date values before current date or empty to disable.
+     * @param url default application URL
+     * @param rb default application ResourceBundle
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -327,7 +330,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         buildMinutes();
         buildDurations();
 
-        // Utilized lambda
+        // Utilizes lambda
         ApptStart_DatePick.setDayCellFactory(dp -> new DateCell() {
             // Disable all cell dates before current date and empty cells.
             @Override
@@ -357,8 +360,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     /**
      * Mouse click action on ApptStart_DatePick. Returns the current Start Date to use as reset value during validations.
-     * @param event
-     * @return
+     * @param event - ApptStart_DatePick Date Picker date selection clicked.
+     * @return LocalDate value selected.
      */
     @javafx.fxml.FXML
     public LocalDate getPrev(Event event) {
@@ -369,10 +372,10 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * OnAction method for ApptStart_DatePick selection is made. Validates if date choose current or future date.<>BR</>
+     * OnAction method validates if date choose current or future date.
      * Set the boolean dpSet to true if valid or alerts user if not valid.
-     * @param actionEvent
-     * @return
+     * @param actionEvent - ApptStart_DatePick selection is made.
+     * @return true if valid.
      */
     @javafx.fxml.FXML
     public Boolean onStartDate(ActionEvent actionEvent) {
@@ -407,10 +410,10 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * OnAction method for Duration and Start Time hours and minutes ComboBoxes selections.<>BR</>
-     * Set the boolean validation variables- hrSet and minSet to true if respective ComboBoxes selected.<>BR</>
-     * If all three have valid selections End Date and Time field is updated.
-     * @param actionEvent
+     * OnAction method for Duration and Start Time hours and minutes ComboBoxes selections.
+     * Set the boolean validation variables- hrSet and minSet to true if respective ComboBoxes selected.
+     * <BR>If all three have valid selections End Date and Time field is updated.
+     * @param actionEvent - Selection of StartTimeHrs, StartTimeMins, or DurationCB ComboBoxes.
      */
     @javafx.fxml.FXML
     public void onDurationUpdate(ActionEvent actionEvent) {
@@ -461,7 +464,7 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     /**
      * Save new or updated appointment.
-     * @param actionEvent
+     * @param actionEvent - Appointment Save button clicked.
      */
     @javafx.fxml.FXML
     public void onActionSaveAppt(ActionEvent actionEvent) {
@@ -490,8 +493,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     }
 
     /**
-     * OnAction method cancels New/Updated Appointment activity. Returns user to Main Menu.
-     * @param actionEvent
+     * OnAction method cancels New/Updated Appointment activity.
+     * Returns user to Main Menu.
+     * @param actionEvent - Appointment Cancel button clicked.
      */
     @javafx.fxml.FXML
     public void onActionCancel(ActionEvent actionEvent) {

@@ -1,15 +1,11 @@
 package com.thecodebarista.dao;
 
-import com.thecodebarista.model.Customer;
 import javafx.collections.ObservableList;
-
 import java.sql.SQLException;
-import java.util.List;
-
 
 /**
  * Interface used for unmanaged classes; tables whose data in not maintained by the application.
- * @param <T>
+ * @param <T> Generic Type for interface used by multiple classes.
  */
 public interface UnmanagedDAO<T> {
 

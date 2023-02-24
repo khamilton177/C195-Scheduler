@@ -26,9 +26,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import static java.lang.Math.addExact;
-import static java.lang.Math.subtractExact;
 
+/**
+ * Main menu of the Scheduler Application.
+ */
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMachine {
 
     public static Label static_AddUpdateLabel;
@@ -147,20 +148,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     @javafx.fxml.FXML
     protected TableColumn<Appointment, Integer> rptCount;
     @javafx.fxml.FXML
-    private TableColumn rptCol11;
-    @javafx.fxml.FXML
-    private TableColumn rptCol21;
-    @javafx.fxml.FXML
-    private TableColumn rptCol31;
-    @javafx.fxml.FXML
-    private TableColumn rptCol41;
-    @javafx.fxml.FXML
-    private TableColumn rptCol51;
-    @javafx.fxml.FXML
-    private TableColumn rptCol61;
-    @javafx.fxml.FXML
-    private TableColumn rptCol71;
-    @javafx.fxml.FXML
     private TableView<Appointment> CntScheduleTblView;
     @javafx.fxml.FXML
     private StackPane TblViewStackPane;
@@ -191,33 +178,15 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     @javafx.fxml.FXML
     private Button CstMonthTypeClearBtn;
     @javafx.fxml.FXML
-    private ComboBox CstSearchCB1;
-    @javafx.fxml.FXML
-    private RadioButton cstTopWkRadio;
-    @javafx.fxml.FXML
-    private ToggleGroup topCstRadioGrp;
-    @javafx.fxml.FXML
-    private RadioButton cntMoRadio1;
-    @javafx.fxml.FXML
-    private ButtonBar CntScheduleBtnBar1;
-    @javafx.fxml.FXML
-    private Button CntScheduleSearchBtn1;
-    @javafx.fxml.FXML
-    private Button CntScheduleClearBtn1;
-    @javafx.fxml.FXML
     private TableColumn rptType2;
-    @javafx.fxml.FXML
-    private Pane CstMostActivePane;
-    @javafx.fxml.FXML
-    private TableView CstMostActiveTblView;
     @javafx.fxml.FXML
     private MenuItem ApptDurationPaneMenuItem;
     @javafx.fxml.FXML
     private TextArea ApptDurationTblView;
 
-    /*
-     * Appointment Protected FXML Fields Start
-     */
+    //
+    //Appointment Protected FXML Fields Start
+    //
     @javafx.fxml.FXML
     protected ComboBox<Long> DurationCB;
     @javafx.fxml.FXML
@@ -244,13 +213,13 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     protected ComboBox<Customer> customer_ID_CBox;
     @javafx.fxml.FXML
     protected ComboBox<User> user_ID_CBox;
-    /*
-    Appointment Protected FXML Fields End
-     */
+    //
+    //Appointment Protected FXML Fields End
+    //
 
-    /*
-    Customer Protected FXML Fields Start
-     */
+    //
+    //Customer Protected FXML Fields Start
+    //
     @javafx.fxml.FXML
     protected TextField phone_TxtFld;
     @javafx.fxml.FXML
@@ -263,13 +232,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     protected ComboBox<Country> country_ID_CBox;
     @javafx.fxml.FXML
     protected ComboBox<FirstLevelDivision> division_ID_CBox;
-    /*
-    Customer Protected FXML Fields End
-     */
+    //
+    //Customer Protected FXML Fields End
+    //
 
     /**
      * Alert user of appointment happening within the next 15 minutes.
-     * @throws SQLException
      * @throws NumberFormatException
      */
     protected void loginAppointAlert() throws NumberFormatException {
@@ -290,12 +258,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
                 for (Appointment appt : userAppt) {
                     LocalDateTime apptStart = appt.getStart().toLocalDateTime();
                     System.out.println(String.format("Appt ID# %d%nAppt. Time:  %s", appt.getAppointment_ID(), apptStart.toString()));
-                    if(apptStart.toLocalDate().equals(ldt.toLocalDate())){
-                        if(apptStart.toLocalTime().withSecond(0).withNano(0).isAfter(ldt.toLocalTime().withSecond(0).withNano(0))
+                    if (apptStart.toLocalDate().equals(ldt.toLocalDate())) {
+                        if (apptStart.toLocalTime().withSecond(0).withNano(0).isAfter(ldt.toLocalTime().withSecond(0).withNano(0))
                                 || apptStart.toLocalTime().withSecond(0).withNano(0).equals(ldt.toLocalTime().withSecond(0).withNano(0))) {
                             Long minsTill = ChronoUnit.MINUTES.between(ldt, apptStart);
                             System.out.println("Minutes until appointment: " + minsTill);
-                            if (minsTill >= 0l && minsTill < 16L){
+                            if (minsTill >= 0l && minsTill < 16L) {
                                 msgCtx = String.format("Hi %s,%nYou have Appointment ID #%d soon!%n%tD at %tR",
                                         CurrentUserNameLbl.getText(), appt.getAppointment_ID(), apptStart.toLocalDate(), apptStart.toLocalTime());
                                 alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
@@ -306,7 +274,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
                     }
                 }
                 System.out.println("Doing loginAppt Alert #4");
-
+                userApptSize = 0; // None of the User's appointments were within 15 minutes set to 0.
+            }
+            if(userApptSize == 0) {
                 msgCtx = String.format("Hi %s. Relax! You don't have any appoints within the next 15 minutes.",
                         CurrentUserNameLbl.getText());
                 alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
@@ -319,13 +289,17 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
     }
 
+    /**
+     * Sets Userid session label and user.
+     * @param setCurrentUserId
+     */
     protected void setCurrentUserIdInfo(int setCurrentUserId) {
         CurrentUserIdLbl.setText("ID #" + setCurrentUserId);
         sessionUserId = setCurrentUserId;
     }
 
     /**
-     *
+     * Sets User name session label and user.
      * @param setCurrentUserName
      */
     protected void setCurrentUserNameInfo(String setCurrentUserName) {
@@ -375,8 +349,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Method calculates the Start time and set the formatted timestamp in hidden text field
-     * @return
+     * Method calculates the Start time and set the formatted timestamp in hidden text field.
+     * @return StartTime (LocalDateTime) of the Appointment.
      */
     protected LocalDateTime calculateStartLdt() {
         LocalTime lt = LocalTime.of(StartTimeHrs.getValue(), StartTimeMins.getValue());
@@ -388,8 +362,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Method calculates the End time and set the formatted timestamp in hidden text field
-     * @return
+     * Method calculates the End time and set the formatted timestamp in hidden text field.
+     * @return EndTime (LocalDateTime) of the Appointment.
      */
     protected LocalDateTime calculateEndLdt() {
         StartTime = calculateStartLdt();
@@ -464,7 +438,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Validates form for missing data before save. Alerts user.
+     * Validates Both Appointment and Customer forms for missing data before save.
+     * Alerts user.
      * @return True if all fields are populated
      */
 
@@ -592,8 +567,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     /**
      * Method deletes associated appointments then Selected customer.
-     * @param selectedCst
-     * @return
+     * @param selectedCst - The Customer selected for deletion.
+     * @return true on successful deletion.
      * @throws SQLException
      */
     protected Boolean delCstRow(Customer selectedCst) throws SQLException {
@@ -652,7 +627,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Method detects the current tab and utilizes the selector in the fxml Include file Controllers
+     * Method detects the current tab and utilizes the selector in the fxml Include file Controllers.
      */
     private void tableItemSelector() {
         TableView.TableViewSelectionModel<Appointment> itemSelector;
@@ -673,7 +648,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Repopulate all Appointment Tableviews
+     * Repopulate all Appointment Tableviews.
      * @throws SQLException
      */
     private void refreshApptTables() throws SQLException {
@@ -732,6 +707,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
     }
 
+    /**
+     * Initializes the controller class.
+     * Run the Tableview methods to display all Tab data info and set the session user info.
+     * @param url default application URL
+     * @param rb default application ResourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -740,10 +721,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             //appointmentSeed();
 
             displayApptTblViewData();
-            //displayCstTblViewData();
+            //displayCstTblViewData(); //not currently used.
             displayCstWithCoInfo();
             setCurrentUserid(sessionUserId);
-            //test2();
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -777,10 +757,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Loads the ApptAddUpdateFormCtrl and calls its method to send the selected row data in the Appointment table view to the appt-add-update-form view.
+     * Loads the ApptAddUpdateFormCtrl and calls its method to send the selected row data in the Appointment table view to the appt-add-update-form.
+     * Present alert error dialog when no selection made.
      * @param actionEvent Update form button, ApptUpdateBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
-     * <BR>Present alert error dialog when no selection made.
      */
     @javafx.fxml.FXML
     private void onActionApptUpdate(ActionEvent actionEvent) throws IOException {
@@ -815,7 +795,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Deletes selected row in Appointment table view.  Presents alert confirmation dialog box.
+     * Deletes selected row in Appointment table view.
+     * Presents alert confirmation dialog box.
      * @param actionEvent Delete form button, ApptDeleteBtn, clicked.
      */
     @javafx.fxml.FXML
@@ -837,9 +818,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     /**
      * Loads the CstAddUpdateFormCtrl to create customers in view the cst-add-update-form view.
+     * Present alert error dialog when no selection made.
      * @param actionEvent Update form button, CstAddBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
-     * <BR>Present alert error dialog when no selection made.
      */
     @javafx.fxml.FXML
     private void onActionCstNew(ActionEvent actionEvent) throws IOException {
@@ -863,10 +844,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Loads the CstAddUpdateFormCtrl and calls its method to send the selected row data in the Customer table view to the cst-add-update-form view.
+     * Loads the CstAddUpdateFormCtrl and calls its method to send the selected row data in the Customer table view to the cst-add-update-form.
+     * Present alert error dialog when no selection made.
      * @param actionEvent Modify form button, CstModifyBtn, clicked.
      * @throws IOException java.io.IOException - captures name exception: NullPointerException.
-     * <BR>Present alert error dialog when no selection made.
      */
     @javafx.fxml.FXML
     private void onActionCstUpdate(ActionEvent actionEvent) throws IOException {
@@ -925,7 +906,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     /**
      * Sets currentTab variable on Appointment tab change.
-     * @param event
+     * @param event - The Tab clicked.
      */
     @javafx.fxml.FXML
     public void onTabSelectLoad(Event event) {
@@ -934,8 +915,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Show pane with filter options for selected Report Menu's.<>BR</>
-     * LAMBDA USAGE - Lambdas used to filter for all visible Panes and set to invisible.<>BR</>
+     * <b>LAMBDA USAGE - </b>Lambdas used to filter for all visible Panes and set to invisible.
+     * Show pane with filter options for selected Report Menu's.
      * Filter children by ID, set to visible if needed and bring to front of StackPanes.
      * @param actionEvent
      */
@@ -974,7 +955,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     /**
      * On action method set boolean variable for control.
-     * @param actionEvent
+     * @param actionEvent - Month or Type ComboBox or Radio button clicked.
      */
     @javafx.fxml.FXML
     public void onReportFilterUpd(ActionEvent actionEvent) {
@@ -1003,7 +984,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     /**
      * On action Method for controls on Report tab. gathers the where clause param data.
-     * @param actionEvent
+     * @param actionEvent - Various Control clicked to filter information.
      */
     @javafx.fxml.FXML
     public void onActionDoQuery(ActionEvent actionEvent) {
@@ -1065,8 +1046,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * On action method from Clear button. Clears selections in fields on Report tab
-     * @param actionEvent
+     * On action method from clears selections in fields on Report tab.
+     * @param actionEvent - Clear button clicked.
      */
     @javafx.fxml.FXML
     public void onActionClearFilter(ActionEvent actionEvent) {
@@ -1085,10 +1066,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Logout of application.<>BR</>Returns to Log In Screen
+     * Logout of application; returns to Log In Screen.
+     * @param actionEvent Logout link clicked.
      */
     @javafx.fxml.FXML
-    private void onActionLogout(ActionEvent actionEvent) throws Exception{
+    private void onActionLogout(ActionEvent actionEvent) {
 
         try{
             FXMLLoader loader = new FXMLLoader();
@@ -1107,9 +1089,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * <P><B>LAMBDA USAGE- </B>Method streams appointments then does a Map/Filter/Reduce to produce the average duration of all Appointments.
-     * <>BR</>Additionally the function interface method is used to calculate the appointments durations in the mapToLong lambda.</P>
-     * @return
+     * <b>LAMBDA USAGE - </b>Method streams appointments then does a Map/Filter/Reduce to produce the average duration of all Appointments.
+     * <BR>Additionally the function interface method is used to calculate the appointments durations in the mapToLong lambda.
+     * @return - String sentence with calculated average information.
      */
     protected String reportDurationAvg() {
         String medium = "";
@@ -1128,21 +1110,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         return medium;
     }
 
-/*
-    protected ObservableList<> test2() throws SQLException {
-        AppointmentDAO apptDao = new AppointmentDaoImpl();
-        ObservableList<Long> durations = FXCollections.observableArrayList();
-        ObservableList<Appointment> apptByDuration = apptDao.extractAll();
-        apptByDuration.stream().forEach((a) -> {long duration = getDurationMins(a);
-            durations.add(duration);
-        });
-        CstMostActiveTblView.setItems();
-    }*/
-
     /**
      * Override of Function Interface Abstract Method. Calculates appointment duration.
-     * @param appointment
-     * @return
+     * @param appointment - Selected Appointment row.
+     * @return - Minutes (Long).
      */
     @Override
     public Long getDurationMins(Appointment appointment) {

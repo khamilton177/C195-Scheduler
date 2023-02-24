@@ -3738,3 +3738,59 @@ Feb 23, 2023 1:34:29 AM com.thecodebarista.controller.LoginFormCtrl onActionLogi
 INFO: Valid Login: true
 Reason: Login Successful!
 
+Feb 23, 2023 10:55:34 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:04:50 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:05:35 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:05:44 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+Feb 23, 2023 11:05:49 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+Feb 23, 2023 11:05:58 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:06:47 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:09:14 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:25:01 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:25:17 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:25:41 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:37:10 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:37:40 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Feb 23, 2023 11:38:44 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+

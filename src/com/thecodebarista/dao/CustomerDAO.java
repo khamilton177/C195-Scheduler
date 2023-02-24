@@ -1,17 +1,17 @@
 package com.thecodebarista.dao;
 
-import com.thecodebarista.model.Appointment;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.Customer;
 
 import java.sql.SQLException;
-import java.util.List;
 
+/**
+ * Customer Data Access Object Interface.
+ * Generate queries for the DB customers table
+ */
 public interface CustomerDAO extends SchedulerDAO<Customer> {
 
     ObservableList<Customer> customerWithCoInfo() throws SQLException;
-
-    // ObservableList<Customer> adhocQuery(String wc) throws SQLException;
 
     String CSTVIEW = "SELECT customers.Customer_ID" +
             " ,customers.Customer_Name" +
