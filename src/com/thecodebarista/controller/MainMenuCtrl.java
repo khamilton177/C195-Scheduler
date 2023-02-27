@@ -28,103 +28,333 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
- * Main menu of the Scheduler Application.
+ * Main menu of the Global Consulting Scheduler Application.
  */
 public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMachine {
 
+    /**
+     * Label used to retain button used to produce the form, New or Update associated table.
+     */
     public static Label static_AddUpdateLabel;
+
+    /**
+     * Appointment row selected in tableview.
+     */
     public Appointment selectedAppt;
 
+    /**
+     * Customer row selected in tableview or appointment forms.
+     */
     Customer selectedCst;
+
+    /**
+     * Contact row selected in appointment or report form dropdowns.
+     */
+    Contact selectedCnt;
+
+    /**
+     * User row selected in appointment form dropdown.
+     */
+    User selectedUser;
+
+    /**
+     * The alert built by the onAction event triggered.
+     */
     Alert alert;
-    String btnTxt;
+
+    /**
+     * Tab selected in current screen.
+     */
     Tab currentTab;
+
+    /**
+     * The return of calculateStartLdt method.
+     */
     LocalDateTime StartTime;
+
+    /**
+     * The return of calculateEndLdt method.
+     */
     LocalDateTime EndTime;
+
+    /**
+     * The confirm button presented in the alert confirmation dialog.
+     */
     Optional<ButtonType> confirm;
+
+    /**
+     * Formats timestamps for use in the start_TxtFld and end_TxtFld.
+     */
     SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * ObservableList of Months by full name.
+     */
     ObservableList<String> monthsItems = FXCollections.observableArrayList();
+
+    /**
+     * ObservableList of types found in the DB appointments table.
+     */
     ObservableList<String> typeItems = FXCollections.observableArrayList();
 
+    /**
+     * Boolean value representing MonthCB selected value.
+     */
     private Boolean moFilter = false;
+
+    /**
+     * Boolean value representing TypeCB selected value.
+     */
     private Boolean typeFilter = false;
     private Boolean cntFilter = false;
     private Boolean cntMoFilter = false;
     private Boolean cntWkFilter = false;
 
+    /**
+     * Label holds the User_Name of the session user on Main Menu screen.
+     */
     @javafx.fxml.FXML
-    protected ApptTableMonthlyCtrl includeApptMoController;
+    public Label CurrentUserNameLbl;
+
+    /**
+     * Label holds the User_ID of the session user on Main Menu screen.
+     */
     @javafx.fxml.FXML
-    protected ApptTableWeeklyCtrl includeApptWkController;
-    @javafx.fxml.FXML
-    protected TableView<Appointment> ApptTblView;
-    @javafx.fxml.FXML
-    protected Button CstAddBtn;
-    @javafx.fxml.FXML
-    protected TableColumn<Customer, String> CstPostalCodeCol;
-    @javafx.fxml.FXML
-    protected TableColumn<Customer, String> CstAddressCol;
-    @javafx.fxml.FXML
-    private TableColumn<Customer, String> CstPhoneCol;
-    @javafx.fxml.FXML
-    protected Label CurrentUserIdLbl;
-    @javafx.fxml.FXML
-    protected Button ApptUpdateBtn;
-    @javafx.fxml.FXML
-    protected Button CstModifyBtn;
-    @javafx.fxml.FXML
-    protected MenuButton ReportMenuBtn;
-    @javafx.fxml.FXML
-    protected TableView<Customer> CstTblView;
-    @javafx.fxml.FXML
-    protected TableColumn<Customer, Integer> CstIdCol;
-    @javafx.fxml.FXML
-    protected TableColumn<Customer, String> CstNameCol;
-    @javafx.fxml.FXML
-    protected Button ApptAddBtn;
-    @javafx.fxml.FXML
-    protected TableColumn<Customer, Integer> CstDivisionIdCol;
+    public Label CurrentUserIdLbl;
+
+    /**
+     * Logout link on Main Menu screen.
+     */
     @javafx.fxml.FXML
     protected Hyperlink LogOutBtn;
+
+    /*
+    --- Start of Appointment's Appointments Tabs FXML controls ---
+     */
+
+    /**
+     * New button on the Appointment Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button ApptAddBtn;
+
+    /**
+     * Update button on the Appointment Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button ApptUpdateBtn;
+
+    /**
+     * Delete button on the Appointment Tabs.
+     */
     @javafx.fxml.FXML
     protected Button ApptDeleteBtn;
+
+    /**
+     * The Monthly Appointment Tab Controller.
+     */
+    @javafx.fxml.FXML
+    protected ApptTableMonthlyCtrl includeApptMoController;
+
+    /**
+     * The Weekly Appointment Tab Controller.
+     */
+    @javafx.fxml.FXML
+    protected ApptTableWeeklyCtrl includeApptWkController;
+
+    /**
+     * Tab pane that holds the Appointment sub tabs.
+     */
+    @javafx.fxml.FXML
+    private TabPane ApptTabs;
+
+    /**
+     * Appointments sub Tab.
+     */
+    @javafx.fxml.FXML
+    private Tab AppTab;
+
+    /**
+     * Appointments by Month sub Tab.
+     */
+    @javafx.fxml.FXML
+    private Tab AppMoTab;
+
+    /**
+     * Appointment by Week sub Tab.
+     */
+    @javafx.fxml.FXML
+    private Tab AppWkTab;
+
+    /**
+     * The Appointments Table View on each Tab
+     */
+    @javafx.fxml.FXML
+    protected TableView<Appointment> ApptTblView;
+
+    /**
+     * Appointment ID column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, Integer> appointment_ID_Col;
+
+    /**
+     * Title column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, String> title_Col;
+
+    /**
+     * Description column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, String>  description_Col;
+
+    /**
+     * Location column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, String>  location_Col;
+
+    /**
+     * Contact column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, Integer> contact_ID_Col;
+
+    /**
+     * Type column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, String>  type_Col;
+
+    /**
+     * Start Date and Time column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, Timestamp>  start_Col;
+
+    /**
+     * End Date and Time column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, Timestamp>  end_Col;
+
+    /**
+     * Customer ID column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, Integer> customer_ID_Col;
+
+    /**
+     * User ID column on the ApptTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Appointment, Integer> user_ID_Col;
+
+    /*
+    --- End of Appointment's Appointments Tabs FXML controls ---
+     */
+
+
+    /*
+    --- Start of Customers Tab FXML controls ---
+     */
+
+    /**
+     * New button on the Customers Tab.
+     */
+    @javafx.fxml.FXML
+    protected Button CstAddBtn;
+
+    /**
+     * Update button on the Customers Tab.
+     */
+    @javafx.fxml.FXML
+    protected Button CstModifyBtn;
+
+    /**
+     * Delete button on the Customers Tab.
+     */
     @javafx.fxml.FXML
     protected Button CstDeleteBtn;
 
+    /**
+     * The Customers Table View on the Customers Tab.
+     */
     @javafx.fxml.FXML
-    protected TableColumn<Appointment, Integer> appointment_ID_Col;
+    protected TableView<Customer> CstTblView;
+
+    /**
+     * Customer ID column on the CstTblView.
+     */
     @javafx.fxml.FXML
-    protected TableColumn<Appointment, String> title_Col;
+    protected TableColumn<Customer, Integer> CstIdCol;
+
+    /**
+     * Customer Name column on the CstTblView.
+     */
     @javafx.fxml.FXML
-    protected TableColumn<Appointment, String>  description_Col;
+    protected TableColumn<Customer, String> CstNameCol;
+
+    /**
+     * Address column on the CstTblView.
+     */
     @javafx.fxml.FXML
-    protected TableColumn<Appointment, String>  location_Col;
+    protected TableColumn<Customer, String> CstAddressCol;
+
+    /**
+     * The Postal Code column on the CstTblView.
+     */
     @javafx.fxml.FXML
-    protected TableColumn<Appointment, Integer> contact_ID_Col;
+    protected TableColumn<Customer, String> CstPostalCodeCol;
+
+    /**
+     * Phone column on the CstTblView.
+     */
     @javafx.fxml.FXML
-    protected TableColumn<Appointment, String>  type_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<Appointment, Timestamp>  start_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<Appointment, Timestamp>  end_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<Appointment, Integer> customer_ID_Col;
-    @javafx.fxml.FXML
-    protected TableColumn<Appointment, Integer> user_ID_Col;
+    private TableColumn<Customer, String> CstPhoneCol;
+
+    /**
+     * Country ID column on the CstTblView.
+     */
     @javafx.fxml.FXML
     private TableColumn<FirstLevelDivision, Integer> CstCountryIdCol;
+
+    /**
+     * Division ID column on the CstTblView.
+     */
     @javafx.fxml.FXML
-    private Label CurrentUserNameLbl;
+    protected TableColumn<Customer, Integer> CstDivisionIdCol;
+    /*
+    --- End of Customers Tab FXML controls ---
+     */
+
+    /*
+    --- Start of Reports Tab FXML controls ---
+     */
+
+    /**
+     * Report Menu dropdown on Reports Tab.
+     */
     @javafx.fxml.FXML
-    private TabPane ApptTabs;
+    protected MenuButton ReportMenuBtn;
+
+    /**
+     * Stack Pane holding the Report Panes on the Reports Menu.
+     */
     @javafx.fxml.FXML
-    private Tab AppTab;
-    @javafx.fxml.FXML
-    private Tab AppWkTab;
-    @javafx.fxml.FXML
-    private Tab AppMoTab;
+    private StackPane reportFilterStackPane;
+
+    /**
+     * Pane on Reports Tab used to display the return of the Report selected.
+     */
     @javafx.fxml.FXML
     private TitledPane ReportTitlePane;
+
+    /**
+     *
+     */
     @javafx.fxml.FXML
     private Pane CstMonthTypePane;
     @javafx.fxml.FXML
@@ -137,8 +367,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     private MenuItem CntSchedulePaneMenuItem;
     @javafx.fxml.FXML
     private Pane CntSchedulePane;
-    @javafx.fxml.FXML
-    private StackPane reportFilterStackPane;
+
     @javafx.fxml.FXML
     protected TableView<Appointment> CstMonthTypeTblView;
     @javafx.fxml.FXML
@@ -184,57 +413,138 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     @javafx.fxml.FXML
     private TextArea ApptDurationTblView;
 
-    //
-    //Appointment Protected FXML Fields Start
-    //
-    @javafx.fxml.FXML
-    protected ComboBox<Long> DurationCB;
+    /*
+    --- End of Reports Tab FXML controls ---
+     */
+
+
+    /*
+    --- Appointment New/Update Form Protected FXML Fields Start ---
+    */
+    /**
+     * Title text field on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField title_TxtFld;
+
+    /**
+     * Description text field on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField description_TxtFld;
+
+    /**
+     * Location text field on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField location_TxtFld;
+
+    /**
+     * Type text field on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField type_TxtFld;
+
+    /**
+     * Start Date field on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected DatePicker ApptStart_DatePick;
+
+    /**
+     * Start Time 'Hrs' dropdown on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected ComboBox<Integer> StartTimeHrs;
+
+    /**
+     * Start Time 'Mins' dropdown on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected ComboBox<Integer> StartTimeMins;
+
+    /**
+     * Duration dropdown on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
-    protected TextField end_TxtFld;
+    protected ComboBox<Long> DurationCB;
+
+    /**
+     * Hidden end_TxtFld on Appointment New/Update form.
+     * Holds the formatted timestamp text.
+     */
     @javafx.fxml.FXML
     protected TextField start_TxtFld;
+
+    /**
+     * Hidden end_TxtFld on Appointment New/Update form.
+     * Hold the formatted timestamp text.
+     */
     @javafx.fxml.FXML
-    protected ComboBox<Contact> contact_ID_CBox;
+    protected TextField end_TxtFld;
+
+    /**
+     * Customer ID# dropdown on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected ComboBox<Customer> customer_ID_CBox;
+
+    /**
+     * Contact ID# dropdown on Appointment New/Update form.
+     */
+    @javafx.fxml.FXML
+    protected ComboBox<Contact> contact_ID_CBox;
+
+    /**
+     * User ID# dropdown on Appointment New/Update form.
+     */
     @javafx.fxml.FXML
     protected ComboBox<User> user_ID_CBox;
-    //
-    //Appointment Protected FXML Fields End
-    //
+    /*
+    --- Appointment New/Update Form Protected FXML Fields End ---
+    */
 
-    //
-    //Customer Protected FXML Fields Start
-    //
+    /*
+    --- Customer Add/Update Form Protected FXML Fields Start ---
+    */
+    /**
+     * Phone text field on Customer Add/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField phone_TxtFld;
+
+    /**
+     * Customer Name text field on Customer Add/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField customer_Name_TxtFld;
+
+    /**
+     * Address text field on Customer Add/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField address_TxtFld;
+
+    /**
+     * Postal Code text field on Customer Add/Update form.
+     */
     @javafx.fxml.FXML
     protected TextField postal_Code_TxtFld;
+
+    /**
+     *  Country ID# dropdown on Customer Add/Update form.
+     */
     @javafx.fxml.FXML
     protected ComboBox<Country> country_ID_CBox;
+
+    /**
+     * Division #ID dropdown on Customer Add/Update form.
+     */
     @javafx.fxml.FXML
     protected ComboBox<FirstLevelDivision> division_ID_CBox;
-    //
-    //Customer Protected FXML Fields End
-    //
+    /*
+    --- Customer Add/Updated Form Protected FXML Fields End ---
+    */
 
     /**
      * Alert user of appointment happening within the next 15 minutes.
@@ -244,6 +554,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         System.out.println("Doing loginAppt Alert #1");
         AppointmentDAO apptDao = new AppointmentDaoImpl();
         String msgCtx = "";
+        String alertTitle = "Appointment Notification";
 
         try{
             ObservableList<Appointment> userAppt = apptDao.getApptNowByUser(sessionUserId);
@@ -266,7 +577,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
                             if (minsTill >= 0l && minsTill < 16L) {
                                 msgCtx = String.format("Hi %s,%nYou have Appointment ID #%d soon!%n%tD at %tR",
                                         CurrentUserNameLbl.getText(), appt.getAppointment_ID(), apptStart.toLocalDate(), apptStart.toLocalTime());
-                                alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
+                                alert = buildAlert(Alert.AlertType.INFORMATION, alertTitle, msgCtx);
                                 confirm = alert.showAndWait();
                                 return;
                             }
@@ -279,7 +590,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             if(userApptSize == 0) {
                 msgCtx = String.format("Hi %s. Relax! You don't have any appoints within the next 15 minutes.",
                         CurrentUserNameLbl.getText());
-                alert = buildAlert(Alert.AlertType.INFORMATION, "", msgCtx);
+                alert = buildAlert(Alert.AlertType.INFORMATION, alertTitle, msgCtx);
                 confirm = alert.showAndWait();
             }
         }
@@ -291,20 +602,18 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     /**
      * Sets Userid session label and user.
-     * @param setCurrentUserId
+     * @param sessionUserId
      */
-    protected void setCurrentUserIdInfo(int setCurrentUserId) {
-        CurrentUserIdLbl.setText("ID #" + setCurrentUserId);
-        sessionUserId = setCurrentUserId;
+    protected void setCurrentUserIdInfo(int sessionUserId) {
+        CurrentUserIdLbl.setText("ID #" + sessionUserId);
     }
 
     /**
      * Sets User name session label and user.
-     * @param setCurrentUserName
+     * @param sessionUserName
      */
-    protected void setCurrentUserNameInfo(String setCurrentUserName) {
-        CurrentUserNameLbl.setText(setCurrentUserName);
-        sessionUserName = setCurrentUserName;
+    protected void setCurrentUserNameInfo(String sessionUserName) {
+        CurrentUserNameLbl.setText(sessionUserName);
     }
 
     /**
@@ -346,6 +655,21 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
 
         return alert;
+    }
+
+    /**
+     * Method builds the message used in alerts.
+     * @param msg Message for alert
+     * @param useSeparator Boolean determines if new line is appended
+     */
+    protected String buildMessage(String msg, Boolean useSeparator) {
+        StringBuilder validateErrMsg = new StringBuilder();
+        String validateMsg = msg;
+        validateErrMsg.append(validateMsg);
+        if (useSeparator) {
+            validateErrMsg.append(System.getProperty("line.separator"));
+        }
+        return validateErrMsg.toString();
     }
 
     /**
@@ -442,7 +766,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      * Alerts user.
      * @return True if all fields are populated
      */
-
     protected Boolean validateFormFields(String btnTxt) {
         Boolean isValid = false;
         StringBuilder validateErrMsg = new StringBuilder();
@@ -718,12 +1041,13 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
         try {
             // For seed data testing. TODO: Don't forget to comment.
-            //appointmentSeed();
+            // appointmentSeed();
 
             displayApptTblViewData();
             //displayCstTblViewData(); //not currently used.
             displayCstWithCoInfo();
-            setCurrentUserid(sessionUserId);
+            setCurrentUserIdInfo(sessionUserId);
+            setCurrentUserNameInfo(sessionUserName);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -932,7 +1256,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
         if (menuItemId.equals("CntSchedulePane")){
             UnmanagedDAO cntCb = new ContactDaoImpl();
+            if (CntApptPeriodRadioGrp.getSelectedToggle() != null)
+                CntApptPeriodRadioGrp.getSelectedToggle().setSelected(false);
+            CntScheduleSearchCB.getSelectionModel().clearSelection();
             CntScheduleSearchCB.setItems(cntCb.extractAll());
+
         }
 
         if (menuItemId.equals("ApptDurationPane")) {
@@ -991,6 +1319,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         System.out.println("Button Clicked: " + actionEvent.getSource().toString());
         String btnTxt = "";
         int wc = 0;
+        String wcPeriod ="";
         String[] reportParams = new String[3];
 
         if (actionEvent.getSource().toString().contains("ComboBox")){
@@ -1022,22 +1351,28 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             }
 
             if (btnTxt.contains("CntSchedule")) {
+                btnTxt = "CntSchedule";
                 if (CntScheduleSearchCB.getValue() == null){
                     alert = buildAlert(Alert.AlertType.INFORMATION, "Contact Schedules", "Please select a contact");
                     confirm = alert.showAndWait();
+                    CntApptPeriodRadioGrp.getSelectedToggle().setSelected(false);
+                    return;
                 }
                 else {
                     String wcContact = String.valueOf(CntScheduleSearchCB.getValue().getContact_ID());
-                    String wcPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
-                    if (CntScheduleMoRadio.isSelected()) {
-                        wc = 1;
-                    }
+                    if(CntApptPeriodRadioGrp.getSelectedToggle() != null)
+                        //wcPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
+                    wc = ((CntScheduleMoRadio.isSelected()) ? 1 : 0);
+                    System.out.println(String.format("Selected radio- '%s' and assoc wc #%d ",wcPeriod, wc));
+//                    if (CntScheduleMoRadio.isSelected()) {
+//                        wc = 1;
+//                    }
                     reportParams[0] = wcContact;
-                    reportParams[1] = wcPeriod;
-                    reportParams[2] = String.valueOf(wc);
+                    reportParams[1] = String.valueOf(wc);
+                    reportParams[2] = wcPeriod;
                 }
             }
-
+            System.out.println(String.format("Btn Text- %s\nParams- %s\n%s\n%s ",btnTxt, reportParams[0], reportParams[1], reportParams[2]));
             displayReportQuery(btnTxt, reportParams);
         }
         catch (SQLException e) {
@@ -1051,7 +1386,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      */
     @javafx.fxml.FXML
     public void onActionClearFilter(ActionEvent actionEvent) {
-        btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
+        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("SearchBtn", "");
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
         if (moFilter) {

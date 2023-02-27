@@ -4,7 +4,6 @@ import com.thecodebarista.dao.CountryDaoImpl;
 import com.thecodebarista.dao.CustomerDAO;
 import com.thecodebarista.dao.CustomerDaoImpl;
 import com.thecodebarista.dao.FirstLevelDivisionDAOImpl;
-import com.thecodebarista.model.Appointment;
 import com.thecodebarista.model.Country;
 import com.thecodebarista.model.Customer;
 import com.thecodebarista.model.FirstLevelDivision;
@@ -14,11 +13,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * Customer controller for Add/Update form.
+ */
 public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable {
 
     CustomerDAO cstDao = new CustomerDaoImpl();
@@ -114,7 +115,7 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
                 saveCstData();
                 stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
                 scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
-                stage.setTitle("C195-Scheduler");
+                stage.setTitle("C195-Global Consulting Scheduler");
                 stage.setScene(new Scene(scene));
                 stage.show();
             }
@@ -138,7 +139,7 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
             // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
-            stage.setTitle("C195-Scheduler");
+            stage.setTitle("C195-Global Consulting Scheduler");
             stage.setScene(new Scene(scene));
             stage.show();
         }

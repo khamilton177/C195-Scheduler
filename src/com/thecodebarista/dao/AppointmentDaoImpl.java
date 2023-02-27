@@ -553,8 +553,8 @@ public class AppointmentDaoImpl implements AppointmentDAO {
     public ObservableList<Appointment> getApptCntByPeriod(String[] reportParams) {
         ObservableList<Appointment> apptCntSched = FXCollections.observableArrayList();
         int wcCnt = Integer.parseInt(reportParams[0]);
-        String wcPeriod = reportParams[1];
-        int wc = Integer.parseInt(reportParams[2]);
+        int wc = Integer.parseInt(reportParams[1]);
+        String wcPeriod = reportParams[2];
         StringBuilder sqlStmt = new StringBuilder("SELECT Appointment_ID" +
                 ", Title" +
                 ", Type" +
@@ -563,16 +563,16 @@ public class AppointmentDaoImpl implements AppointmentDAO {
                 ", End" +
                 ", Customer_ID" +
                 " FROM appointments" +
-                " WHERE Contact_ID = '" + wcCnt +
-                "'");
+                " WHERE Contact_ID = " +
+                wcCnt);
 
         // Create WHERE clause based on params passed
         switch (wc) {
             case 1:
-                sqlStmt.append(" AND MONTH(Start)  = MONTH(NOW())");
+                sqlStmt.append(" AND MONTH(Start) = MONTH(NOW())");
                 break;
             default:
-                sqlStmt.append(" AND WEEK(Start)  = WEEK(NOW())");
+                sqlStmt.append(" AND WEEK(Start) = WEEK(NOW())");
                 break;
         }
         sqlStmt.append(" ORDER BY Start");

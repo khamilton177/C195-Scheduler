@@ -129,7 +129,7 @@ public class LoginFormCtrl implements Initializable {
     }
 
     /**
-     * Method logs lgin attempt activity to file.
+     * Method logs login attempt activity to file.
      */
     public static void loginLogger() {
         try{

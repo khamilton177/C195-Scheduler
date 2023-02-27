@@ -1,9 +1,6 @@
 package com.thecodebarista;
-
 import com.thecodebarista.model.Appointment;
-
 import java.time.*;
-
 import static com.thecodebarista.controller.LoginFormCtrl.static_ZoneId;
 import static java.lang.Math.addExact;
 import static java.lang.Math.subtractExact;
@@ -15,7 +12,15 @@ import static java.lang.Math.subtractExact;
 @FunctionalInterface
 public interface TimeMachine {
 
-    int busHrsOpen = 8; // Business Open in Est hours.
+    /**
+     * Business Open in Est hours.
+     * Used in method to calculate the first hour in the 'hours' dropdown.
+     */
+    int busHrsOpen = 8;
+    /**
+     * Total amount of business hour.
+     * Used in method to determine the last hour populated in the 'hours' dropdown.
+     */
     int totalBusHrs = 14;
 
     /**

@@ -27,7 +27,7 @@
             <Label layoutX="367.0" layoutY="65.0" text="Type" />
             <TextField fx:id="type_TxtFld" layoutX="368.0" layoutY="85.0" prefHeight="25.0" prefWidth="345.0" />
             <Label layoutX="45.0" layoutY="116.0" text="Start Date" />
-            <DatePicker fx:id="ApptStart_DatePick" editable="false" layoutX="45.0" layoutY="131.0" onAction="#onStartDate" onMouseClicked="#getPrev" prefHeight="25.0" prefWidth="137.0" />
+            <DatePicker fx:id="ApptStart_DatePick" editable="false" layoutX="45.0" layoutY="131.0" onAction="#onStartDate" prefHeight="25.0" prefWidth="137.0" />
             <Label layoutX="200.0" layoutY="116.0" text="Start Time" />
             <HBox layoutX="200.0" layoutY="131.0" prefHeight="25.0" prefWidth="149.0">
                <children>

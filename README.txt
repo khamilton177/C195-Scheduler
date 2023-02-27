@@ -1,0 +1,49 @@
+Copyright (c) 2023, The Code Barista LLC and/or its affiliates.
+
+The Global Consulting Scheduler is a GUI-based application to schedule appointments and store customer information.
+
+Author: Kerry J. Hamilton, The Code Barista LLC.
+Contact Information: khami67@wgu.edu
+Application Version: Version 1.0, Feb. 25, 2023
+
+Application Specifications:
+	IDE- IntelliJ IDEA 2021.3.1 (Community Edition)
+	Java SE JDK 17.0.1
+	JavaFX-SDK-17.0.1
+
+Database Specifications:
+	MySQL Connector driver version- mysql-connector-java-8.0.25
+
+Application Directions:
+
+	Enter the application by providing valid user credentials at the login screen.
+	User greeting alert informs users whether there is an upcoming meeting within the next 15 minutes.
+
+	Users can navigate between three tabs (Appointments, Customers, Reports)-
+		Appointments- composed of three sub-tabs:
+			Appointment- list all appointments in a table view.
+			Appointments by Month- list all current month appointments in a table view.
+			Appointments by Week- list all current week appointments in a table view.
+
+		Customers- list all contacts in a table view.
+
+		Create new appointments and customers using the 'New' button on the Button menu-bar.
+
+		Update and delete appointment and customer data by selecting the row item from the corresponding table view, then utilizing the 'Update,' or 'Delete' buttons on the Button menu-bar, respectively.
+
+		Reports- contains a dropdown menu to select between three query panes:
+			Total Customer Appointments by Month/Type- Users can select a combination of months and appointment types from the respective dropdowns; if the user makes no selections, the report returns counts for all months and types. Clicking the 'Search' button returns the results; clicking the 'Clear' button clears any current dropdown selections.
+
+			Contact Schedules- Users select a contact from the dropdown. The default report queries the current week. Alternatively, choosing the 'Month' radio button, shows the contact's current month's appointments.
+
+			Total Appointment Duration Average- Menu selection of this report immediately returns the query results.
+
+   Deleting a customer with appointments will notify the user of the deletion of all existing appointments. A bulk deletion of appointments occurs on user confirmation of the message.
+
+   The logout link will return the user to the Login screen.
+
+   The cancel button on the Login screen will close the application.
+
+About Additional Report:
+	The 'Total Appointment Duration Average' report averages the length of all scheduled appointments and reports it as a Long.
+	The business could use this report to leverage staffing needs, appointment management, and business hours adjustments.

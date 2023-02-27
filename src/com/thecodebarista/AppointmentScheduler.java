@@ -11,23 +11,24 @@ import java.sql.SQLException;
 import java.util.Locale; //DO NOT DELETE
 
 /**
- * Main Class for Scheduler Application.
+ * Main Class for Global Consulting Scheduler Application.
+ * @author Kerry J. Hamilton, Student ID #000888046
  */
 public class AppointmentScheduler extends Application {
 
     /**
-     * Redirect main stage to Log in Form
+     * Redirect main stage to start the application in the Login Form screen
      * @param stage application default stage
-     * @throws Exception
+     * @throws Exception catch exceptions to System Output.
      */
     @Override
     public void start(Stage stage) throws Exception {
         // TODO: 2/19/2023 Comment out. Used for test Locale ONLY! 
-        //Locale.setDefault(new Locale("fr")); // Use this for testng language conversion only
+        // Locale.setDefault(new Locale("fr")); // Use this for testng language conversion only
 
         try{
             Parent root = FXMLLoader.load(getClass().getResource("view/login-form.fxml"));
-            stage.setTitle("C195-Scheduler");
+            stage.setTitle("C195-Global Consulting Scheduler");
             stage.setScene(new Scene(root));
             stage.show();
         }
