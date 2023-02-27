@@ -1208,20 +1208,33 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     /**
      * Deletes selected row in Customer table view. Presents alert confirmation dialog box.
      * @param actionEvent Delete form button, CstDeleteBtn, clicked.
-     * @throws IOException java.io.IOException - captures name exception: NullPointerException.
-     * <BR>Present alert error dialog when no selection made.
      */
     @javafx.fxml.FXML
-    private void onActionDeleteCst(ActionEvent actionEvent) throws IOException {
+    private void onActionDeleteCst(ActionEvent actionEvent) {
         String btnTxt = ((Button) actionEvent.getSource()).getId().replace("Btn", "");
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
-
+        StringBuilder msgCtx = new StringBuilder();
         try {
             selectedCst = CstTblView.getSelectionModel().getSelectedItem();
-            String msgCtx = "Please confirm deletion of " + "Customer ID: " + selectedCst.getCustomer_ID() +
-                    System.getProperty("line.separator") + System.getProperty("line.separator") + "ALL ASSOCIATED CUSTOMER APPOINTMENTS WILL BE DELETED.";
-            confirmDelete(selectedCst, btnTxt, msgCtx);
-        } catch (NullPointerException e) {
+            msgCtx.append(String.format("Please confirm deletion of Customer ID: %d\n\n", selectedCst.getCustomer_ID()));
+
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            ObservableList<Appointment> userAppt = apptDao.getApptByFK("Customer_ID", selectedCst.getCustomer_ID());
+            System.out.println("Customer has- " + userAppt.size());
+
+            if(userAppt.size() > 0){
+                msgCtx.append(String.format("ALL ASSOCIATED CUSTOMER APPOINTMENTS WILL BE DELETED.\n\n"));
+                for (Appointment appt : userAppt) {
+                    msgCtx.append(String.format("Appointment ID# %d%nType: %s\n", appt.getAppointment_ID(), appt.getType()));
+                }
+                confirmDelete(selectedCst, btnTxt, msgCtx.toString());
+            }
+            else{
+                confirmDelete(selectedCst, btnTxt, msgCtx.toString());
+            }
+        }
+        catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
             String errorMsg = "Error: No Customer Selected!";
             alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
             confirm = alert.showAndWait();
