@@ -243,7 +243,7 @@
                                                                      <padding>
                                                                         <Insets left="10.0" />
                                                                      </padding></Label>
-                                                                  <ComboBox fx:id="CntScheduleSearchCB" prefWidth="150.0">
+                                                                  <ComboBox fx:id="CntScheduleSearchCB" onAction="#onReportFilterUpd" prefWidth="150.0">
                                                                      <VBox.margin>
                                                                         <Insets left="10.0" />
                                                                      </VBox.margin></ComboBox>

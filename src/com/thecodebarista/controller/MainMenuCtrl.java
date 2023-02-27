@@ -1308,7 +1308,16 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             typeFilter = true;
             return;
         }
+
+        if (btnTxt.equals("CntScheduleSearchCB")) {
+            if (CntApptPeriodRadioGrp.getSelectedToggle() != null) {
+                CntScheduleTblView.getItems().clear();
+                CntApptPeriodRadioGrp.getSelectedToggle().setSelected(false);
+            }
+        }
+
     }
+
 
     /**
      * On action Method for controls on Report tab. gathers the where clause param data.
@@ -1360,13 +1369,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
                 }
                 else {
                     String wcContact = String.valueOf(CntScheduleSearchCB.getValue().getContact_ID());
-                    if(CntApptPeriodRadioGrp.getSelectedToggle() != null)
+                    if(CntApptPeriodRadioGrp.getSelectedToggle() != null) {
+                        CntScheduleTblView.getItems().clear();
                         //wcPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
-                    wc = ((CntScheduleMoRadio.isSelected()) ? 1 : 0);
-                    System.out.println(String.format("Selected radio- '%s' and assoc wc #%d ",wcPeriod, wc));
-//                    if (CntScheduleMoRadio.isSelected()) {
-//                        wc = 1;
-//                    }
+                        wc = ((CntScheduleMoRadio.isSelected()) ? 1 : 0);
+                        System.out.println(String.format("Selected radio- '%s' and assoc wc #%d ",wcPeriod, wc));
+                    }
                     reportParams[0] = wcContact;
                     reportParams[1] = String.valueOf(wc);
                     reportParams[2] = wcPeriod;
