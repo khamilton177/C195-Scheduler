@@ -3,6 +3,7 @@ Copyright (c) 2023, The Code Barista LLC and/or its affiliates.
 The Global Consulting Scheduler is a GUI-based application to schedule appointments and store customer information.
 
 Author: Kerry J. Hamilton, The Code Barista LLC.
+Student ID: 000888046
 Contact Information: khami67@wgu.edu
 Application Version: Version 1.0, Feb. 25, 2023
 
