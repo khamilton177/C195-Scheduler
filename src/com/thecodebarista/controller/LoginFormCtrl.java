@@ -122,7 +122,7 @@ public class LoginFormCtrl implements Initializable {
             PasswordLbl.setText(rb.getString("Password"));
             LoginBtn.setText(rb.getString("Login"));
             ExitBtn.setText(rb.getString("Exit"));
-            // stage.setTitle(rb.getString("Title"));
+            //stage.setTitle(rb.getString("Title"));
             useForeign = true;
         }
         return useForeign;
