@@ -110,22 +110,21 @@ public class LoginFormCtrl implements Initializable {
      * Method sets the Login Form elements text and error messages to language specified by Locale.
      * @return boolean useForeign
      */
-    private Boolean setLoginLanguage() {
+    private void setLoginLanguage() {
         ResourceBundle rb = ResourceBundle.getBundle("Lang");
         String userSystemLocale = String.valueOf(Locale.getDefault());
         System.out.println("Locale is: " + userSystemLocale);
-        Boolean useForeign = false;
+        //Boolean useForeign = false;
 
-        if(userSystemLocale.equals("fr")) {
+        //if(userSystemLocale.equals("fr") || userSystemLocale.contains("fr_")) {
             BrandNameLbl.setText(rb.getString("BrandName"));
             UserNameLbl.setText(rb.getString("Username"));
             PasswordLbl.setText(rb.getString("Password"));
             LoginBtn.setText(rb.getString("Login"));
             ExitBtn.setText(rb.getString("Exit"));
-            //stage.setTitle(rb.getString("Title"));
-            useForeign = true;
-        }
-        return useForeign;
+            //useForeign = true;
+        //}
+        //return useForeign;
     }
 
     /**
@@ -309,8 +308,8 @@ public class LoginFormCtrl implements Initializable {
         System.out.println("Region: " + ZoneIdLbl.getText().split("/")[0]);
 
         // Get the locale information and direct application to use the foreign messages for the Login Form.
-        useLocale = setLoginLanguage();
-        System.out.println("Are we using foreign error messages? " + useLocale);
+        setLoginLanguage();
+        //System.out.println("Are we using foreign error messages? " + useLocale);
     }
 
 }
