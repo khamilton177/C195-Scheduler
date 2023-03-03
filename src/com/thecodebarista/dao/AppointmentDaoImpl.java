@@ -297,7 +297,6 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         try {
             String sqlStmt = "SELECT * FROM appointments" +
                     " WHERE (Customer_ID = ?) &&" +
-                    //" (DATE(Start) = ? || DATE(Start) = ?-1 || DATE(Start) = ?+1)" +
                     " (DATE(Start) = DATE(?) || DATE(Start) = DATE(?) - 1 || DATE(Start) = DATE(?) + 1)";
 
             prepStmt = useConnection().prepareStatement(sqlStmt);
