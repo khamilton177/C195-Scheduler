@@ -25,11 +25,13 @@ public class AppointmentScheduler extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // TODO: 2/19/2023 Comment out. Used for test Locale ONLY! 
-        //Locale.setDefault(new Locale("fr")); // Use this for testng language conversion only
+        // Locale.setDefault(new Locale("fr")); // Use this for testng language conversion only
 
         try{
             Parent root = FXMLLoader.load(getClass().getResource("view/login-form.fxml"));
-            stage.setTitle(ResourceBundle.getBundle("Lang").getString("Title"));
+            if(Locale.getDefault().getLanguage().equals("fr")) {
+                stage.setTitle(ResourceBundle.getBundle("Lang").getString("Title"));
+            }
             stage.setScene(new Scene(root));
             stage.show();
         }

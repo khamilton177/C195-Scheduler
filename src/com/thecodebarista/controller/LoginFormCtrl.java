@@ -112,19 +112,16 @@ public class LoginFormCtrl implements Initializable {
      */
     private void setLoginLanguage() {
         ResourceBundle rb = ResourceBundle.getBundle("Lang");
-        String userSystemLocale = String.valueOf(Locale.getDefault());
-        System.out.println("Locale is: " + userSystemLocale);
-        //Boolean useForeign = false;
+        String userSystemLocaleLang = String.valueOf(Locale.getDefault().getLanguage());
+        System.out.println("Language is " + userSystemLocaleLang);
 
-        //if(userSystemLocale.equals("fr") || userSystemLocale.contains("fr_")) {
+        if(userSystemLocaleLang.equals("fr")) {
             BrandNameLbl.setText(rb.getString("BrandName"));
             UserNameLbl.setText(rb.getString("Username"));
             PasswordLbl.setText(rb.getString("Password"));
             LoginBtn.setText(rb.getString("Login"));
             ExitBtn.setText(rb.getString("Exit"));
-            //useForeign = true;
-        //}
-        //return useForeign;
+        }
     }
 
     /**
