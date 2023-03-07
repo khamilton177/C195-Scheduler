@@ -12,6 +12,9 @@ import java.sql.Statement;
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getCstData;
 
+/**
+ * Implements the Abstract methods in the CustomerDAO class.
+ */
 public class CustomerDaoImpl implements CustomerDAO {
     private static String returnGenKeys = "Statement.RETURN_GENERATED_KEYS";
     private static PreparedStatement prepStmt;

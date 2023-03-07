@@ -1,5 +1,9 @@
 package com.thecodebarista.model;
 
+/**
+ * User Model representing client_schedule.users DB table.
+ * Not an application managed table.
+ */
 public class User {
     /**
      * The User ID.

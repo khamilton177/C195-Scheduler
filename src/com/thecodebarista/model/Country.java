@@ -1,5 +1,9 @@
 package com.thecodebarista.model;
 
+/**
+ * Country Model representing client_schedule.countries DB table.
+ * Not an application managed table.
+ */
 public class Country {
     private int Country_ID;
     private String Country;

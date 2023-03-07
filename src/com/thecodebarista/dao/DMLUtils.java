@@ -1,18 +1,23 @@
 package com.thecodebarista.dao;
 
-import com.thecodebarista.controller.MainMenuCtrl;
 import com.thecodebarista.model.*;
-import javafx.collections.FXCollections;
-
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Class for DML; processes the prepared statements.
+ */
 public class DMLUtils {
     public static PreparedStatement prepStmt;
     public static ResultSet rsData;
     public static int rowsAffected;
 
+    /**
+     * Method processes SQL Statements.
+     * The isSelect determines if the prepare statement will execute as a query or an update.
+     * @param prepStmt prepared statement
+     * @param sqlStmt query passed in from the DaoImpl classes.
+     * @return The number of rows affected from insert, update, delete or 0 for queries.
+     */
     public static int doDMLv2(PreparedStatement prepStmt, String sqlStmt) {
         boolean isSelect = sqlStmt.toLowerCase().startsWith("select");
         System.out.println("Processing: " + prepStmt.toString());
@@ -41,8 +46,7 @@ public class DMLUtils {
     }
 
     /**
-     * Build a class object from the returned ResultSet
-     *
+     * Build a User object from the returned ResultSet.
      * @param rs The return ResultSet from a doDMLv2 call.
      * @return User with populated data.
      * @throws SQLException Log will have SQL statement error.
@@ -55,8 +59,7 @@ public class DMLUtils {
     }
 
     /**
-     * Build a class object from the returned ResultSet
-     *
+     * Build an Appointment object from the returned ResultSet.
      * @param rs The return ResultSet from a doDMLv2 call.
      * @return Appointment with populated data.
      * @throws SQLException Log will have SQL statement error.
@@ -76,8 +79,7 @@ public class DMLUtils {
     }
 
     /**
-     * Build a class object from the returned ResultSet
-     *
+     * Build a Customer object from the returned ResultSet.
      * @param rs The return ResultSet from a doDMLv2 call.
      * @return Customer with populated data.
      * @throws SQLException Log will have SQL statement error.
@@ -95,8 +97,7 @@ public class DMLUtils {
     }
 
     /**
-     * Build a class object from the returned ResultSet
-     *
+     * Build a Contact object from the returned ResultSet.
      * @param rs The return ResultSet from a doDMLv2 call.
      * @return Contact with populated data.
      * @throws SQLException Log will have SQL statement error.
@@ -109,8 +110,7 @@ public class DMLUtils {
     }
 
     /**
-     * Build a class object from the returned ResultSet
-     *
+     * Build a Country object from the returned ResultSet.
      * @param rs The return ResultSet from a doDMLv2 call.
      * @return Country with populated data.
      * @throws SQLException Log will have SQL statement error.
@@ -122,8 +122,7 @@ public class DMLUtils {
     }
 
     /**
-     * Build a class object from the returned ResultSet
-     *
+     * Build a FirstLevelDivision object from the returned ResultSet.
      * @param rs The return ResultSet from a doDMLv2 call.
      * @return FirstLevelDivision with populated data.
      * @throws SQLException Log will have SQL statement error.
@@ -135,6 +134,12 @@ public class DMLUtils {
         return new FirstLevelDivision(division_ID, division, country_ID);
     }
 
+    /**
+     * Build class object for the Appointment by Month/Type returned ResultSet.
+     * @param rs The return ResultSet from a doDMLv2 call.
+     * @return FirstLevelDivision with populated data.
+     * @throws SQLException Log will have SQL statement error.
+     */
     public static Appointment getReportData(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
@@ -149,6 +154,12 @@ public class DMLUtils {
         return rptRow;
     }
 
+    /**
+     * Build class object for the Appointment Contact Scheduled returned ResultSet.
+     * @param rs The return ResultSet from a doDMLv2 call.
+     * @return FirstLevelDivision with populated data.
+     * @throws SQLException Log will have SQL statement error.
+     */
     public static Appointment getApptCntByPeriodData(ResultSet rs) throws SQLException {
         Appointment rptRow = new Appointment();
         rptRow.setAppointment_ID(rs.getInt("Appointment_ID"));

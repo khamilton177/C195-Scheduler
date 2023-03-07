@@ -986,7 +986,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Fills the MonthCB ComboBox with the months of the year. Used on Reports tab.
+     * <b>LAMBDA USAGE - </b>Fills the MonthCB ComboBox with the months of the year.
+     * Lambda filters out the empty value in the months enum then streams it to a list. Used on Reports tab.
      */
     private void buildMonths() {
         String[] months = new DateFormatSymbols().getInstance().getMonths();

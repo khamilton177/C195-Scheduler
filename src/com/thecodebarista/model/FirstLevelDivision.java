@@ -1,5 +1,9 @@
 package com.thecodebarista.model;
 
+/**
+ * FirstLevelDivision Model representing client_schedule.first_levels_divisions DB table.
+ * Not an application managed table.
+ */
 public class FirstLevelDivision {
     private int Division_ID;
     private String Division;

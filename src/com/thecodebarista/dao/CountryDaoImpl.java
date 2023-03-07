@@ -12,6 +12,9 @@ import java.util.List;
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.*;
 
+/**
+ * Implements the Abstract methods in the UnmanagedDAO class.
+ */
 public class CountryDaoImpl implements UnmanagedDAO {
 
     @Override
