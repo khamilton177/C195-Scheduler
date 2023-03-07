@@ -1031,6 +1031,28 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
+     * <b>LAMBDA USAGE - </b>Method streams appointments then does a Map/Filter/Reduce to produce the average duration of all Appointments.
+     * <BR>Additionally the function interface method is used to calculate the appointments durations in the mapToLong lambda.
+     * @return - String sentence with calculated average information.
+     */
+    protected String reportDurationAvg() {
+        String medium = "";
+        try {
+            AppointmentDAO apptDao = new AppointmentDaoImpl();
+            ObservableList<Appointment> apptByDuration = apptDao.extractAll();
+            OptionalDouble avg = apptByDuration.stream().mapToLong((a) -> getDurationMins(a))
+                    .filter(m -> m >= 15l && m <= 60l).average();
+            medium = avg.isPresent() ? String.format("AVERAGE TIME OF APPOINTMENTS: %s",String.valueOf((long)avg.getAsDouble())) : "NO APPOINTMENT TIMES TO AVERAGE";
+            System.out.println("AVERAGE TIME OF APPOINTMENTS: " + medium);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return medium;
+    }
+
+    /**
      * Initializes the controller class.
      * Run the Tableview methods to display all Tab data info and set the session user info.
      * @param url default application URL
@@ -1331,7 +1353,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     }
 
-
     /**
      * On action Method for controls on Report tab. gathers the where clause param data.
      * @param actionEvent - Various Control clicked to filter information.
@@ -1442,28 +1463,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
         }
-    }
-
-    /**
-     * <b>LAMBDA USAGE - </b>Method streams appointments then does a Map/Filter/Reduce to produce the average duration of all Appointments.
-     * <BR>Additionally the function interface method is used to calculate the appointments durations in the mapToLong lambda.
-     * @return - String sentence with calculated average information.
-     */
-    protected String reportDurationAvg() {
-        String medium = "";
-        try {
-            AppointmentDAO apptDao = new AppointmentDaoImpl();
-            ObservableList<Appointment> apptByDuration = apptDao.extractAll();
-            OptionalDouble avg = apptByDuration.stream().mapToLong((a) -> getDurationMins(a))
-                    .filter(m -> m >= 15l && m <= 60l).average();
-            medium = avg.isPresent() ? String.format("AVERAGE TIME OF APPOINTMENTS: %s",String.valueOf((long)avg.getAsDouble())) : "NO APPOINTMENT TIMES TO AVERAGE";
-            System.out.println("AVERAGE TIME OF APPOINTMENTS: " + medium);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return medium;
     }
 
     /**
