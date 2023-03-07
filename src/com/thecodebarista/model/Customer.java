@@ -1,5 +1,8 @@
 package com.thecodebarista.model;
 
+/**
+ * Customer Model representing client_schedule.customers DB table.
+ */
 public class Customer {
     private int Customer_ID;
     private String Customer_Name;
@@ -8,10 +11,19 @@ public class Customer {
     private String Phone;
     private int Division_ID;
     /**
-     * Exist in Object Only field used to capture the associated Division_ID's Country_ID for Customer Tableviews
+     * Exist in Object Only field used to capture the associated Division_ID's Country_ID for Customer Tableviews.
      */
     private int Country_ID;
 
+    /**
+     * Customer constructor with all customer member for DB creation.
+     * @param customer_ID
+     * @param customer_Name
+     * @param address
+     * @param postal_Code
+     * @param phone
+     * @param division_ID
+     */
     public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID) {
         Customer_ID = customer_ID;
         Customer_Name = customer_Name;
@@ -21,6 +33,16 @@ public class Customer {
         Division_ID = division_ID;
     }
 
+    /**
+     * Customer constructor with Country member.
+     * @param customer_ID
+     * @param customer_Name
+     * @param address
+     * @param postal_Code
+     * @param phone
+     * @param division_ID
+     * @param country_ID
+     */
     public Customer(int customer_ID, String customer_Name, String address, String postal_Code, String phone, int division_ID, int country_ID) {
         Customer_ID = customer_ID;
         Customer_Name = customer_Name;

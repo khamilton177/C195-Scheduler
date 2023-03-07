@@ -4,6 +4,9 @@ import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Class for the JDBC connection
+ */
 public abstract class DBConnection {
 
     //These variables are separated for future use to plugin new connection parameters
@@ -17,6 +20,9 @@ public abstract class DBConnection {
     private static final String dbHostURL = "//" + dbHost + ":" + dbServerPort + "/";
     private static final String dbName = "client_schedule";
 
+    /**
+     * The connProperties save the timestamp data in UTC while presenting time in GUI to user's zoned session.
+     */
     //Save the timestamp data in UTC while presenting time in GUI to user's zoned session.
     private static final String connProperties = "?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true";
     private static final String MySQLJDBCDriver = "com.mysql.cj.jdbc.Driver";

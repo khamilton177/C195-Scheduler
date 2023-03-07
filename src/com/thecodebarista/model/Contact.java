@@ -1,5 +1,9 @@
 package com.thecodebarista.model;
 
+/**
+ * Contact Model representing client_schedule.contacts DB table.
+ * Not an application managed table.
+ */
 public class Contact {
     private int Contact_ID;
     private String Contact_Name;

@@ -14,6 +14,9 @@ import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getCntData;
 import static com.thecodebarista.dao.DMLUtils.getDivData;
 
+/**
+ * Implements the Abstract methods in the UnmanagedDAO class.
+ */
 public class FirstLevelDivisionDAOImpl implements UnmanagedDAO{
     private static PreparedStatement prepStmt;
 

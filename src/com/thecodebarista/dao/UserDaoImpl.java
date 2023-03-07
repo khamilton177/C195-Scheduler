@@ -11,6 +11,9 @@ import java.sql.SQLException;
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getUserData;
 
+/**
+ * Implements the Abstract methods in the UnmanagedDAO class.
+ */
 public class UserDaoImpl implements UnmanagedDAO{
     private static PreparedStatement prepStmt;
 

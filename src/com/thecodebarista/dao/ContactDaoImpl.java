@@ -15,6 +15,9 @@ import java.util.List;
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DMLUtils.getCntData;
 
+/**
+ * Implements the Abstract methods in the UnmanagedDAO class.
+ */
 public class ContactDaoImpl implements UnmanagedDAO {
     private static PreparedStatement prepStmt;
 
