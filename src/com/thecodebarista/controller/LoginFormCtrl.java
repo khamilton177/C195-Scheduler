@@ -59,14 +59,24 @@ public class LoginFormCtrl implements Initializable {
     public static String static_ZoneId;
 
     /**
+     * Static Session User Object after Successful Login.
+     */
+    public static User sessionUser;
+
+    /**
      * Static int used to retain the Login user's ID information.
      */
     public static int sessionUserId;
 
     /**
-     * Static int used to retain the Login user's name information.
+     * Static String used to retain the Login user's name information.
      */
     public static String sessionUserName;
+
+    /**
+     * Static int used to retain the Login user's Admin status information.
+     */
+    public static int sessionUserAccess;
 
     @javafx.fxml.FXML
     private Label LoginMsgTxt;
@@ -161,6 +171,10 @@ public class LoginFormCtrl implements Initializable {
         switch (msg) {
             case "Success" -> logMsg.append(enRb.getString("Success"));
 
+            case "Inactive" -> {
+                LoginMsgTxt.setText(rb.getString("Inactive"));
+                logMsg.append(enRb.getString("Inactive"));
+            }
             case "EmptyName" -> {
                 LoginMsgTxt.setText(rb.getString("EmptyName"));
                 logMsg.append(enRb.getString("EmptyName"));
@@ -204,6 +218,7 @@ public class LoginFormCtrl implements Initializable {
             String loginCredentials = "SELECT * FROM users WHERE User_Name  = '" +
                     userName +
                     "' AND Password  = '" + password + "'";
+
             return loginCredentials;
         }
         return passCredentials;
@@ -215,6 +230,14 @@ public class LoginFormCtrl implements Initializable {
      */
     public void setCurrentUserid(int objId) {
         LoginFormCtrl.sessionUserId = objId;
+    }
+
+    /**
+     * Set the successful login user access level to the session user access.
+     * @param objIsAdmin - The User_ID of login user.
+     */
+    public void setCurrentUsesAccess(int objIsAdmin) {
+        LoginFormCtrl.sessionUserAccess = objIsAdmin;
     }
 
     /**
@@ -252,15 +275,22 @@ public class LoginFormCtrl implements Initializable {
                 try{
                     getCurrentUserid = Objects.requireNonNull(notLoginUser).getUser_ID();
                     if (getCurrentUserid > 0){
+                        if (notLoginUser.getActive() < 1){
+                            setLoginErrMsg("Inactive");
+                            actLog.info(setLoginErrMsg("Inactive"));
+                            return;
+                        }
                         System.out.println("Valid Login: " + getCurrentUserid);
                         setLoginErrMsg("Success");
                         actLog.info(setLoginErrMsg("Success"));
+                        sessionUser = notLoginUser;
                         sessionUserId = getCurrentUserid;
-
                         setCurrentUserid(getCurrentUserid);
 
-
                         sessionUserName = notLoginUser.getUser_Name();
+
+                        sessionUserAccess = notLoginUser.getIs_Admin();
+                        setCurrentUsesAccess(sessionUserAccess);
 
                         FXMLLoader loader = new FXMLLoader();
                         loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
@@ -268,7 +298,7 @@ public class LoginFormCtrl implements Initializable {
                         MainMenuCtrl formController = loader.getController();
                         formController.setCurrentUserIdInfo(sessionUserId);
                         formController.setCurrentUserNameInfo(sessionUserName);
-
+                        formController.setCurrentUserViewAccess(sessionUserAccess);
 
                         formController.loginAppointAlert();
 
@@ -286,8 +316,8 @@ public class LoginFormCtrl implements Initializable {
             }
         }
         catch(Exception e) {
-            System.out.println("from here 5 " + e.getMessage());
-            System.out.println("from here 6 " +e.getCause());
+            System.out.println(String.format("%s msg: %s", btnTxt, e.getMessage()));
+            System.out.println(String.format("%s msg: %s", btnTxt, e.getCause()));
         }
     }
 
@@ -308,5 +338,4 @@ public class LoginFormCtrl implements Initializable {
         setLoginLanguage();
         //System.out.println("Are we using foreign error messages? " + useLocale);
     }
-
 }

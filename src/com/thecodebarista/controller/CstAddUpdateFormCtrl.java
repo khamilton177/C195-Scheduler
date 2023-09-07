@@ -113,8 +113,17 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
 
             if (validForm) {
                 saveCstData();
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+                scene = loader.load();
+                MainMenuCtrl formController = loader.getController();
+                formController.setMainTabPane("CstTab");
+
+                if (sessionUserAccess < 1) {
+                    formController.setCurrentUserViewAccess(sessionUserAccess);
+                }
                 stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-                scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+                //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                 stage.setTitle("C195-Global Consulting Scheduler");
                 stage.setScene(new Scene(scene));
                 stage.show();
@@ -136,9 +145,18 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
         try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+            scene = loader.load();
+            MainMenuCtrl formController = loader.getController();
+            formController.setMainTabPane("CstTab");
+
+            if (sessionUserAccess < 1) {
+                formController.setCurrentUserViewAccess(sessionUserAccess);
+            }
             // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+            //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
             stage.setTitle("C195-Global Consulting Scheduler");
             stage.setScene(new Scene(scene));
             stage.show();

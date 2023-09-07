@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
-import static com.thecodebarista.dao.DMLUtils.getCstData;
+import static com.thecodebarista.dao.DBUtils.getCstData;
 
 /**
  * Implements the Abstract methods in the CustomerDAO class.
@@ -46,12 +46,12 @@ public class CustomerDaoImpl implements CustomerDAO {
             System.out.println("made it here 1");
 
             // Pass the preparedStatement to be executed.
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
             System.out.println("made it here 2");
 
             // Get the ResultSet of the executed query.
             System.out.println("made it here 3");
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // If Customer data found, extract the ResultSet to a Customer object and return.
             if (rs.next()) {
@@ -89,10 +89,10 @@ public class CustomerDaoImpl implements CustomerDAO {
 
 
         prepStmt = useConnection().prepareStatement(sqlStmt);
-        DMLUtils.doDMLv2(prepStmt, sqlStmt);
+        DBUtils.doDMLv2(prepStmt, sqlStmt);
 
         // Get the ResultSet of the executed query.
-        ResultSet rs = DMLUtils.getResult();
+        ResultSet rs = DBUtils.getResult();
 
         // Extract the ResultSet to a class object.
         System.out.println("Building Customer List");
@@ -120,7 +120,7 @@ public class CustomerDaoImpl implements CustomerDAO {
             prepStmt.setInt(5, customer.getDivision_ID());
 
             // Pass the preparedStatement to be executed with plain string for validation and log.
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             ResultSet rs = prepStmt.getGeneratedKeys();
             rs.next();
@@ -153,7 +153,7 @@ public class CustomerDaoImpl implements CustomerDAO {
             prepStmt.setInt(5, customer.getDivision_ID());
             prepStmt.setInt(6, customer.getCustomer_ID());
 
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
         }
         catch(SQLException e) {
             e.printStackTrace();
@@ -168,7 +168,7 @@ public class CustomerDaoImpl implements CustomerDAO {
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, customer.getCustomer_ID());
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
         }
         catch(SQLException e) {
             e.printStackTrace();
@@ -177,14 +177,39 @@ public class CustomerDaoImpl implements CustomerDAO {
     }
 
     @Override
+    public ObservableList<Customer> sfQuery(String sfQuery) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public ObservableList<String> genericData(String query) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public int existColumns(String column) throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public int alterTable(String column) throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public int makeColumnUnique(String column) throws SQLException {
+        return 0;
+    }
+
+    @Override
     public ObservableList<Customer> customerWithCoInfo() throws SQLException {
         ObservableList<Customer> cstWithCoInfo = FXCollections.observableArrayList();
         String sqlStmt = CSTVIEW;
         prepStmt = useConnection().prepareStatement(sqlStmt);
-        DMLUtils.doDMLv2(prepStmt, sqlStmt);
+        DBUtils.doDMLv2(prepStmt, sqlStmt);
 
         // Get the ResultSet of the executed query.
-        ResultSet rs = DMLUtils.getResult();
+        ResultSet rs = DBUtils.getResult();
 
         // Extract the ResultSet to a class object.
         System.out.println("Building Customer with Country List");

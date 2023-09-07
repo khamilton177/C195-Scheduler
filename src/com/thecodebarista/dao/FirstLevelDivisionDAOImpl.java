@@ -7,12 +7,9 @@ import javafx.collections.ObservableList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
-import static com.thecodebarista.dao.DMLUtils.getCntData;
-import static com.thecodebarista.dao.DMLUtils.getDivData;
+import static com.thecodebarista.dao.DBUtils.getDivData;
 
 /**
  * Implements the Abstract methods in the UnmanagedDAO class.
@@ -33,12 +30,12 @@ public class FirstLevelDivisionDAOImpl implements UnmanagedDAO{
             // Pass the preparedStatement to be executed.
 
             // Pass the preparedStatement to be executed.
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
             System.out.println("made it here 2");
 
             // Get the ResultSet of the executed query.
             System.out.println("made it here 3");
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // If FirstLevelDivision data found, extract the ResultSet to a FirstLevelDivision object and return.
             if (rs.next()) {
@@ -61,10 +58,10 @@ public class FirstLevelDivisionDAOImpl implements UnmanagedDAO{
         try{
             String sqlStmt = "SELECT * FROM first_Level_divisions";
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             while (rs.next()) {
@@ -93,12 +90,12 @@ public class FirstLevelDivisionDAOImpl implements UnmanagedDAO{
             // Pass the preparedStatement to be executed.
 
             // Pass the preparedStatement to be executed.
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
             System.out.println("made it here 2");
 
             // Get the ResultSet of the executed query.
             System.out.println("made it here 3");
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // If FirstLevelDivision data found, extract the ResultSet to a FirstLevelDivision object and return.
             if (rs.next()) {
@@ -131,11 +128,11 @@ public class FirstLevelDivisionDAOImpl implements UnmanagedDAO{
             System.out.println("Passing selected Country ID.");
 
             // Pass the preparedStatement to be executed.
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
             System.out.println("Process query");
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Division List based on Country.");

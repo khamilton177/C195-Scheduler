@@ -17,6 +17,17 @@ import java.util.ResourceBundle;
  */
 public class AppointmentScheduler extends Application {
 
+    @Override
+    public void init() throws Exception {
+        DBConnection.establishConnection();
+        UserDAO checkUserDB = new UserDaoImpl();
+        ContactDAO checkCntDB = new ContactDaoImpl();
+        checkUserDB.existColumns("Is_Admin");
+        checkUserDB.existColumns("Active");
+        checkCntDB.existColumns("Active");
+        checkCntDB.makeColumnUnique("Email");
+    }
+
     /**
      * Redirect main stage to start the application in the Login Form screen
      * @param stage application default stage
@@ -47,7 +58,7 @@ public class AppointmentScheduler extends Application {
      * @throws SQLException
      */
     public static void main(String[] args) throws SQLException {
-        DBConnection.establishConnection();
+        // DBConnection.establishConnection();
         LoginFormCtrl.loginLogger();
 
         launch(args);

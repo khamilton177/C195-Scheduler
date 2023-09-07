@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.thecodebarista.TimeMachine;
 import com.thecodebarista.dao.*;
@@ -68,6 +69,16 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     Tab currentTab;
 
     /**
+     * Tab selected in current screen.
+     */
+    protected String prevTab;
+
+    /**
+     * Tab selected under Appointments tab screen.
+     */
+    Tab currentSubTab;
+
+    /**
      * The return of calculateStartLdt method.
      */
     LocalDateTime StartTime;
@@ -86,6 +97,26 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      * Formats timestamps for use in the start_TxtFld and end_TxtFld.
      */
     SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * ObservableList of User's Names Status.
+     */
+    ObservableList<String> userNames = FXCollections.observableArrayList();
+
+    /**
+     * ObservableList of Contact's Names Status.
+     */
+    ObservableList<String> cntNames = FXCollections.observableArrayList();
+
+    /**
+     * ObservableList of Admin Status.
+     */
+    ObservableList<String> adminStatus = FXCollections.observableArrayList();
+
+    /**
+     * ObservableList of Active Statuses.
+     */
+    ObservableList<String> activeStatus = FXCollections.observableArrayList();
 
     /**
      * ObservableList of Months by full name.
@@ -128,9 +159,74 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     @javafx.fxml.FXML
     protected Hyperlink LogOutBtn;
 
+    /**
+     * Tab pane that holds the all tabs.
+     */
+    @javafx.fxml.FXML
+    protected TabPane MainTabPane;
+
+    /**
+     * SelectModel for the MainTabPane.
+     */
+    SingleSelectionModel<Tab> tabSelect;
+
+    /**
+     * The Appointments tab.
+     */
+    @javafx.fxml.FXML
+    protected Tab ApptTab;
+
+    /**
+     * The Customers tab.
+     */
+    @javafx.fxml.FXML
+    protected Tab CstTab;
+
+    /**
+     * The Reports tab.
+     */
+    @javafx.fxml.FXML
+    protected Tab RptTab;
+
+    /**
+     * The Users tab.
+     */
+    @javafx.fxml.FXML
+    protected Tab UserAdminTab;
+
+    /**
+     * The Contacts tab.
+     */
+    @javafx.fxml.FXML
+    protected Tab CntAdminTab;
+
     /*
     --- Start of Appointment's Appointments Tabs FXML controls ---
      */
+
+    /**
+     * The Appointment Period Radio group.
+     */
+    @javafx.fxml.FXML
+    protected ToggleGroup ApptPeriodGrp;
+
+    /**
+     * The 'All' Appointment's Radio button.
+     */
+    @javafx.fxml.FXML
+    protected RadioButton AppAllRadio;
+
+    /**
+     * The Monthly Appointment's Radio button.
+     */
+    @javafx.fxml.FXML
+    protected RadioButton AppWkRadio;
+
+    /**
+     * The Weekly Appointment's Radio Button.
+     */
+    @javafx.fxml.FXML
+    protected RadioButton AppMoRadio;
 
     /**
      * New button on the Appointment Tabs.
@@ -419,6 +515,183 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
 
     /*
+    --- Start of User Tab FXML controls ---
+     */
+
+    /**
+     * New button on the User Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button UserAddBtn;
+
+    /**
+     * Update button on the User Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button UserModifyBtn;
+
+    /**
+     * Activate/Deactivate button on the User Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button UserActiveStatusBtn;
+
+    @javafx.fxml.FXML
+    private Button userSearchFilterBtn;
+
+    @javafx.fxml.FXML
+    private Button UserClrSearchBtn;
+
+    @javafx.fxml.FXML
+    private Pane userSearchPane;
+
+    /**
+     * The Searchable User Filter.
+     */
+    @javafx.fxml.FXML
+    protected ComboBox<String> sfUserNameCB;
+
+    /**
+     * The Active Status Search Filter.
+     */
+    @javafx.fxml.FXML
+    protected ComboBox<String> sfAdminCB;
+
+    /**
+     * The Active Status Search Filter.
+     */
+    @javafx.fxml.FXML
+    protected ComboBox<String> sfUserActiveCB;
+
+    /**
+     * The User Table View.
+     * Only shown when user has Admin Access.
+     */
+    @javafx.fxml.FXML
+    protected TableView<User> UserTblView;
+
+    /**
+     * User ID column on the UserTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<User, Integer> UserIdCol;
+
+    /**
+     * UserName column on the UserTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<User, String> UserNameCol;
+
+    /**
+     * User Password column on the UserTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<User, String> UserPwdCol;
+
+    /**
+     * User ID column on the UserTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<User, Integer> UserAdminCol;
+
+    /**
+     * User ID column on the UserTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<User, Integer> UserActiveCol;
+
+    /*
+    --- End of User Tab FXML controls ---
+     */
+
+
+    /*
+    --- Start of Contact Tab FXML controls ---
+     */
+
+    /**
+     * New button on the Contact Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button CntAddBtn;
+
+    /**
+     * Update button on the Contact Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button CntModifyBtn;
+
+    /**
+     * Activate/Deactivate button on the Contact Tabs.
+     */
+    @javafx.fxml.FXML
+    protected Button CntActiveStatusBtn;
+
+    @javafx.fxml.FXML
+    private Button cntSearchFilterBtn;
+
+    @javafx.fxml.FXML
+    private Button CntClrSearchBtn;
+
+    @javafx.fxml.FXML
+    private Pane cntSearchPane;
+
+    /**
+     * The Searchable Contact Name Filter.
+     */
+    @javafx.fxml.FXML
+    protected ComboBox<String> sfCntNameCB;
+
+    /**
+     * The Active Status Search Filter.
+     */
+    @javafx.fxml.FXML
+    protected TextField sfCntEmail;
+
+    /**
+     * The Active Status Search Filter.
+     */
+    @javafx.fxml.FXML
+    protected ComboBox<String> sfCntActiveCB;
+
+    @javafx.fxml.FXML
+    private Button CntSearchBtn;
+
+    /**
+     * The Contact Table View.
+     */
+    @javafx.fxml.FXML
+    protected TableView<Contact> CntTblView;
+
+    /**
+     * Contact ID column on the CntTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Contact, Integer> CntIdCol;
+
+    /**
+     * Contact Name column on the CntTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Contact, String> CntNameCol;
+
+    /**
+     * Contact Email column on the CntTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Contact, String> CntEmailCol;
+
+    /**
+     * Contact Active? column on the CntTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<Contact, Integer> CntActiveCol;
+    /*
+    --- End of Contact Tab FXML controls ---
+     */
+
+
+    /*
     --- Appointment New/Update Form Protected FXML Fields Start ---
     */
     /**
@@ -504,6 +777,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     --- Appointment New/Update Form Protected FXML Fields End ---
     */
 
+
     /*
     --- Customer Add/Update Form Protected FXML Fields Start ---
     */
@@ -544,6 +818,55 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     protected ComboBox<FirstLevelDivision> division_ID_CBox;
     /*
     --- Customer Add/Updated Form Protected FXML Fields End ---
+    */
+
+
+
+    /*
+    --- User Add/Update Form Protected FXML Fields Start ---
+    */
+    /**
+     * UserName text field on User Add/Update form.
+     */
+    @javafx.fxml.FXML
+    protected TextField user_Name_TxtFld;
+
+    /**
+     * User Password text field on User Add/Update form.
+     */
+    @javafx.fxml.FXML
+    protected TextField pwd_TxtFld;
+
+    @javafx.fxml.FXML
+    protected CheckBox user_Active_ChkBox;
+
+    @javafx.fxml.FXML
+    protected CheckBox admin_ChkBox;
+    /*
+    --- User Add/Update Form Protected FXML Fields End ---
+    */
+
+
+
+    /*
+    --- Contact Add/Update Form Protected FXML Fields Start ---
+    */
+    /**
+     * Contact Name text field on User Add/Update form.
+     */
+    @javafx.fxml.FXML
+    protected TextField cnt_Name_TxtFld;
+
+    /**
+     * Contact Email text field on User Add/Update form.
+     */
+    @javafx.fxml.FXML
+    protected TextField email_TxtFld;
+
+    @javafx.fxml.FXML
+    protected CheckBox cnt_Active_ChkBox;
+    /*
+    --- Contact Add/Updated Form Protected FXML Fields End ---
     */
 
     /**
@@ -614,6 +937,29 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      */
     protected void setCurrentUserNameInfo(String sessionUserName) {
         CurrentUserNameLbl.setText(sessionUserName);
+    }
+
+    /**
+     * Removes the tabs that are only for Admin level access.
+     * @param sessionUserAccess
+     */
+
+    protected void setCurrentUserViewAccess(int sessionUserAccess) {
+        System.out.println("Access Level: " + sessionUserAccess);
+        if (sessionUserAccess < 1) {
+
+            int count = (int) MainTabPane.getTabs().stream().filter((p) -> p.getId().contains("Admin")).count();
+            for (int i = 0; i < count; i++) {
+                ObservableList<Tab> adminTabs = MainTabPane.getTabs();
+                System.out.println("Tab List Count: " + adminTabs.size());
+                for (Tab tab : adminTabs) {
+                    if (tab.getId().contains("Admin")) {
+                        adminTabs.remove(tab);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -700,6 +1046,28 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
+     * Method sets all User Constructor fields in a Tableview.
+     */
+    protected void userSetAllRows() {
+        UserIdCol.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
+        UserNameCol.setCellValueFactory(new PropertyValueFactory<>("user_Name"));
+        UserPwdCol.setCellValueFactory(new PropertyValueFactory<>("password"));
+        UserAdminCol.setCellValueFactory(new PropertyValueFactory<>("is_Admin"));
+        UserActiveCol.setCellValueFactory(new PropertyValueFactory<>("active"));
+    }
+
+    /**
+     * Method sets all Contact Constructor fields in a Tableview.
+     */
+    protected void cntSetAllRows() {
+        CntIdCol.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
+        CntNameCol.setCellValueFactory(new PropertyValueFactory<>("contact_Name"));
+        CntEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        CntActiveCol.setCellValueFactory(new PropertyValueFactory<>("active"));
+
+    }
+
+    /**
      * Method sets all Customer Constructor fields in a Tableview.
      */
     protected void cstSetAllRows() {
@@ -726,6 +1094,72 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         customer_ID_Col.setCellValueFactory(new PropertyValueFactory<>("customer_ID"));
         user_ID_Col.setCellValueFactory(new PropertyValueFactory<>("user_ID"));
         contact_ID_Col.setCellValueFactory(new PropertyValueFactory<>("contact_ID"));
+    }
+
+    /**
+     * Displays the User ObservableList data in the TableView.
+     */
+    public void displayUserTblViewData() throws SQLException {
+        ObservableList<User> allUsers = FXCollections.observableArrayList();
+        UserDAO userDao = new UserDaoImpl();
+        userSetAllRows();
+        allUsers.addAll(userDao.extractAll());
+        UserTblView.setItems(allUsers);
+    }
+
+    /**
+     * Displays the User ObservableList data in the TableView.
+     */
+    public void displayUserTblViewData(String option, String param) throws SQLException {
+        ObservableList<User> users = FXCollections.observableArrayList();
+        UserDAO userDao = new UserDaoImpl();
+        userSetAllRows();
+
+        switch (option) {
+            case "All":
+                users.addAll(userDao.extractAll());
+                break;
+            case "sf":
+                users.addAll(userDao.sfQuery(param));
+                break;
+            case "sfClear":
+            default:
+                users.addAll(userDao.ActiveUsers());
+        }
+        UserTblView.setItems(users);
+    }
+
+    /**
+     * Displays the Contact ObservableList data in the TableView.
+     */
+    public void displayCntTblViewData() throws SQLException {
+        ObservableList<Contact> allContacts = FXCollections.observableArrayList();
+        ContactDAO cntDao = new ContactDaoImpl();
+        cntSetAllRows();
+        allContacts.addAll(cntDao.extractAll());
+        CntTblView.setItems(allContacts);
+    }
+
+    /**
+     * Displays the Contact ObservableList data in the TableView.
+     */
+    public void displayCntTblViewData(String option, String param) throws SQLException {
+        ObservableList<Contact> contacts = FXCollections.observableArrayList();
+        ContactDAO cntDao = new ContactDaoImpl();
+        cntSetAllRows();
+
+        switch (option) {
+            case "All":
+                contacts.addAll(cntDao.extractAll());
+                break;
+            case "sf":
+                contacts.addAll(cntDao.sfQuery(param));
+                break;
+            case "sfClear":
+            default:
+                contacts.addAll(cntDao.ActiveContacts());
+        }
+        CntTblView.setItems(contacts);
     }
 
     /**
@@ -762,6 +1196,23 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
+     * Display the Appt ObservableList data in the TableView based on ApptPeriodGrp selection.
+     */
+    public void displayApptTblViewData_v2(String btnTxt) throws SQLException {
+        ObservableList<Appointment> ApptAppointments = FXCollections.observableArrayList();
+        AppointmentDAO apptDao = new AppointmentDaoImpl();
+        apptSetAllRows();
+        if(btnTxt.equals("AppMoRadio")) {
+            ApptAppointments.addAll(apptDao.getByMonth());
+        } else if (btnTxt.equals("AppWkRadio") ){
+            ApptAppointments.addAll(apptDao.getByWeekly());
+        } else{
+            ApptAppointments.addAll(apptDao.extractAll());
+        }
+        ApptTblView.setItems(ApptAppointments);
+    }
+
+    /**
      * Validates Both Appointment and Customer forms for missing data before save.
      * Alerts user.
      * @return True if all fields are populated
@@ -772,10 +1223,17 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         String validateMsg = "";
         TextField[] formFields;
         ComboBox[] formCbFields;
+        CheckBox[] formCxbFields;
         String startTxtFld = "";
         String endTxtFld = "";
 
-        if(btnTxt.equals("CstSave")) {
+        if(btnTxt.equals("UserSave")) {
+            formFields = new TextField[]{user_Name_TxtFld, pwd_TxtFld};
+        }
+        else if(btnTxt.equals("CntSave")) {
+            formFields = new TextField[]{cnt_Name_TxtFld, email_TxtFld};
+        }
+        else if(btnTxt.equals("CstSave")) {
             formFields = new TextField[]{phone_TxtFld, customer_Name_TxtFld, address_TxtFld, postal_Code_TxtFld};
         }
         else {
@@ -815,7 +1273,32 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             }
         }
 
-        if (btnTxt.equals("CstSave")) {
+        if (btnTxt.equals("UserSave")) {
+            formCxbFields = new CheckBox[]{admin_ChkBox, user_Active_ChkBox};
+        }
+        else if (btnTxt.equals("CntSave")) {
+            formCxbFields = new CheckBox[]{cnt_Active_ChkBox};
+        }
+        else if (btnTxt.equals("CstSave")) {
+            formCxbFields = new CheckBox[]{};
+        }
+        else {
+            formCxbFields = new CheckBox[]{};
+        }
+        for (CheckBox check : formCxbFields) {
+            if (!check.isSelected()) {
+                validateMsg = "";
+                validateErrMsg.append(validateMsg);
+            }
+        }
+
+        if (btnTxt.equals("UserSave")) {
+            formCbFields = new ComboBox[]{};
+        }
+        else if (btnTxt.equals("CntSave")) {
+            formCbFields = new ComboBox[]{};
+        }
+        else if (btnTxt.equals("CstSave")) {
             formCbFields = new ComboBox[]{country_ID_CBox, division_ID_CBox};
         }
         else {
@@ -836,7 +1319,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         else {
             isValid = true;
 
-            if(btnTxt.equals("CstSave")) {
+            if(btnTxt.equals("UserSave") || btnTxt.equals("CntSave") || btnTxt.equals("CstSave")) {
                 return isValid;
             }
             else {
@@ -954,7 +1437,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      */
     private void tableItemSelector() {
         TableView.TableViewSelectionModel<Appointment> itemSelector;
-        switch (currentTab.getId()) {
+        switch (currentSubTab.getId()) {
             case "AppMoTab":
                 itemSelector = includeApptMoController.ApptTblViewMonthly.getSelectionModel(); // Tab is Include FXML file
                 selectedAppt = itemSelector.getSelectedItem();
@@ -975,14 +1458,45 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      * @throws SQLException
      */
     private void refreshApptTables() throws SQLException {
+        String apptPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
+        System.out.println("Current Appt Period Selected: " + apptPeriod);
+
         try {
-            displayApptTblViewData();
-            includeApptMoController.displayApptTblViewMonthly();
-            includeApptWkController.displayApptTblViewWeekly();
+            displayApptTblViewData_v2(apptPeriod);
+            // displayApptTblViewData();
+            // includeApptMoController.displayApptTblViewMonthly();
+            // includeApptWkController.displayApptTblViewWeekly();
         }
         catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Creates data for Search Filter ComboBox options.
+     */
+    private void buildSfFilters() throws SQLException {
+        activeStatus.addAll("", "Active", "Inactive");
+        adminStatus.addAll("Yes", "No");
+
+        // Create User sfFilters
+        sfAdminCB.setItems(adminStatus);
+        sfUserActiveCB.setItems(activeStatus);
+        UserDAO userNameDao = new UserDaoImpl();
+
+        for (User user : userNameDao.extractAll()) {
+            userNames.add(user.getUser_Name());
+        }
+        sfUserNameCB.setItems(userNames);
+
+        // Create Contact sfFilters
+        sfCntActiveCB.setItems(activeStatus);
+        ContactDAO cntNameDao = new ContactDaoImpl();
+
+        for (Contact cnt : cntNameDao.extractAll()) {
+            cntNames.add(cnt.getContact_Name());
+        }
+        sfCntNameCB.setItems(cntNames);
     }
 
     /**
@@ -1031,6 +1545,28 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         }
     }
 
+    public void setMainTabPane(String tabName) {
+        tabSelect = MainTabPane.getSelectionModel();
+        System.out.println(String.format("Tab index is %s", tabSelect.getSelectedIndex()));
+        System.out.println(String.format("Prev Tab name is %s", tabName));
+        ObservableList<Tab> mainTabs = MainTabPane.getTabs();
+        for (Tab tab : mainTabs) {
+            if (tab.getId().equals(tabName)) {
+                tabSelect.select(tab);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Sets currentTab variable on Main Menu changes.
+     */
+    public String onTabChange() {
+        currentTab = MainTabPane.getSelectionModel().getSelectedItem();
+        System.out.println("Current Tab Inquiry for tabSelect: " + currentTab.getId());
+        return currentTab.getId();
+    }
+
     /**
      * <b>LAMBDA USAGE - </b>Method streams appointments then does a Map/Filter/Reduce to produce the average duration of all Appointments.
      * <BR>Additionally the function interface method is used to calculate the appointments durations in the mapToLong lambda.
@@ -1051,30 +1587,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             e.getCause();
         }
         return medium;
-    }
-
-    /**
-     * Initializes the controller class.
-     * Run the Tableview methods to display all Tab data info and set the session user info.
-     * @param url default application URL
-     * @param rb default application ResourceBundle
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
-        try {
-            // For seed data testing. TODO: Don't forget to comment.
-            // appointmentSeed();
-
-            displayApptTblViewData();
-            //displayCstTblViewData(); //not currently used.
-            displayCstWithCoInfo();
-            setCurrentUserIdInfo(sessionUserId);
-            setCurrentUserNameInfo(sessionUserName);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -1119,8 +1631,9 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             loader.setLocation(getClass().getResource("/com/thecodebarista/view/appt-add-update-form.fxml"));
             scene = loader.load();
             ApptAddUpdateFormCtrl modelCtrl = loader.getController();
-            tableItemSelector();
+            // tableItemSelector();
             System.out.println("Made it here 1");
+            selectedAppt = ApptTblView.getSelectionModel().getSelectedItem();
             modelCtrl.sendApptModifyData(selectedAppt);
 
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
@@ -1152,7 +1665,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
         try {
-            tableItemSelector();
+            // tableItemSelector();
+            selectedAppt = ApptTblView.getSelectionModel().getSelectedItem();
             String msgCtx = "Please confirm deletion of " + "Appointment ID: " + selectedAppt.getAppointment_ID() +
                     System.getProperty("line.separator") + "Type: " + selectedAppt.getType();
             confirmDelete(selectedAppt, btnTxt, msgCtx);
@@ -1165,12 +1679,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     /**
      * Loads the CstAddUpdateFormCtrl to create customers in view the cst-add-update-form view.
-     * Present alert error dialog when no selection made.
      * @param actionEvent Update form button, CstAddBtn, clicked.
-     * @throws IOException java.io.IOException - captures name exception: NullPointerException.
      */
     @javafx.fxml.FXML
-    private void onActionCstNew(ActionEvent actionEvent) throws IOException {
+    private void onActionCstNew(ActionEvent actionEvent) {
         String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
         System.out.println("New Customer Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
@@ -1265,13 +1777,486 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     }
 
     /**
-     * Sets currentTab variable on Appointment tab change.
+     * Loads the UserAddUpdateFormCtrl to create users in view the user-add-update-form view.
+     * @param actionEvent Update form button, UserAddBtn, clicked.
+     */
+    @javafx.fxml.FXML
+    public void onActionUserNew(ActionEvent actionEvent) {
+        String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("New User Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Objects.requireNonNull(getClass().getResource("/com/thecodebarista/view/user-add-update-form.fxml")));
+            scene = loader.load();
+
+            stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            stage.setTitle("New User");
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+        }
+    }
+
+    /**
+     * Loads the UserAddUpdateFormCtrl and calls its method to send the selected row data in the User table view to the user-add-update-form.
+     * Present alert error dialog when no selection made.
+     * @param actionEvent Modify form button, CstModifyBtn, clicked.
+     * @throws IOException java.io.IOException - captures name exception: NullPointerException.
+     */
+    @javafx.fxml.FXML
+    public void onActionUserUpdate(ActionEvent actionEvent) throws IOException{
+        String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Update User Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+        String errorMsg = "Error: No User Selected!";
+        // onTabChange();
+
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/com/thecodebarista/view/user-add-update-form.fxml"));
+            scene = loader.load();
+            UserAddUpdateFormCtrl modelCtrl = loader.getController();
+            selectedUser = UserTblView.getSelectionModel().getSelectedItem();
+            if (selectedUser.getUser_ID() < 3) {
+                errorMsg = String.format("You do not have privileges to modify Legacy User: '%s'", selectedUser.getUser_Name());
+
+            }
+            static_AddUpdateLabel.setText("Update User");
+            modelCtrl.showAdminOnlyFlds();
+            modelCtrl.sendUserModifyData(selectedUser);
+            stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }
+        catch(NullPointerException e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
+            confirm = alert.showAndWait();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionSetActiveStatusUser(ActionEvent actionEvent) {
+        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+        String msgCtx = "";
+        int activeStatus = 1;
+
+        if (UserActiveStatusBtn.getText().equals("Deactivate")) {
+            activeStatus = 0;
+        }
+
+        try {
+            selectedUser = UserTblView.getSelectionModel().getSelectedItem();
+            msgCtx = String.format("Please confirm deactivation for User ID: %d\nUser Name: %s\n", selectedUser.getUser_ID(), selectedUser.getUser_Name());
+            alert = buildAlert(Alert.AlertType.CONFIRMATION, btnTxt, msgCtx);
+            confirm = alert.showAndWait();
+            if (confirm.isPresent() && confirm.get() == ButtonType.OK){
+                UserDAO userDao = new UserDaoImpl();
+                userDao.setActivationStatus(activeStatus, selectedUser.getUser_ID());
+                displayUserTblViewData("Active", null);
+            }
+        }
+        catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            String errorMsg = "Error: No User Selected!";
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
+            confirm = alert.showAndWait();
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionShowUser(Event event)  throws IOException {
+        String btnTxt = ((Button)event.getSource()).getId().replace("Btn", "");
+        System.out.println("Update User Button Clicked: " + ((Button)event.getSource()).getId());
+
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/com/thecodebarista/view/user-add-update-form.fxml"));
+            scene = loader.load();
+            UserAddUpdateFormCtrl modelCtrl = loader.getController();
+            static_AddUpdateLabel.setText("User Info");
+            modelCtrl.showAdminOnlyFlds();
+            modelCtrl.sendUserModifyData(sessionUser);
+            stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(scene));
+            System.out.println("Made it here 2");
+            stage.show();
+        }
+        catch(NullPointerException e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @javafx.fxml.FXML
+    public void onKeyPressSfUserList(Event event)  throws IOException {
+        String searchText = sfUserNameCB.getEditor().getText().toLowerCase();
+        ObservableList<String> filterList = null;
+        if (searchText.isBlank()) {
+            System.out.println("Empty search: " + searchText);
+            sfUserNameCB.setItems(userNames);
+            sfUserNameCB.getSelectionModel().clearSelection();
+            sfUserNameCB.show();
+        } else {
+            try {
+                filterList = sfUserNameCB.getItems().stream().filter(n -> n.toLowerCase()
+                                .contains(searchText))
+                        .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+                if (!filterList.isEmpty()) {
+                    sfUserNameCB.setItems(filterList);
+                    sfUserNameCB.show();
+                } else {
+                    sfUserNameCB.hide();
+                }
+            } catch (NullPointerException e) {
+                System.out.println("Error: " + e.getMessage());
+                sfUserNameCB.setItems(userNames);
+                sfUserNameCB.getSelectionModel().clearSelection();
+                sfUserNameCB.show();
+            }
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionCntNew(ActionEvent actionEvent) {
+        String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("New Contact Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Objects.requireNonNull(getClass().getResource("/com/thecodebarista/view/cnt-add-update-form.fxml")));
+            scene = loader.load();
+
+            stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            stage.setTitle("New Contact");
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionCntUpdate(ActionEvent actionEvent) throws IOException{
+        String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Update Contact Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+        String errorMsg = "Error: No Contact Selected!";
+        // onTabChange();
+
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/com/thecodebarista/view/cnt-add-update-form.fxml"));
+            scene = loader.load();
+            CntAddUpdateFormCtrl modelCtrl = loader.getController();
+            selectedCnt = CntTblView.getSelectionModel().getSelectedItem();
+            if (selectedCnt.getContact_ID() < 4) {
+                errorMsg = String.format("You do not have privileges to modify Legacy Contact: '%s'", selectedCnt.getContact_Name());
+
+            }
+            static_AddUpdateLabel.setText("Update Contact");
+            modelCtrl.sendCntModifyData(selectedCnt);
+            modelCtrl.showAdminOnlyFlds();
+            stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }
+        catch(NullPointerException e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
+            confirm = alert.showAndWait();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionSetActiveStatusCnt(ActionEvent actionEvent) {
+        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+        String msgCtx = "";
+        int activeStatus = 1;
+
+        if (CntActiveStatusBtn.getText().equals("Deactivate")) {
+            activeStatus = 0;
+        }
+
+        try {
+            selectedCnt = CntTblView.getSelectionModel().getSelectedItem();
+            msgCtx = String.format("Please confirm deactivation for Contact ID: %d\nContact Name: %s\n", selectedCnt.getContact_ID(), selectedCnt.getContact_Name());
+            alert = buildAlert(Alert.AlertType.CONFIRMATION, btnTxt, msgCtx);
+            confirm = alert.showAndWait();
+            if (confirm.isPresent() && confirm.get() == ButtonType.OK){
+                ContactDAO cntDao = new ContactDaoImpl();
+                cntDao.setActivationStatus(activeStatus, selectedCnt.getContact_ID());
+                displayCntTblViewData("Active", null);
+            }
+        }
+        catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            String errorMsg = "Error: No Contact Selected!";
+            alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
+            confirm = alert.showAndWait();
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onKeyPressSfCntList(Event event)  throws IOException {
+        String searchText = sfCntNameCB.getEditor().getText().toLowerCase();
+        ObservableList<String> filterList = null;
+        if (searchText.isBlank()) {
+            System.out.println("Empty search: " + searchText);
+            sfCntNameCB.setItems(cntNames);
+            sfCntNameCB.getSelectionModel().clearSelection();
+            sfCntNameCB.show();
+        } else {
+            try {
+                filterList = sfCntNameCB.getItems().stream().filter(n -> n.toLowerCase()
+                                .contains(searchText))
+                        .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+                if (!filterList.isEmpty()) {
+                    sfCntNameCB.setItems(filterList);
+                    sfCntNameCB.show();
+                } else {
+                    sfCntNameCB.hide();
+                }
+            } catch (NullPointerException e) {
+                System.out.println("Error: " + e.getMessage());
+                sfCntNameCB.setItems(cntNames);
+                sfCntNameCB.getSelectionModel().clearSelection();
+                sfCntNameCB.show();
+            }
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionShowHideSearch(ActionEvent actionEvent) {
+        String btnTxt = ((Button) actionEvent.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + ((Button)actionEvent.getSource()).getId());
+
+        if (btnTxt.contains("user")) {
+            if (userSearchFilterBtn.getText().equals("Show Search Filter")) {
+                userSearchPane.setVisible(true);
+                userSearchFilterBtn.setText("Hide Search Filter");
+            }
+            else {
+                userSearchPane.setVisible(false);
+                userSearchFilterBtn.setText("Show Search Filter");
+            }
+        }
+        else {
+            if (cntSearchFilterBtn.getText().equals("Show Search Filter")) {
+                cntSearchPane.setVisible(true);
+                cntSearchFilterBtn.setText("Hide Search Filter");
+            }
+            else {
+                cntSearchPane.setVisible(false);
+                cntSearchFilterBtn.setText("Show Search Filter");
+            }
+        }
+
+    }
+
+    @javafx.fxml.FXML
+    public void onActionSfSearch(Event event)  throws SQLException {
+        String btnTxt = ((Button) event.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + ((Button)event.getSource()).getId());
+        StringBuilder sfQuery = new StringBuilder();
+        StringBuilder sfWhere = new StringBuilder();
+        String sfNameSelect;
+        String wc_name = "";
+        String wc_email;
+        int wc_admin;
+        int wc_active;
+        String sfStatement;
+        if (btnTxt.contains("User")) {
+            sfQuery.append("SELECT * FROM users");
+
+            // If Name list item was selected set where clause to equal.
+            if (sfUserNameCB.getValue() != null) {
+                sfNameSelect = sfUserNameCB.getValue();
+                System.out.println(String.format("User Selected is %s", sfNameSelect));
+                Boolean item = sfUserNameCB.getItems().stream().allMatch(n -> n.equals(sfUserNameCB.getValue()))? true : false;
+
+                if(sfNameSelect.isEmpty()){
+                    // Do Nothing
+                }
+                // If Name list item was selected set where clause to equal.
+                else if(item) {
+                    wc_name = String.format(" User_Name = '%s'", sfNameSelect);
+                }
+                else {
+                    // If there's a value but not selected set where clause to Like.
+                    wc_name = String.format(" User_Name LIKE '%%%s%%'", sfNameSelect);
+                }
+            }
+
+            if (!wc_name.isEmpty()) {
+                sfWhere.append(wc_name);
+                System.out.println(String.format("NAME WHERE CLAUSE: %s", sfWhere));
+            }
+
+            // Test that Active value was passed. If not Null add it to where clause.
+            if (sfAdminCB.getValue() != null) {
+                if (!sfWhere.isEmpty()) {
+                    sfWhere.append(" AND");
+                }
+                wc_admin = sfAdminCB.getValue().equals("Yes")? 1:0;
+                sfWhere.append(String.format(" Is_Admin = %d",wc_admin));
+            }
+
+            // Test that Active value was passed. If not Null or Empty selected added to where clause.
+            if (sfUserActiveCB.getValue() != null) {
+                if (!sfUserActiveCB.getValue().isEmpty()) {
+                    if (!sfWhere.isEmpty()) {
+                        sfWhere.append(" AND");
+                    }
+                    wc_active = sfUserActiveCB.getValue().equals("Active")? 1:0;
+                    System.out.println(String.format("Active: %d", wc_active));
+                    sfWhere.append(String.format(" Active = %d", wc_active));
+                }
+            }
+
+            // If there's a where clause. Added it to the Query.
+            if (!sfWhere.isEmpty()) {
+                sfStatement = sfQuery.append(String.format(" WHERE%s", sfWhere)).toString();
+            }
+            else {
+                sfStatement = sfQuery.toString();
+            }
+
+            displayUserTblViewData("sf", sfStatement);
+        }
+
+        if (btnTxt.contains("Cnt")) {
+            sfQuery.append("SELECT * FROM contacts");
+
+            // If Name list item was selected set where clause to equal.
+            if (sfCntNameCB.getValue() != null) {
+                sfNameSelect = sfCntNameCB.getValue();
+                System.out.println(String.format("User Selected is %s", sfNameSelect));
+                Boolean item = sfCntNameCB.getItems().stream().allMatch(n -> n.equals(sfUserNameCB.getValue()))? true : false;
+
+                if(sfNameSelect.isEmpty()){
+                    // Do Nothing
+                }
+                // If Name list item was selected set where clause to equal.
+                else if(item) {
+                    wc_name = String.format(" Contact_Name = '%s'", sfNameSelect);
+                }
+                else {
+                    // If there's a value but not selected set where clause to Like.
+                    wc_name = String.format(" Contact_Name LIKE '%%%s%%'", sfNameSelect);
+                }
+            }
+
+            if (!wc_name.isEmpty()) {
+                sfWhere.append(wc_name);
+                System.out.println(String.format("NAME WHERE CLAUSE: %s", sfWhere));
+            }
+
+            // Test that Email value was passed. If not Null, set it to LIKE where clause.
+            if (sfCntEmail.getText() != null) {
+                if (!sfWhere.isEmpty()) {
+                    sfWhere.append(" AND");
+                }
+                wc_email = sfCntEmail.getText();
+                sfWhere.append(String.format(" Email LIKE '%%%s%%'",wc_email));
+            }
+
+            // Test that Active value was passed. If not Null or Empty selected added to where clause.
+            if (sfCntActiveCB.getValue() != null) {
+                if (!sfCntActiveCB.getValue().isEmpty()) {
+                    if (!sfWhere.isEmpty()) {
+                        sfWhere.append(" AND");
+                    }
+                    wc_active = sfCntActiveCB.getValue().equals("Active")? 1:0;
+                    System.out.println(String.format("Active: %d", wc_active));
+                    sfWhere.append(String.format(" Active = %d", wc_active));
+                }
+            }
+
+            // If there's a where clause. Added it to the Query.
+            if (!sfWhere.isEmpty()) {
+                sfStatement = sfQuery.append(String.format(" WHERE%s", sfWhere)).toString();
+            }
+            else {
+                sfStatement = sfQuery.toString();
+            }
+            displayCntTblViewData("sf", sfStatement);
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onActionSfClear(Event event) throws SQLException {
+        String btnTxt = ((Button) event.getSource()).getId().replace("Btn", "");
+        System.out.println("Button Clicked: " + ((Button)event.getSource()).getId());
+
+        if (btnTxt.contains("User")) {
+            sfUserNameCB.getSelectionModel().clearSelection();
+            sfUserNameCB.getEditor().clear();
+            sfAdminCB.getSelectionModel().clearSelection();
+            sfUserActiveCB.getSelectionModel().clearSelection();
+            displayUserTblViewData("sfClear", null);
+        }
+        if (btnTxt.contains("Cnt")) {
+            sfCntNameCB.getSelectionModel().clearSelection();
+            sfCntNameCB.getEditor().clear();
+            sfCntEmail.clear();
+            sfCntActiveCB.getSelectionModel().clearSelection();
+            displayCntTblViewData("sfClear", null);
+        }
+    }
+
+    @javafx.fxml.FXML
+    public void onMouseEnterUserBtn(Event event) throws SQLException {
+
+    }
+
+    @javafx.fxml.FXML
+    public void onMouseExitUserBtn(Event event) throws SQLException {
+
+    }
+
+    @javafx.fxml.FXML
+    public void onApptRadioSelect(Event event) throws SQLException {
+        System.out.println("Button Clicked: " + event.getSource().toString());
+        String btnTxt = "";
+        btnTxt = ((RadioButton) event.getSource()).getId();
+        // CntApptPeriodRadioGrp.getSelectedToggle();
+        try {
+            displayApptTblViewData_v2(btnTxt);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Sets currentSubTab variable on Appointment tab changes.
      * @param event - The Tab clicked.
      */
     @javafx.fxml.FXML
-    public void onTabSelectLoad(Event event) {
-        currentTab = ApptTabs.getSelectionModel().getSelectedItem();
-        System.out.println("Current Tab Inquiry for tabSelect: " + currentTab.getId());
+    public void onSubTabChange(Event event) {
+        currentSubTab = ApptTabs.getSelectionModel().getSelectedItem();
+        System.out.println("Current SubTab Inquiry for subTabSelect: " + currentSubTab.getId());
     }
 
     /**
@@ -1291,7 +2276,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             buildTypes();
         }
         if (menuItemId.equals("CntSchedulePane")){
-            UnmanagedDAO cntCb = new ContactDaoImpl();
+            ContactDAO cntCb = new ContactDaoImpl();
             if (CntApptPeriodRadioGrp.getSelectedToggle() != null)
                 CntApptPeriodRadioGrp.getSelectedToggle().setSelected(false);
             CntScheduleSearchCB.getSelectionModel().clearSelection();
@@ -1474,5 +2459,35 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     @Override
     public Long getDurationMins(Appointment appointment) {
         return ChronoUnit.MINUTES.between(appointment.getStart().toLocalDateTime(), appointment.getEnd().toLocalDateTime());
+    }
+
+    /**
+     * Initializes the controller class.
+     * Run the Tableview methods to display all Tab data info and set the session user info.
+     * @param url default application URL
+     * @param rb default application ResourceBundle
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            // For seed data testing. TODO: Don't forget to comment out.
+            // appointmentSeed();
+            displayApptTblViewData();
+            //displayCstTblViewData(); //not currently used.
+            displayCstWithCoInfo();
+            displayUserTblViewData("Active", null);
+            displayCntTblViewData("Active", null);
+            setCurrentUserIdInfo(sessionUserId);
+            setCurrentUserNameInfo(sessionUserName);
+            if (sessionUserAccess > 0) {
+                buildSfFilters();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
     }
 }

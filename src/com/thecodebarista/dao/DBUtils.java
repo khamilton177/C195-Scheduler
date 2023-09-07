@@ -6,10 +6,48 @@ import java.sql.*;
 /**
  * Class for DML; processes the prepared statements.
  */
-public class DMLUtils {
+public class DBUtils {
+    public static DatabaseMetaData metaData;
     public static PreparedStatement prepStmt;
     public static ResultSet rsData;
     public static int rowsAffected;
+
+    /**
+     * Method processes SQL ALTER statements.
+     * @param metaData prepared statement
+     * @return The number of rows affected for columns altered.
+     */
+    public static ResultSet checkDDL(DatabaseMetaData metaData, String table, String column) {
+        rowsAffected =0;
+
+        try{
+            rsData = metaData.getColumns(null, null, table, column);
+        }
+        catch(SQLException e){
+            System.out.println("Error: "+e.getMessage());
+        }
+        return rsData;
+    }
+
+    /**
+     * Method processes SQL ALTER statements.
+     * @param prepStmt prepared statement
+     * @param sqlStmt query passed in from the DaoImpl classes.
+     * @return The number of rows affected for columns altered.
+     */
+    public static int doDDL(PreparedStatement prepStmt, String sqlStmt) {
+        System.out.println("Processing: " + prepStmt.toString());
+        rowsAffected =0;
+
+        try{
+            rowsAffected = prepStmt.executeUpdate();
+            System.out.println("Rows Affected from Table Alter Statement: " + rowsAffected);
+        }
+        catch(SQLException e){
+            System.out.println("Error: "+e.getMessage());
+        }
+        return rowsAffected;
+    }
 
     /**
      * Method processes SQL Statements.
@@ -55,7 +93,9 @@ public class DMLUtils {
         int user_ID = (rs.getInt("User_ID"));
         String user_Name = (rs.getString("User_Name"));
         String password = (rs.getString("Password"));
-        return new User(user_ID, user_Name, password);
+        int is_Admin = (rs.getInt("Is_Admin"));
+        int active = (rs.getInt("Active"));
+        return new User(user_ID, user_Name, password, is_Admin, active);
     }
 
     /**
@@ -106,7 +146,8 @@ public class DMLUtils {
         int contact_ID = (rs.getInt("Contact_ID"));
         String contact_Name = (rs.getString("Contact_Name"));
         String email = (rs.getString("Email"));
-        return new Contact(contact_ID, contact_Name, email);
+        int active = (rs.getInt("Active"));
+        return new Contact(contact_ID, contact_Name, email, active);
     }
 
     /**

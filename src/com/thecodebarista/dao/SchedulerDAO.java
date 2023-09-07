@@ -1,5 +1,6 @@
 package com.thecodebarista.dao;
 
+import com.thecodebarista.model.User;
 import javafx.collections.ObservableList;
 import java.sql.SQLException;
 
@@ -19,4 +20,10 @@ public interface SchedulerDAO<T> {
 
     int delete(T t);
 
+    ObservableList<T> sfQuery(String sfQuery) throws SQLException;
+    ObservableList<String> genericData(String query) throws SQLException;
+
+    int existColumns(String column) throws SQLException;
+    int alterTable(String column) throws SQLException;
+    int makeColumnUnique(String column) throws SQLException;
 }

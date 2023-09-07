@@ -3,14 +3,14 @@ package com.thecodebarista.dao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.Appointment;
-import javafx.scene.control.TableColumn;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
-import static com.thecodebarista.dao.DMLUtils.getApptData;
+import static com.thecodebarista.dao.DBUtils.getApptData;
 
 /**
  * Implements the Abstract methods in the AppointmentDAO class.
@@ -38,12 +38,12 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             System.out.println("made it here 1");
 
             // Pass the preparedStatement to be executed.
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
             System.out.println("made it here 2");
 
             // Get the ResultSet of the executed query.
             System.out.println("made it here 3");
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // If Appointment data found, extract the ResultSet to an Appointment object and return.
             if (rs.next()) {
@@ -71,10 +71,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         try{
             String sqlStmt = "SELECT * FROM appointments";
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Appointments List");
@@ -116,7 +116,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             prepStmt.setInt(9, appointment.getContact_ID());
 
             // Pass the preparedStatement to be executed with plain string for validation and log.
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             ResultSet rs = prepStmt.getGeneratedKeys();
             rs.next();
@@ -166,7 +166,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             prepStmt.setInt(10, appointment.getAppointment_ID());
 
             // Pass the preparedStatement to be executed with plain string for validation and log.
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -185,12 +185,32 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         try {
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, appointment.getAppointment_ID());
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
         return rowsAffected;
+    }
+
+    @Override
+    public ObservableList<Appointment> sfQuery(String sfQuery) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public int existColumns(String column) throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public int alterTable(String column) throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public int makeColumnUnique(String column) throws SQLException {
+        return 0;
     }
 
     /**
@@ -204,7 +224,7 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         try {
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, id);
-            rowsAffected = DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -226,10 +246,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
                     " WHERE Customer_ID = ?";
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, id);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Associated Appointments List");
@@ -263,10 +283,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
                     " WHERE " + fkID +
                     " = " + qID;
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Associated Appointments List");
@@ -304,10 +324,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
             prepStmt.setDate(2, Date.valueOf(startDt));
             prepStmt.setDate(3, Date.valueOf(startDt));
             prepStmt.setDate(4, Date.valueOf(startDt));
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Associated Appointments List");
@@ -342,10 +362,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
                 " ORDER BY Start";
 
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Associated Appointments List");
@@ -385,10 +405,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
                     " WHERE YEARWEEK(Start) = YEARWEEK(NOW())" +
                     " ORDER BY End";
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Appt. Wkly List");
@@ -428,10 +448,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
                     " WHERE MONTH(Start) = MONTH(NOW())" +
                     " ORDER BY End";
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             System.out.println("Building Appt. Monthly List");
@@ -461,10 +481,10 @@ public class AppointmentDaoImpl implements AppointmentDAO {
         try{
             String sqlStmt = query;
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
             ResultSetMetaData metaData = rs.getMetaData();
             int columnCount = metaData.getColumnCount();
 
@@ -522,17 +542,17 @@ public class AppointmentDaoImpl implements AppointmentDAO {
 
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt.toString());
-            DMLUtils.doDMLv2(prepStmt, sqlStmt.toString());
+            DBUtils.doDMLv2(prepStmt, sqlStmt.toString());
 
             // Get the ResultSet and ResultSet metadata of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
             ResultSetMetaData metaData = rs.getMetaData();
             int columnCount = metaData.getColumnCount();
 
             System.out.println("Building Appointment Count By Month and Type");
             // Extract the ResultSet to a class object.
             while (rs.next()) {
-                Appointment rptRows = DMLUtils.getReportData(rs);
+                Appointment rptRows = DBUtils.getReportData(rs);
                 allCstByMoTypeTotal.add(rptRows);
             }
             return allCstByMoTypeTotal;
@@ -579,15 +599,15 @@ public class AppointmentDaoImpl implements AppointmentDAO {
 
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt.toString());
-            DMLUtils.doDMLv2(prepStmt, sqlStmt.toString());
+            DBUtils.doDMLv2(prepStmt, sqlStmt.toString());
 
             // Get the ResultSet and ResultSet metadata of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             System.out.println("Building Contact Appointment By Month/week");
             // Extract the ResultSet to a class object.
             while (rs.next()) {
-                Appointment rptRows = DMLUtils.getApptCntByPeriodData(rs);
+                Appointment rptRows = DBUtils.getApptCntByPeriodData(rs);
                 apptCntSched.add(rptRows);
             }
             return apptCntSched;

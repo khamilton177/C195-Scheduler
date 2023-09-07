@@ -6,11 +6,9 @@ import javafx.collections.ObservableList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
-import static com.thecodebarista.dao.DMLUtils.*;
+import static com.thecodebarista.dao.DBUtils.*;
 
 /**
  * Implements the Abstract methods in the UnmanagedDAO class.
@@ -28,10 +26,10 @@ public class CountryDaoImpl implements UnmanagedDAO {
             prepStmt.setInt(1, id);
 
             // Pass the preparedStatement to be executed.
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // If Country data found, extract the ResultSet to a Country object and return.
             if (rs.next()) {
@@ -53,10 +51,10 @@ public class CountryDaoImpl implements UnmanagedDAO {
         try{
             String sqlStmt = "SELECT * FROM countries";
             prepStmt = useConnection().prepareStatement(sqlStmt);
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // Extract the ResultSet to a class object.
             while (rs.next()) {
@@ -83,10 +81,10 @@ public class CountryDaoImpl implements UnmanagedDAO {
             prepStmt.setString(1, name);
 
             // Pass the preparedStatement to be executed.
-            DMLUtils.doDMLv2(prepStmt, sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
 
             // Get the ResultSet of the executed query.
-            ResultSet rs = DMLUtils.getResult();
+            ResultSet rs = DBUtils.getResult();
 
             // If Country data found, extract the ResultSet to a Country object and return.
             if (rs.next()) {

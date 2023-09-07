@@ -15,6 +15,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
@@ -29,28 +30,36 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="905.0" prefWidth="1151.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodebarista.controller.MainMenuCtrl">
    <children>
-      <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="85.0" prefWidth="1145.0" style="-fx-background-color: white;">
+      <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="85.0" prefWidth="1145.0" style="-fx-background-color: black;">
          <children>
-            <ImageView fitHeight="85.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="85.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../resources/images/head.png" />
                </image>
             </ImageView>
-            <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="696.0" />
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="640.0" />
             <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="321.0">
                <children>
                   <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="472.0">
                      <children>
-                        <Label fx:id="CurrentUserNameLbl" alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="218.0">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
                         <Label fx:id="CurrentUserIdLbl" alignment="BASELINE_CENTER" prefHeight="100.0" prefWidth="218.0">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
+                        <StackPane>
+                           <children>
+                              <Label fx:id="CurrentUserNameLbl" alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="250.0" text="VISIBLE" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <StackPane.margin>
+                                    <Insets right="20.0" />
+                                 </StackPane.margin>
+                              </Label>
+                              <Button fx:id="CurrentUserBtn" mnemonicParsing="false" onAction="#onActionShowUser" onMouseEntered="#onMouseEnterUserBtn" onMouseExited="#onMouseExitUserBtn" opacity="0.3" prefHeight="25.0" prefWidth="150.0" />
+                           </children>
+                        </StackPane>
                         <Hyperlink fx:id="LogOutBtn" alignment="BASELINE_CENTER" onAction="#onActionLogout" prefHeight="100.0" prefWidth="198.0" text="Logout" />
                      </children>
                   </HBox>
@@ -58,101 +67,82 @@
             </VBox>
          </children>
       </HBox>
-      <TabPane layoutY="82.0" prefHeight="819.0" prefWidth="1145.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="MainTabPane" layoutY="82.0" prefHeight="819.0" prefWidth="1145.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Appointments">
+          <Tab fx:id="ApptTab" text="Appointments">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1145.0">
                      <children>
-                        <Pane layoutX="5.0" prefHeight="802.0" prefWidth="1139.0">
+                        <Pane prefHeight="762.0" prefWidth="1145.0">
                            <children>
-                              <Pane layoutX="-4.0" prefHeight="42.0" prefWidth="1145.0">
+                              <Pane layoutX="-4.0" prefHeight="58.0" prefWidth="1145.0">
                                  <children>
-                                    <ButtonBar layoutX="205.0" layoutY="4.0" prefHeight="40.0" prefWidth="850.0">
+                                    <HBox alignment="CENTER_LEFT" layoutX="17.0" prefHeight="41.0" prefWidth="783.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="600.0">
+                                             <children>
+                                                <RadioButton fx:id="AppAllRadio" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#onApptRadioSelect" selected="true" text="All">
+                                                   <toggleGroup>
+                                                      <ToggleGroup fx:id="ApptPeriodGrp" />
+                                                   </toggleGroup>
+                                                   <HBox.margin>
+                                                      <Insets left="5.0" right="10.0" />
+                                                   </HBox.margin>
+                                                </RadioButton>
+                                                <RadioButton fx:id="AppMoRadio" alignment="CENTER" mnemonicParsing="false" onAction="#onApptRadioSelect" text="Monthly" toggleGroup="$ApptPeriodGrp">
+                                                   <HBox.margin>
+                                                      <Insets right="10.0" />
+                                                   </HBox.margin>
+                                                </RadioButton>
+                                                <RadioButton fx:id="AppWkRadio" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onApptRadioSelect" text="Weekly" toggleGroup="$ApptPeriodGrp" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_RIGHT">
+                                             <children>
+                                                <TextField alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="249.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <ButtonBar layoutX="830.0" layoutY="4.0" prefHeight="40.0" prefWidth="272.0">
                                       <buttons>
                                         <Button fx:id="ApptAddBtn" mnemonicParsing="false" onAction="#onActionApptNew" text="New" />
                                           <Button fx:id="ApptUpdateBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" onAction="#onActionApptUpdate" text="Update" />
                                           <Button fx:id="ApptDeleteBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" onAction="#onActionDeleteAppt" text="Delete" />
                                       </buttons>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
                                     </ButtonBar>
                                  </children>
                               </Pane>
-                              <AnchorPane prefHeight="895.0" prefWidth="6.0" />
-                              <TabPane fx:id="ApptTabs" layoutY="40.0" prefHeight="757.0" prefWidth="1145.0" tabClosingPolicy="UNAVAILABLE">
-                                 <tabs>
-                                    <Tab fx:id="AppTab" onSelectionChanged="#onTabSelectLoad" text="Appointments">
-                                      <content>
-                                        <AnchorPane>
-                                             <children>
-                                                <ScrollPane layoutX="1.0" prefHeight="728.0" prefWidth="1145.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <content>
-                                                      <AnchorPane>
-                                                         <children>
-                                                            <TableView fx:id="ApptTblView" prefHeight="400.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                              <columns>
-                                                                  <TableColumn fx:id="appointment_ID_Col" editable="false" prefWidth="125.0" text="Appointment ID" />
-                                                                  <TableColumn fx:id="title_Col" prefWidth="100.0" text="Title" />
-                                                                  <TableColumn fx:id="description_Col" minWidth="0.0" prefWidth="136.0" text="Description" />
-                                                                  <TableColumn fx:id="location_Col" minWidth="7.0" prefWidth="99.0" text="Location" />
-                                                                  <TableColumn fx:id="contact_ID_Col" minWidth="9.0" prefWidth="88.0" text="Contact" />
-                                                                  <TableColumn fx:id="type_Col" prefWidth="82.0" text="Type" />
-                                                                  <TableColumn fx:id="start_Col" prefWidth="137.0" text="Start Date and Time" />
-                                                                  <TableColumn fx:id="end_Col" minWidth="0.0" prefWidth="146.0" text="End Date and Time" />
-                                                                  <TableColumn fx:id="customer_ID_Col" minWidth="0.0" prefWidth="93.0" text="Customer ID" />
-                                                                  <TableColumn fx:id="user_ID_Col" prefWidth="92.0" text="User ID" />
-                                                              </columns>
-                                                            </TableView>
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </content>
-                                                </ScrollPane>
-                                             </children>
-                                          </AnchorPane>
-                                      </content>
-                                    </Tab>
-                                    <Tab fx:id="AppMoTab" onSelectionChanged="#onTabSelectLoad" text="Appointments by Month">
-                                       <content>
-                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                             <children>
-                                                <ScrollPane layoutX="94.0" prefHeight="728.0" prefWidth="1145.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <content>
-                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="764.0" prefWidth="888.0">
-                                                         <children>
-                                                            <fx:include fx:id="includeApptMo" source="../view/ApptTblMonthlyView.fxml" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </content>
-                                                </ScrollPane>
-                                             </children>
-                                          </AnchorPane>
-                                       </content>
-                                    </Tab>
-                                    <Tab fx:id="AppWkTab" onSelectionChanged="#onTabSelectLoad" text="Appointments by Week">
-                                       <content>
-                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="714.0" prefWidth="893.0">
-                                             <children>
-                                                <ScrollPane prefHeight="728.0" prefWidth="1145.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <content>
-                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="799.0" prefWidth="888.0">
-                                                         <children>
-                                                            <fx:include fx:id="includeApptWk" source="../view/ApptTblWeeklyView.fxml" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </content>
-                                                </ScrollPane>
-                                             </children>
-                                          </AnchorPane>
-                                       </content>
-                                    </Tab>
-                                 </tabs>
-                              </TabPane>
+                              <AnchorPane layoutX="-4.0" layoutY="58.0" prefHeight="858.0" prefWidth="1100.0">
+                                 <children>
+                                    <TableView fx:id="ApptTblView" prefHeight="722.0" prefWidth="1145.0">
+                                       <columns>
+                                          <TableColumn fx:id="appointment_ID_Col" editable="false" prefWidth="125.0" text="Appointment ID" />
+                                          <TableColumn fx:id="title_Col" prefWidth="100.0" text="Title" />
+                                          <TableColumn fx:id="description_Col" minWidth="0.0" prefWidth="136.0" text="Description" />
+                                          <TableColumn fx:id="location_Col" minWidth="7.0" prefWidth="99.0" text="Location" />
+                                          <TableColumn fx:id="contact_ID_Col" minWidth="9.0" prefWidth="88.0" text="Contact" />
+                                          <TableColumn fx:id="type_Col" prefWidth="82.0" text="Type" />
+                                          <TableColumn fx:id="start_Col" prefWidth="137.0" text="Start Date and Time" />
+                                          <TableColumn fx:id="end_Col" minWidth="0.0" prefWidth="146.0" text="End Date and Time" />
+                                          <TableColumn fx:id="customer_ID_Col" minWidth="0.0" prefWidth="93.0" text="Customer ID" />
+                                          <TableColumn fx:id="user_ID_Col" prefWidth="92.0" text="User ID" />
+                                       </columns>
+                                    </TableView>
+                                 </children></AnchorPane>
                            </children>
                         </Pane>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Customers">
+          <Tab fx:id="CstTab" text="Customers">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1097.0">
                      <children>
@@ -167,35 +157,34 @@
                                           <Button fx:id="CstDeleteBtn" layoutX="993.0" layoutY="19.0" mnemonicParsing="false" onAction="#onActionDeleteCst" text="Delete" />
                                        </buttons>
                                     </ButtonBar>
+                                    <HBox alignment="CENTER_RIGHT" prefHeight="41.0" prefWidth="786.0">
+                                       <children>
+                                          <TextField alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="249.0" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </Pane>
-                              <AnchorPane prefHeight="750.0" prefWidth="1145.0" />
-                              <ScrollPane layoutX="1.0" layoutY="-2.0" prefHeight="740.0" prefWidth="1145.0">
-                                 <content>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="752.0" prefWidth="1080.0">
-                                       <children>
-                                          <TableView fx:id="CstTblView" layoutX="-207.0" prefHeight="752.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <columns>
-                                                <TableColumn fx:id="CstIdCol" editable="false" prefWidth="100.0" text="Customer ID" />
-                                                <TableColumn fx:id="CstNameCol" minWidth="0.0" prefWidth="154.0" text="Customer Name" />
-                                                <TableColumn fx:id="CstAddressCol" prefWidth="132.0" text="Address" />
-                                                <TableColumn fx:id="CstPostalCodeCol" minWidth="0.0" prefWidth="100.0" text="Postal Code" />
-                                                <TableColumn fx:id="CstPhoneCol" prefWidth="118.0" text="Phone" />
-                                                <TableColumn fx:id="CstCountryIdCol" prefWidth="100.0" text="Country ID" />
-                                                <TableColumn fx:id="CstDivisionIdCol" prefWidth="100.0" text="Division ID" />
-                                             </columns>
-                                          </TableView>
-                                       </children>
-                                    </AnchorPane>
-                                 </content>
-                              </ScrollPane>
+                              <AnchorPane prefHeight="750.0" prefWidth="1145.0">
+                                 <children>
+                                    <TableView fx:id="CstTblView" prefHeight="752.0" prefWidth="1080.0">
+                                       <columns>
+                                          <TableColumn fx:id="CstIdCol" editable="false" prefWidth="100.0" text="Customer ID" />
+                                          <TableColumn fx:id="CstNameCol" minWidth="0.0" prefWidth="154.0" text="Customer Name" />
+                                          <TableColumn fx:id="CstAddressCol" prefWidth="132.0" text="Address" />
+                                          <TableColumn fx:id="CstPostalCodeCol" minWidth="0.0" prefWidth="100.0" text="Postal Code" />
+                                          <TableColumn fx:id="CstPhoneCol" prefWidth="118.0" text="Phone" />
+                                          <TableColumn fx:id="CstCountryIdCol" prefWidth="100.0" text="Country ID" />
+                                          <TableColumn fx:id="CstDivisionIdCol" prefWidth="100.0" text="Division ID" />
+                                       </columns>
+                                    </TableView>
+                                 </children></AnchorPane>
                            </children>
                         </Pane>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Reports">
+            <Tab fx:id="RptTab" text="Reports">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -242,11 +231,13 @@
                                                                   <Label text="Contact">
                                                                      <padding>
                                                                         <Insets left="10.0" />
-                                                                     </padding></Label>
+                                                                     </padding>
+                                                                  </Label>
                                                                   <ComboBox fx:id="CntScheduleSearchCB" onAction="#onReportFilterUpd" prefWidth="150.0">
                                                                      <VBox.margin>
                                                                         <Insets left="10.0" />
-                                                                     </VBox.margin></ComboBox>
+                                                                     </VBox.margin>
+                                                                  </ComboBox>
                                                                   <RadioButton fx:id="CntScheduleWkRadio" mnemonicParsing="false" onAction="#onActionDoQuery" text="by Week">
                                                                      <VBox.margin>
                                                                         <Insets left="10.0" top="10.0" />
@@ -338,6 +329,195 @@
                               </Pane>
                            </children>
                         </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="UserAdminTab" text="Users">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1097.0">
+                     <children>
+                        <Pane layoutY="146.0" prefHeight="648.0" prefWidth="1145.0">
+                           <children>
+                              <Pane layoutY="-146.0" prefHeight="139.0" prefWidth="1145.0">
+                                 <children>
+                                    <ButtonBar prefHeight="43.0" prefWidth="1058.0">
+                                       <buttons>
+                                          <Button fx:id="userSearchFilterBtn" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionShowHideSearch" prefHeight="25.0" prefWidth="184.0" text="Show Search Filter" />
+                                          <Button fx:id="UserAddBtn" mnemonicParsing="false" onAction="#onActionUserNew" text="New" />
+                                          <Button fx:id="UserModifyBtn" layoutX="785.0" layoutY="18.0" mnemonicParsing="false" onAction="#onActionUserUpdate" text="Update" />
+                                          <Button fx:id="UserActiveStatusBtn" layoutX="993.0" layoutY="19.0" mnemonicParsing="false" onAction="#onActionSetActiveStatusUser" text="Deactivate" />
+                                       </buttons>
+                                    </ButtonBar>
+                                 </children>
+                              </Pane>
+                              <AnchorPane prefHeight="688.0" prefWidth="1145.0">
+                                 <children>
+                                    <Pane fx:id="userSearchPane" layoutX="5.0" layoutY="-93.0" prefHeight="85.0" prefWidth="1131.0" visible="false">
+                                       <children>
+                                          <VBox>
+                                             <children>
+                                                <HBox alignment="BOTTOM_LEFT" prefHeight="31.0" prefWidth="1129.0">
+                                                   <children>
+                                                      <Label layoutX="10.0" layoutY="10.0" prefHeight="17.0" prefWidth="280.0" text="User Name">
+                                                         <HBox.margin>
+                                                            <Insets left="10.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <Label layoutX="38.0" layoutY="10.0" prefHeight="17.0" prefWidth="155.0" text="Admin?">
+                                                         <HBox.margin>
+                                                            <Insets left="10.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <Label layoutX="180.0" layoutY="24.0" prefHeight="17.0" prefWidth="155.0" text="Active?">
+                                                         <HBox.margin>
+                                                            <Insets left="10.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox prefHeight="49.0" prefWidth="1129.0">
+                                                   <children>
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="786.0">
+                                                         <children>
+                                                            <ComboBox fx:id="sfUserNameCB" editable="true" layoutX="269.0" layoutY="18.0" onKeyPressed="#onKeyPressSfUserList" prefHeight="25.0" prefWidth="279.0" promptText="Choose from dropdown or start typing name.">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </HBox.margin>
+                                                            </ComboBox>
+                                                            <ComboBox fx:id="sfAdminCB" layoutX="180.0" layoutY="19.0" prefWidth="150.0">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </HBox.margin>
+                                                            </ComboBox>
+                                                            <ComboBox fx:id="sfUserActiveCB" prefWidth="150.0">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </HBox.margin>
+                                                            </ComboBox>
+                                                         </children>
+                                                      </HBox>
+                                                      <ButtonBar prefHeight="43.0" prefWidth="196.0">
+                                                         <buttons>
+                                                            <Button fx:id="UserSearchBtn" layoutX="993.0" layoutY="19.0" mnemonicParsing="false" onAction="#onActionSfSearch" text="Search" />
+                                                            <Button fx:id="UserClrSearchBtn" layoutX="131.0" layoutY="22.0" mnemonicParsing="false" onAction="#onActionSfClear" text="Clear Search" />
+                                                         </buttons>
+                                                      </ButtonBar>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="750.0" prefWidth="1145.0">
+                                 <children>
+                                    <TableView fx:id="UserTblView" prefHeight="752.0" prefWidth="1080.0">
+                                       <columns>
+                                          <TableColumn fx:id="UserIdCol" editable="false" prefWidth="100.0" text="User ID" />
+                                          <TableColumn fx:id="UserNameCol" minWidth="0.0" prefWidth="154.0" text="User Name" />
+                                          <TableColumn fx:id="UserPwdCol" prefWidth="132.0" text="Password" />
+                                          <TableColumn fx:id="UserAdminCol" prefWidth="132.0" text="Admin?" />
+                                          <TableColumn fx:id="UserActiveCol" prefWidth="132.0" text="Active?" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </Pane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="CntAdminTab" text="Contacts">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1097.0">
+                     <children>
+                        <Pane layoutY="49.0" prefHeight="745.0" prefWidth="1145.0">
+                           <children>
+                              <Pane layoutY="-49.0" prefHeight="42.0" prefWidth="1145.0">
+                                 <children>
+                                    <ButtonBar prefHeight="43.0" prefWidth="1058.0">
+                                       <buttons>
+                                          <Button fx:id="cntSearchFilterBtn" layoutX="955.0" layoutY="19.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionShowHideSearch" prefHeight="25.0" prefWidth="184.0" text="Show Search Filter" />
+                                          <Button fx:id="CntAddBtn" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionCntNew" prefHeight="25.0" prefWidth="75.0" text="New" />
+                                          <Button fx:id="CntModifyBtn" layoutX="785.0" layoutY="18.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionCntUpdate" prefHeight="25.0" prefWidth="75.0" text="Update" />
+                                          <Button fx:id="CntActiveStatusBtn" layoutX="993.0" layoutY="19.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionSetActiveStatusCnt" prefHeight="25.0" prefWidth="75.0" text="Deactivate" />
+                                       </buttons>
+                                    </ButtonBar>
+                                 </children>
+                              </Pane>
+                              <AnchorPane layoutX="10.0" layoutY="74.0" prefHeight="688.0" prefWidth="1145.0">
+                                 <children>
+                                    <Pane fx:id="cntSearchPane" layoutX="-9.0" layoutY="-60.0" prefHeight="70.0" prefWidth="1145.0" visible="false">
+                                       <children>
+                                          <VBox>
+                                             <children>
+                                                <HBox alignment="BOTTOM_LEFT" prefHeight="31.0" prefWidth="1129.0">
+                                                   <children>
+                                                      <Label prefHeight="17.0" prefWidth="282.0" text="Contact Name">
+                                                         <HBox.margin>
+                                                            <Insets left="10.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <Label layoutX="10.0" layoutY="10.0" prefHeight="17.0" prefWidth="247.0" text="Email">
+                                                         <HBox.margin>
+                                                            <Insets left="10.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <Label layoutX="38.0" layoutY="10.0" prefHeight="17.0" prefWidth="157.0" text="Active?">
+                                                         <HBox.margin>
+                                                            <Insets left="15.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="786.0">
+                                                         <children>
+                                                            <ComboBox fx:id="sfCntNameCB" editable="true" layoutX="538.0" layoutY="18.0" onKeyPressed="#onKeyPressSfCntList" prefHeight="25.0" prefWidth="281.0" promptText="Choose from dropdown or start typing name.">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </HBox.margin>
+                                                            </ComboBox>
+                                                            <TextField fx:id="sfCntEmail" alignment="CENTER_RIGHT" layoutX="20.0" layoutY="18.0" prefHeight="25.0" prefWidth="250.0">
+                                                               <HBox.margin>
+                                                                  <Insets right="10.0" />
+                                                               </HBox.margin>
+                                                            </TextField>
+                                                            <ComboBox fx:id="sfCntActiveCB" prefHeight="25.0" prefWidth="100.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <ButtonBar prefHeight="43.0" prefWidth="197.0">
+                                                         <buttons>
+                                                            <Button fx:id="CntSearchBtn" layoutX="993.0" layoutY="19.0" mnemonicParsing="false" onAction="#onActionSfSearch" text="Search" />
+                                                            <Button fx:id="CntClrSearchBtn" layoutX="132.0" layoutY="19.0" mnemonicParsing="false" onAction="#onActionSfClear" text="Clear Search" />
+                                                         </buttons>
+                                                      </ButtonBar>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="72.0" prefHeight="680.0" prefWidth="1145.0">
+                                 <children>
+                                    <TableView fx:id="CntTblView" layoutY="31.0" prefHeight="721.0" prefWidth="1080.0">
+                                       <columns>
+                                          <TableColumn fx:id="CntIdCol" editable="false" prefWidth="100.0" text="ContactID" />
+                                          <TableColumn fx:id="CntNameCol" minWidth="0.0" prefWidth="154.0" text="ContactName" />
+                                          <TableColumn fx:id="CntEmailCol" prefWidth="132.0" text="Email" />
+                                          <TableColumn fx:id="CntActiveCol" prefWidth="132.0" text="Active?" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </Pane>
                      </children>
                   </AnchorPane>
                </content>

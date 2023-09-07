@@ -2,12 +2,12 @@ package com.thecodebarista.model;
 
 /**
  * Contact Model representing client_schedule.contacts DB table.
- * Not an application managed table.
  */
 public class Contact {
     private int Contact_ID;
     private String Contact_Name;
     private String Email;
+    private int Active;
 
     public Contact(int contact_ID, String contact_Name, String email) {
         Contact_ID = contact_ID;
@@ -15,6 +15,12 @@ public class Contact {
         Email = email;
     }
 
+    public Contact(int contact_ID, String contact_Name, String email, int active) {
+        Contact_ID = contact_ID;
+        Contact_Name = contact_Name;
+        Email = email;
+        Active = active;
+    }
     public int getContact_ID() {
         return Contact_ID;
     }
@@ -37,6 +43,14 @@ public class Contact {
 
     public void setEmail(String email) {
         Email = email;
+    }
+
+    public int getActive() {
+        return Active;
+    }
+
+    public void setActive(int active) {
+        Active = active;
     }
 
     // Customized toString for Listview Selections

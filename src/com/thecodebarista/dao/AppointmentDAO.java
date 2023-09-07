@@ -11,7 +11,6 @@ import java.time.LocalDate;
  */
 public interface AppointmentDAO extends SchedulerDAO<Appointment> {
 
-    ObservableList<String> genericData(String query) throws SQLException;
     ObservableList<Appointment> getApptByCst(int cstId, LocalDate startDt) throws SQLException;
     ObservableList<Appointment> getApptNowByUser(int id) throws SQLException;
     ObservableList<Appointment> getByMonth() throws SQLException;

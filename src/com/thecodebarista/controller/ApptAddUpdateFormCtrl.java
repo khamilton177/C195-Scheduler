@@ -422,8 +422,8 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             });
 
             customer_ID_CBox.setItems(cstLVItems.extractAll());
-            contact_ID_CBox.setItems(cntLVItems.extractAll());
-            user_ID_CBox.setItems(userLVItems.extractAll());
+            contact_ID_CBox.setItems(cntLVItems.ActiveContacts());
+            user_ID_CBox.setItems(userLVItems.ActiveUsers());
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -556,8 +556,17 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                 boolean noConflict = apptOverlapCheck();
                 if (noConflict) {
                     saveApptData();
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+                    scene = loader.load();
+                    MainMenuCtrl formController = loader.getController();
+                    formController.setMainTabPane("ApptTab");
+
+                    if (sessionUserAccess < 1) {
+                        formController.setCurrentUserViewAccess(sessionUserAccess);
+                    }
                     stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-                    scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+                    //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                     stage.setTitle("C195-Global Consulting Scheduler");
                     stage.setScene(new Scene(scene));
                     stage.show();
@@ -580,8 +589,17 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         System.out.println("Cancel Button Clicked: " + ((Button)actionEvent.getSource()).getId());
 
         try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+            scene = loader.load();
+            MainMenuCtrl formController = loader.getController();
+            formController.setMainTabPane("ApptTab");
+
+            if (sessionUserAccess < 1) {
+                formController.setCurrentUserViewAccess(sessionUserAccess);
+            }
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
+            //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
             stage.setTitle("C195-Global Consulting Scheduler");
             stage.setScene(new Scene(scene));
             stage.show();
