@@ -47,7 +47,9 @@ Application Directions:
 
             Update user and contact data by selecting the row item from the corresponding table view, then utilizing the 'Update' button in the Button menu-bar.
 
-		    Deactivate a user or contact by selecting the row item from the corresponding table view and then utilizing the 'Deactivate' button on the Button menu-bar. Users must enter 'Update' forms to reactivate a user or contact.
+		    Deactivate a user or contact by selecting the row item from the corresponding table view and then utilizing the 'Deactivate' button on the Button menu-bar.
+		    User confirmation is need to complete.
+		    Users must enter the 'Update' forms to reactivate a user or contact.
 
             Users and Contacts tabs include a Search Filter. Selecting the 'Show Search Filter' button on the Button menu-bar reveals the fields available for filtering:
                 Users Search Filter Pane-
@@ -71,7 +73,12 @@ Application Directions:
 
             Close the Search Filter pane by selecting the 'Hide Search Filter' button on the Button menu-bar.
 
-   Deleting a customer with appointments will notify the user of the deletion of all existing appointments. A bulk deletion of appointments occurs on user confirmation of the message.
+   Non-admin users may update their passwords by clicking on their username in the top-right of the main application page.
+
+   Legacy users- admin and test, cannot be modified. User will receive an alert when trying to update.
+
+   Deleting a customer with appointments will notify the user of the deletion of all existing appointments.
+   A bulk deletion of appointments occurs on user confirmation of the message.
 
    The logout link will return the user to the Login screen.
 
