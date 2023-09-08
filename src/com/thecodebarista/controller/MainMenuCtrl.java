@@ -1855,13 +1855,20 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
         try {
             selectedUser = UserTblView.getSelectionModel().getSelectedItem();
-            msgCtx = String.format("Please confirm deactivation for User ID: %d\nUser Name: %s\n", selectedUser.getUser_ID(), selectedUser.getUser_Name());
-            alert = buildAlert(Alert.AlertType.CONFIRMATION, btnTxt, msgCtx);
-            confirm = alert.showAndWait();
-            if (confirm.isPresent() && confirm.get() == ButtonType.OK){
-                UserDAO userDao = new UserDaoImpl();
-                userDao.setActivationStatus(activeStatus, selectedUser.getUser_ID());
-                displayUserTblViewData("Active", null);
+            if (selectedUser.getUser_ID() < 3) {
+                msgCtx = String.format("You do not have privileges to deactivate Legacy User: '%s'", selectedUser.getUser_Name());
+                alert = buildAlert(Alert.AlertType.ERROR, btnTxt, msgCtx);
+                confirm = alert.showAndWait();
+            }
+            else {
+                msgCtx = String.format("Please confirm deactivation for User ID: %d\nUser Name: %s\n", selectedUser.getUser_ID(), selectedUser.getUser_Name());
+                alert = buildAlert(Alert.AlertType.CONFIRMATION, btnTxt, msgCtx);
+                confirm = alert.showAndWait();
+                if (confirm.isPresent() && confirm.get() == ButtonType.OK){
+                    UserDAO userDao = new UserDaoImpl();
+                    userDao.setActivationStatus(activeStatus, selectedUser.getUser_ID());
+                    displayUserTblViewData("Active", null);
+                }
             }
         }
         catch (SQLException | NullPointerException e) {
