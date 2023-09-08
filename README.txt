@@ -1,4 +1,4 @@
-Copyright (c) 2023, The Code Barista LLC and/or its affiliates.
+Copyright (c) 2023, The Code Barista LLC and its affiliates.
 
 The Global Consulting Scheduler is a GUI-based application to schedule appointments and store customer information.
 
@@ -20,24 +20,56 @@ Application Directions:
 	Enter the application by providing valid user credentials at the login screen.
 	User greeting alert informs users whether there is an upcoming meeting within the next 15 minutes.
 
-	Users can navigate between three tabs (Appointments, Customers, Reports)-
-		Appointments- composed of three sub-tabs:
-			Appointment- list all appointments in a table view.
-			Appointments by Month- list all current month appointments in a table view.
-			Appointments by Week- list all current week appointments in a table view.
+	All users can navigate between three tabs (Appointments, Customers, Reports). 'Admin' designated users will have two additional tabs (Users and Contacts)-
+		Appointments- tab includes three radio buttons:
+			All- list all appointments in a table view; this is the default view.
+			Monthly- List all current month appointments in a table view.
+			Weekly- List all current week appointments in a table view.
 
-		Customers- list all contacts in a table view.
+		Customers- List all customers in a table view.
 
-		Create new appointments and customers using the 'New' button on the Button menu-bar.
+		    Create new appointments and customers using the 'New' button on the Button menu-bar.
 
-		Update and delete appointment and customer data by selecting the row item from the corresponding table view, then utilizing the 'Update,' or 'Delete' buttons on the Button menu-bar, respectively.
+		    Update and delete appointment and customer data by selecting the row item from the corresponding table view, then utilizing the 'Update,' or 'Delete' buttons on the Button menu-bar, respectively.
 
 		Reports- contains a dropdown menu to select between three query panes:
-			Total Customer Appointments by Month/Type- Users can select a combination of months and appointment types from the respective dropdowns; if the user makes no selections, the report returns counts for all months and types. Clicking the 'Search' button returns the results; clicking the 'Clear' button clears any current dropdown selections.
+			Total Customer Appointments by Month/Type- Users can choose a combination of months and appointment types from the respective dropdowns; if the user makes no selections, the report returns counts for all months and types. Clicking the 'Search' button returns the results; clicking the 'Clear' button clears any current dropdown selections.
 
-			Contact Schedules- Users select a contact from the dropdown. The default report queries the current week. Alternatively, choosing the 'Month' radio button, shows the contact's current month's appointments.
+			Contact Schedules- Users select a contact from the dropdown. The default report queries the current week. Alternatively, choosing the 'Month' radio button shows the contact's current month's appointments.
 
 			Total Appointment Duration Average- Menu selection of this report immediately returns the query results.
+
+        Users- List all 'active' users in a table view.
+
+        Contacts- List all 'active' contacts in a table view.
+
+            Create new users and contacts using the 'New' button on the Button menu-bar.
+
+            Update user and contact data by selecting the row item from the corresponding table view, then utilizing the 'Update' button in the Button menu-bar.
+
+		    Deactivate a user or contact by selecting the row item from the corresponding table view and then utilizing the 'Deactivate' button on the Button menu-bar. Users must enter 'Update' forms to reactivate a user or contact.
+
+            Users and Contacts tabs include a Search Filter. Selecting the 'Show Search Filter' button on the Button menu-bar reveals the fields available for filtering:
+                Users Search Filter Pane-
+
+                    User Name- filter by username, full or partial.
+
+                    Admin?- Select 'Yes' or 'No.'
+
+                    Active?- leave empty for all users; select 'Active' or Inactive' for specific active status.
+
+                Contacts Search Filter Pane-
+
+                    Contact Name- filter by contact name, full or partial.
+
+                    Active?- leave empty for all users; select 'Active' or Inactive' for specific active status.
+
+            Send the filtered search by pressing the 'Search' button within the Search Filter pane.
+
+            Clear the search fields using the 'Clear Search' button within the Search Filter pane.
+            *** Leaving all fields blank and performing the search will return all users or contacts.
+
+            Close the Search Filter pane by selecting the 'Hide Search Filter' button on the Button menu-bar.
 
    Deleting a customer with appointments will notify the user of the deletion of all existing appointments. A bulk deletion of appointments occurs on user confirmation of the message.
 
