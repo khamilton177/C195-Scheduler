@@ -1,5 +1,7 @@
 package com.thecodebarista.model;
 
+import java.sql.Timestamp;
+
 /**
  * User Model representing client_schedule.users DB table.
  */
@@ -21,11 +23,17 @@ public class User {
      * The User Admin status.
      */
     private int Is_Admin;
+
     /**
      * The User Active status.
      */
     private int Active;
 
+    /**
+     * The User last successful login timestamp.
+     * This will not be a part of the new/update forms.
+     */
+    private Timestamp Last_Login;
 
     /**
      * User constructor for end-user.
@@ -40,7 +48,7 @@ public class User {
     }
 
     /**
-     * User constructor with all user member for DB creation.
+     * User constructor for Admins.
      * @param user_ID
      * @param user_Name
      * @param password
@@ -89,6 +97,14 @@ public class User {
 
     public void setActive(int active) {
         Active = active;
+    }
+
+    public Timestamp getLast_Login() {
+        return Last_Login;
+    }
+
+    public void setLast_Login(Timestamp last_Login) {
+        Last_Login = last_Login;
     }
 
     @Override

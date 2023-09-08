@@ -34,12 +34,6 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
     private TextField user_ID_TxtFld;
 
     @javafx.fxml.FXML
-    private CheckBox active_TxtFld;
-
-    @javafx.fxml.FXML
-    private CheckBox admin_TxtFld;
-
-    @javafx.fxml.FXML
     private Button UserSaveBtn;
 
     @javafx.fxml.FXML
@@ -47,8 +41,10 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
     @javafx.fxml.FXML
     private ButtonBar AddUpdBtnBar;
+
     @javafx.fxml.FXML
     private ButtonBar PwdBtnBar;
+
     @javafx.fxml.FXML
     private Button ChangePwdBtn;
 
@@ -64,7 +60,7 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         user_Name_TxtFld.setText(String.valueOf(selectedUser.getUser_Name()));
         pwd_TxtFld.setText(String.valueOf(selectedUser.getPassword()));
 
-        //if ((sessionUserAccess > 0) && (static_AddUpdateLabel.getText().equals("Update User"))) {
+        if (static_AddUpdateLabel.getText().equals("Update User")) {
             Boolean isAdmin = false;
             Boolean isActive = true;
 
@@ -77,7 +73,7 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                 isActive = false;
             }
             user_Active_ChkBox.setSelected(isActive);
-        //}
+        }
     }
 
     /**
@@ -99,7 +95,8 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
      */
     protected void saveUserData() throws SQLException {
         int result = 0;
-        int user_ID = Integer.parseInt(user_ID_TxtFld.getText());
+        int user_ID;
+
         String user_Name = user_Name_TxtFld.getText();
         String password = pwd_TxtFld.getText();
         int is_Admin = admin_ChkBox.isSelected()? 1:0;
@@ -112,15 +109,17 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                 result = userDAOSave.insert(userIns);
                 break;
             case "User Info":
+                user_ID = Integer.parseInt(user_ID_TxtFld.getText());
                 User userUpd = new User(user_ID, user_Name, password, is_Admin, active);
                 result = userDAOSave.update(userUpd);
                 break;
             case "Update User":
+                user_ID = Integer.parseInt(user_ID_TxtFld.getText());
                 if (sessionUserAccess > 0) {
                     userUpd = new User(user_ID, user_Name, password, is_Admin, active);
                     result = userDAOSave.update(userUpd);
                 }
-                break;
+
         }
         System.out.println(result);
     }

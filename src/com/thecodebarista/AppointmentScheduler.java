@@ -24,6 +24,7 @@ public class AppointmentScheduler extends Application {
         ContactDAO checkCntDB = new ContactDaoImpl();
         checkUserDB.existColumns("Is_Admin");
         checkUserDB.existColumns("Active");
+        checkUserDB.existColumns("Last_Login");
         checkCntDB.existColumns("Active");
         checkCntDB.makeColumnUnique("Email");
     }

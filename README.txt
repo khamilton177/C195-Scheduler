@@ -32,7 +32,7 @@ Application Directions:
 
 		    Update and delete appointment and customer data by selecting the row item from the corresponding table view, then utilizing the 'Update,' or 'Delete' buttons on the Button menu-bar, respectively.
 
-		Reports- contains a dropdown menu to select between three query panes:
+		Reports- Contains a dropdown menu to select between three query panes:
 			Total Customer Appointments by Month/Type- Users can choose a combination of months and appointment types from the respective dropdowns; if the user makes no selections, the report returns counts for all months and types. Clicking the 'Search' button returns the results; clicking the 'Clear' button clears any current dropdown selections.
 
 			Contact Schedules- Users select a contact from the dropdown. The default report queries the current week. Alternatively, choosing the 'Month' radio button shows the contact's current month's appointments.
@@ -54,17 +54,17 @@ Application Directions:
             Users and Contacts tabs include a Search Filter. Selecting the 'Show Search Filter' button on the Button menu-bar reveals the fields available for filtering:
                 Users Search Filter Pane-
 
-                    User Name- filter by username, full or partial.
+                    User Name- Filter by username, full or partial.
 
-                    Admin?- Select 'Yes' or 'No.'
+                    Admin?- Select 'Yes' or 'No.' Leaving empty will show both users of both access levels;
 
-                    Active?- leave empty for all users; select 'Active' or Inactive' for specific active status.
+                    Active?- Leave empty for all users; select 'Active' or Inactive' for specific active status.
 
                 Contacts Search Filter Pane-
 
-                    Contact Name- filter by contact name, full or partial.
+                    Contact Name- Filter by contact name, full or partial.
 
-                    Active?- leave empty for all users; select 'Active' or Inactive' for specific active status.
+                    Active?- Leave empty for all users; select 'Active' or Inactive' for specific active status.
 
             Send the filtered search by pressing the 'Search' button within the Search Filter pane.
 
@@ -72,6 +72,8 @@ Application Directions:
             *** Leaving all fields blank and performing the search will return all users or contacts.
 
             Close the Search Filter pane by selecting the 'Hide Search Filter' button on the Button menu-bar.
+
+   Inactive users will not be allowed to log in. An alert will prompt them to contact the system administrator.
 
    Non-admin users may update their passwords by clicking on their username in the top-right of the main application page.
 

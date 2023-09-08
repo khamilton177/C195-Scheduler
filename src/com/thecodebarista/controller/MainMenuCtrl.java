@@ -1476,7 +1476,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      * Creates data for Search Filter ComboBox options.
      */
     private void buildSfFilters() throws SQLException {
-        activeStatus.addAll("", "Active", "Inactive");
+        activeStatus.addAll("Active", "Inactive");
         adminStatus.addAll("Yes", "No");
 
         // Create User sfFilters
@@ -1791,7 +1791,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             scene = loader.load();
 
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            stage.setTitle("New User");
+            // stage.setTitle("New User");
             stage.setScene(new Scene(scene));
             stage.show();
         }

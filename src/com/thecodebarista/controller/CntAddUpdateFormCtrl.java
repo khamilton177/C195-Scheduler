@@ -61,7 +61,6 @@ public class CntAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
 
     /**
      * Method enable Admin Only updatable fields on Update Contacts form.
-     * @throws SQLException
      */
     protected void showAdminOnlyFlds() {
         if (sessionUserAccess > 0) {

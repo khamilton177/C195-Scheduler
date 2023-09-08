@@ -4,11 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import com.thecodebarista.model.*;
 
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static com.thecodebarista.dao.DBConnection.useConnection;
 import static com.thecodebarista.dao.DBUtils.getUserData;
@@ -209,7 +205,9 @@ public class UserDaoImpl implements UserDAO{
         if (column.equals("Active")) {
             sqlStmt += " INT NOT NULL DEFAULT 1";
         }
-
+        if (column.equals("Last_Login")) {
+            sqlStmt += " TIMESTAMP NULL";
+        }
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
 
@@ -222,7 +220,7 @@ public class UserDaoImpl implements UserDAO{
     }
 
     @Override
-    public int makeColumnUnique(String column) throws SQLException {
+    public int makeColumnUnique(String column) {
         String sqlStmt = "ALTER TABLE users" +
                 " ADD CONSTRAINT UNIQUE (" +
                 column +
@@ -254,6 +252,23 @@ public class UserDaoImpl implements UserDAO{
         }
         return rowsAffected;
     }
+
+    @Override
+    public int updateLastLogin(Timestamp login, int id) throws SQLException{
+        String sqlStmt = "UPDATE users SET" +
+                " Last_Login = ?" +
+                " WHERE User_ID = ?";
+        // Build the preparedStatement.
+        try {
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            prepStmt.setTimestamp(1, login);
+            prepStmt.setInt(2, id);
+            rowsAffected = DBUtils.doDMLv2(prepStmt, sqlStmt);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowsAffected;    }
 
     @Override
     public int setActivationStatus(int active, int id) {

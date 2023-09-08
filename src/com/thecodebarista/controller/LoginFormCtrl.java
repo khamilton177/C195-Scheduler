@@ -1,4 +1,5 @@
 package com.thecodebarista.controller;
+import com.thecodebarista.dao.UserDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Objects;
@@ -224,6 +228,20 @@ public class LoginFormCtrl implements Initializable {
         return passCredentials;
     }
 
+    private void auditLogin(int sessionUserId) {
+        LocalDateTime ldt = LocalDateTime.now();
+        // System.out.println("Raw Now- : " + ldt);
+        Timestamp loginDate = Timestamp.valueOf(ldt.withSecond(0).withNano(0));
+
+        try{
+            UserDAO userDao = new UserDaoImpl();
+            userDao.updateLastLogin(loginDate, sessionUserId);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Set the successful login userid to the session user id.
      * @param objId - The User_ID of login user.
@@ -286,7 +304,7 @@ public class LoginFormCtrl implements Initializable {
                         sessionUser = notLoginUser;
                         sessionUserId = getCurrentUserid;
                         setCurrentUserid(getCurrentUserid);
-
+                        auditLogin(sessionUserId);
                         sessionUserName = notLoginUser.getUser_Name();
 
                         sessionUserAccess = notLoginUser.getIs_Admin();
