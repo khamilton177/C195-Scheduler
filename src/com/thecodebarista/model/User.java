@@ -1,5 +1,7 @@
 package com.thecodebarista.model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import java.sql.Timestamp;
 
 /**
@@ -9,7 +11,8 @@ public class User {
     /**
      * The User ID.
      */
-    private final int User_ID;
+    private int User_ID;
+
     /**
      * The User name.
      */
@@ -34,6 +37,17 @@ public class User {
      * This will not be a part of the new/update forms.
      */
     private Timestamp Last_Login;
+
+    /**
+     * Exist in Object Only field used to capture Report Query Tableview field property.
+     */
+    private IntegerProperty days = new SimpleIntegerProperty();
+
+    /**
+     * Default User Constructor.
+     */
+    public User() {
+    }
 
     /**
      * User constructor for end-user.
@@ -63,8 +77,30 @@ public class User {
         Active = active;
     }
 
+    /**
+     * User constructor for All db fields.
+     * @param user_ID
+     * @param user_Name
+     * @param password
+     * @param is_Admin
+     * @param active
+     * @param last_Login
+     */
+    public User(int user_ID, String user_Name, String password, int is_Admin, int active, Timestamp last_Login) {
+        User_ID = user_ID;
+        User_Name = user_Name;
+        Password = password;
+        Is_Admin = is_Admin;
+        Active = active;
+        Last_Login = last_Login;
+    }
+
     public int getUser_ID() {
         return User_ID;
+    }
+
+    public void setUser_ID(int user_ID) {
+        User_ID = user_ID;
     }
 
     public String getUser_Name() {
@@ -105,6 +141,18 @@ public class User {
 
     public void setLast_Login(Timestamp last_Login) {
         Last_Login = last_Login;
+    }
+
+    public int getDays() {
+        return days.get();
+    }
+
+    public IntegerProperty daysProperty() {
+        return days;
+    }
+
+    public void setDays(int days) {
+        this.days.set(days);
     }
 
     @Override

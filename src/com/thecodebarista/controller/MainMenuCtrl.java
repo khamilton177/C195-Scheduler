@@ -508,7 +508,18 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     private MenuItem ApptDurationPaneMenuItem;
     @javafx.fxml.FXML
     private TextArea ApptDurationTblView;
-
+    @javafx.fxml.FXML
+    private Pane AgedLoginPane;
+    @javafx.fxml.FXML
+    private MenuItem AgedLoginPaneMenuItem;
+    @javafx.fxml.FXML
+    protected TableView<User> AgedLoginTblView;
+    @javafx.fxml.FXML
+    protected TableColumn<User, String> rptUserName;
+    @javafx.fxml.FXML
+    protected TableColumn<User, Timestamp> rptLastLogin;
+    @javafx.fxml.FXML
+    protected TableColumn<User, Integer> rptDays;
     /*
     --- End of Reports Tab FXML controls ---
      */
@@ -835,7 +846,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
      * User Password text field on User Add/Update form.
      */
     @javafx.fxml.FXML
-    protected TextField pwd_TxtFld;
+    protected PasswordField pwd_PwdFld;
 
     @javafx.fxml.FXML
     protected CheckBox user_Active_ChkBox;
@@ -1198,7 +1209,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     /**
      * Display the Appt ObservableList data in the TableView based on ApptPeriodGrp selection.
      */
-    public void displayApptTblViewData_v2(String btnTxt) throws SQLException {
+    public void displayApptTblViewData(String btnTxt) throws SQLException {
         ObservableList<Appointment> ApptAppointments = FXCollections.observableArrayList();
         AppointmentDAO apptDao = new AppointmentDaoImpl();
         apptSetAllRows();
@@ -1210,6 +1221,17 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             ApptAppointments.addAll(apptDao.extractAll());
         }
         ApptTblView.setItems(ApptAppointments);
+    }
+
+    void displayAgedLogins() throws SQLException {
+        ObservableList<User> agedLogins = FXCollections.observableArrayList();
+        UserDAO agedDao = new UserDaoImpl();
+
+        rptUserName.setCellValueFactory(new PropertyValueFactory<>("User_Name"));
+        rptLastLogin.setCellValueFactory(new PropertyValueFactory<>("Last_Login"));
+        rptDays.setCellValueFactory(new PropertyValueFactory<>("Days"));
+        agedLogins.addAll(agedDao.agedLogins());
+        AgedLoginTblView.setItems(agedLogins);
     }
 
     /**
@@ -1228,7 +1250,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         String endTxtFld = "";
 
         if(btnTxt.equals("UserSave")) {
-            formFields = new TextField[]{user_Name_TxtFld, pwd_TxtFld};
+            formFields = new TextField[]{user_Name_TxtFld, pwd_PwdFld};
         }
         else if(btnTxt.equals("CntSave")) {
             formFields = new TextField[]{cnt_Name_TxtFld, email_TxtFld};
@@ -1462,7 +1484,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         System.out.println("Current Appt Period Selected: " + apptPeriod);
 
         try {
-            displayApptTblViewData_v2(apptPeriod);
+            displayApptTblViewData(apptPeriod);
             // displayApptTblViewData();
             // includeApptMoController.displayApptTblViewMonthly();
             // includeApptWkController.displayApptTblViewWeekly();
@@ -2249,7 +2271,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         btnTxt = ((RadioButton) event.getSource()).getId();
         // CntApptPeriodRadioGrp.getSelectedToggle();
         try {
-            displayApptTblViewData_v2(btnTxt);
+            displayApptTblViewData(btnTxt);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -2295,7 +2317,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             ApptDurationTblView.setText(reportDurationAvg());
         }
 
-        if (menuItemId.equals("CstMostActivePane")) { // NOT IN USE
+        if (menuItemId.equals("AgedLoginPane")) {
+            displayAgedLogins();
         }
 
         ReportTitlePane.setText(menuItem);

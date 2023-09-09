@@ -16,4 +16,5 @@ public interface UserDAO extends SchedulerDAO<User>  {
     int updateLastLogin(Timestamp login, int id) throws SQLException;
     int setActivationStatus(int active, int id);
     ObservableList<User> ActiveUsers() throws SQLException;
+    ObservableList<User> agedLogins() throws SQLException;
 }

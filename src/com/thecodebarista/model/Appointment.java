@@ -31,9 +31,9 @@ public class Appointment {
      */
     private IntegerProperty count = new SimpleIntegerProperty();
 
-   /**
-    * Default Appointment Constructor.
-    */
+    /**
+     * Default Appointment Constructor.
+     */
     public Appointment() {
     }
 
@@ -162,8 +162,8 @@ public class Appointment {
         return count.get();
     }
 
-    public void setCount(int Mount) {
-        this.count.set(Mount);
+    public void setCount(int Count) {
+        this.count.set(Count);
     }
 
     @Override

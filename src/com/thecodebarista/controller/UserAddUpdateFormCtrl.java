@@ -58,7 +58,7 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
         user_ID_TxtFld.setText(String.valueOf(selectedUser.getUser_ID()));
         user_Name_TxtFld.setText(String.valueOf(selectedUser.getUser_Name()));
-        pwd_TxtFld.setText(String.valueOf(selectedUser.getPassword()));
+        pwd_PwdFld.setText(String.valueOf(selectedUser.getPassword()));
 
         if (static_AddUpdateLabel.getText().equals("Update User")) {
             Boolean isAdmin = false;
@@ -98,7 +98,7 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         int user_ID;
 
         String user_Name = user_Name_TxtFld.getText();
-        String password = pwd_TxtFld.getText();
+        String password = pwd_PwdFld.getText();
         int is_Admin = admin_ChkBox.isSelected()? 1:0;
         int active = user_Active_ChkBox.isSelected()? 1:0;
 

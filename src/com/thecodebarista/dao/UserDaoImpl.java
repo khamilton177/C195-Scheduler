@@ -206,7 +206,7 @@ public class UserDaoImpl implements UserDAO{
             sqlStmt += " INT NOT NULL DEFAULT 1";
         }
         if (column.equals("Last_Login")) {
-            sqlStmt += " TIMESTAMP NULL";
+            sqlStmt += " DATETIME NULL";
         }
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
@@ -313,6 +313,38 @@ public class UserDaoImpl implements UserDAO{
             e.getCause();
         }
         return activeUsers;
+    }
+
+    @Override
+    public ObservableList<User> agedLogins() {
+        ObservableList<User> userLogins = FXCollections.observableArrayList();
+
+        try{
+            String sqlStmt = "SELECT User_Name" +
+                    ", Last_Login" +
+                    ", DATEDIFF(now(), DATE(Last_Login)) as Days" +
+                    " FROM users" +
+                    " WHERE DATE(Last_Login) <= CURDATE()+90" +
+                    " HAVING Days >= 1" +
+                    " ORDER BY Last_Login DESC";
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
+
+            // Get the ResultSet of the executed query.
+            ResultSet rs = DBUtils.getResult();
+
+            // Extract the ResultSet to a class object.
+            while (rs.next()) {
+                User agedRows = DBUtils.getAgedLogins(rs);
+                userLogins.add(agedRows);
+            }
+            return userLogins;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            e.getCause();
+        }
+        return userLogins;
     }
 
     @Override

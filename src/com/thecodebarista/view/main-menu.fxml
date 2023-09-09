@@ -202,6 +202,7 @@
                                                     <MenuItem fx:id="CstMonthTypePaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="Total Customer Appointments by Month/Type" />
                                                     <MenuItem fx:id="CntSchedulePaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="Contact Schedules" />
                                                       <MenuItem fx:id="ApptDurationPaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="Total Appoint  Duration Average" />
+                                                      <MenuItem fx:id="AgedLoginPaneMenuItem" mnemonicParsing="false" onAction="#showFilterPane" text="Aged Logins" />
                                                   </items>
                                                 </MenuButton>
                                                 <StackPane fx:id="reportFilterStackPane">
@@ -260,6 +261,7 @@
                                                             <VBox alignment="CENTER_LEFT" prefHeight="168.0" prefWidth="190.0" />
                                                          </children>
                                                       </Pane>
+                                                      <Pane fx:id="AgedLoginPane" layoutX="10.0" layoutY="10.0" prefHeight="134.0" prefWidth="200.0" visible="false" />
                                                    </children>
                                                 </StackPane>
                                              </children>
@@ -276,17 +278,6 @@
                                                          <children>
                                                             <StackPane fx:id="TblViewStackPane" layoutX="9.600000381469727" layoutY="9.600000381469727" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <children>
-                                                                  <TableView fx:id="CstMostActiveTblView" layoutX="10.0" layoutY="10.0" prefHeight="750.0" prefWidth="875.0">
-                                                                     <columns>
-                                                                        <TableColumn fx:id="rptCol11" prefWidth="75.0" />
-                                                                        <TableColumn fx:id="rptCol21" prefWidth="75.0" />
-                                                                        <TableColumn fx:id="rptCol31" prefWidth="75.0" />
-                                                                        <TableColumn fx:id="rptCol41" prefWidth="75.0" />
-                                                                        <TableColumn fx:id="rptCol51" prefWidth="75.0" />
-                                                                        <TableColumn fx:id="rptCol61" prefWidth="75.0" />
-                                                                        <TableColumn fx:id="rptCol71" prefWidth="75.0" />
-                                                                     </columns>
-                                                                  </TableView>
                                                                   <TableView fx:id="CstMonthTypeTblView" prefHeight="750.0" prefWidth="875.0">
                                                                     <columns>
                                                                       <TableColumn fx:id="rptMonth" prefWidth="75.0" text="Month">
@@ -311,6 +302,17 @@
                                                                         <TableColumn fx:id="rptStart" prefWidth="75.0" text="Start" />
                                                                         <TableColumn fx:id="rptEnd" prefWidth="75.0" text="End" />
                                                                         <TableColumn fx:id="rptCnt" prefWidth="75.0" text="Customer ID" />
+                                                                     </columns>
+                                                                  </TableView>
+                                                                  <TableView fx:id="AgedLoginTblView" layoutX="10.0" layoutY="10.0" prefHeight="750.0" prefWidth="875.0">
+                                                                     <columns>
+                                                                        <TableColumn fx:id="rptUserName" prefWidth="75.0" text="User Name" />
+                                                                        <TableColumn fx:id="rptLastLogin" prefWidth="75.0" text="Last Login" />
+                                                                        <TableColumn fx:id="rptDays" prefWidth="75.0" text="Days">
+                                                                           <cellValueFactory>
+                                                                              <PropertyValueFactory property="days" />
+                                                                           </cellValueFactory>
+                                                                        </TableColumn>
                                                                      </columns>
                                                                   </TableView>
                                                                   <TextArea fx:id="ApptDurationTblView" prefHeight="200.0" prefWidth="200.0" />
@@ -417,7 +419,7 @@
                                        <columns>
                                           <TableColumn fx:id="UserIdCol" editable="false" prefWidth="100.0" text="User ID" />
                                           <TableColumn fx:id="UserNameCol" minWidth="0.0" prefWidth="154.0" text="User Name" />
-                                          <TableColumn fx:id="UserPwdCol" prefWidth="132.0" text="Password" />
+                                          <TableColumn fx:id="UserPwdCol" prefWidth="132.0" text="Password" visible="false" />
                                           <TableColumn fx:id="UserAdminCol" prefWidth="132.0" text="Admin?" />
                                           <TableColumn fx:id="UserActiveCol" prefWidth="132.0" text="Active?" />
                                        </columns>

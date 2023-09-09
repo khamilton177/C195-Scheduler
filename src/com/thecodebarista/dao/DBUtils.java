@@ -213,5 +213,17 @@ public class DBUtils {
         return rptRow;
     }
 
+    public static User getAgedLogins(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        String user_Name = (rs.getString(metaData.getColumnLabel(1)));
+        System.out.println("Got Name? " + user_Name);
+        Timestamp last_Login = (rs.getTimestamp(metaData.getColumnLabel(2)));
+        System.out.println("Got Login? " + last_Login);
+        int days = (rs.getInt(metaData.getColumnLabel(3)));;
+        User agedRow = new User();
+        agedRow.setUser_Name(user_Name);
+        agedRow.setLast_Login(last_Login);
+        agedRow.setDays(days);
+        return agedRow;
+    }
 }
-
