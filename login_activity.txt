@@ -5482,3 +5482,83 @@ Sep 09, 2023 3:43:11 AM com.thecodebarista.controller.LoginFormCtrl onActionLogi
 INFO: Valid Login: true
 Reason: Login Successful!
 
+Sep 09, 2023 2:19:24 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 10, 2023 1:59:39 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 10, 2023 8:43:01 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 12, 2023 4:33:37 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 12, 2023 5:29:44 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 12, 2023 5:38:59 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 2:12:19 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 2:31:28 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+Sep 13, 2023 2:31:32 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 2:33:31 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 2:40:35 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 2:57:43 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 2:59:01 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 3:00:42 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 3:02:04 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 3:32:46 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 3:35:15 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 3:44:36 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+WARNING: Valid Login: false
+Reason: The username and password combination is invalid.
+
+Sep 13, 2023 3:45:09 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+
+Sep 13, 2023 3:51:41 PM com.thecodebarista.controller.LoginFormCtrl onActionLogin
+INFO: Valid Login: true
+Reason: Login Successful!
+

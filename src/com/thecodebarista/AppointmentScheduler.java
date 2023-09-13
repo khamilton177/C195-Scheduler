@@ -26,7 +26,7 @@ public class AppointmentScheduler extends Application {
         checkUserDB.existColumns("Active");
         checkUserDB.existColumns("Last_Login");
         checkCntDB.existColumns("Active");
-        checkCntDB.makeColumnUnique("Email");
+        checkCntDB.showIndexes("Email");
     }
 
     /**

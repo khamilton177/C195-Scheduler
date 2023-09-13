@@ -197,6 +197,11 @@ public class CustomerDaoImpl implements CustomerDAO {
     }
 
     @Override
+    public int showIndexes(String column) throws SQLException {
+        return 0;
+    }
+
+    @Override
     public int makeColumnUnique(String column) throws SQLException {
         return 0;
     }

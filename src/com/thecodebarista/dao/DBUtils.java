@@ -58,6 +58,7 @@ public class DBUtils {
      */
     public static int doDMLv2(PreparedStatement prepStmt, String sqlStmt) {
         boolean isSelect = sqlStmt.toLowerCase().startsWith("select");
+        boolean isShow = sqlStmt.toLowerCase().startsWith("show");
         System.out.println("Processing: " + prepStmt.toString());
         rowsAffected =0;
 
@@ -67,6 +68,10 @@ public class DBUtils {
             if(isSelect){
                 rsData=prepStmt.executeQuery();
                 System.out.println("Rows Affected from SELECT: " + rowsAffected);
+            }
+            else if(isShow){
+                rsData=prepStmt.executeQuery();
+                System.out.println("Rows Affected from SHOW: " + rowsAffected);
             }
             else {
                 rowsAffected = prepStmt.executeUpdate();
@@ -90,12 +95,13 @@ public class DBUtils {
      * @throws SQLException Log will have SQL statement error.
      */
     public static User getUserData(ResultSet rs) throws SQLException {
-        int user_ID = (rs.getInt("User_ID"));
-        String user_Name = (rs.getString("User_Name"));
-        String password = (rs.getString("Password"));
-        int is_Admin = (rs.getInt("Is_Admin"));
-        int active = (rs.getInt("Active"));
-        return new User(user_ID, user_Name, password, is_Admin, active);
+        int user_ID = rs.getInt("User_ID");
+        String user_Name = rs.getString("User_Name");
+        String password = rs.getString("Password");
+        int is_Admin = rs.getInt("Is_Admin");
+        int active = rs.getInt("Active");
+        Timestamp last_Login = rs.getTimestamp("Last_Login");
+        return new User(user_ID, user_Name, password, is_Admin, active, last_Login);
     }
 
     /**

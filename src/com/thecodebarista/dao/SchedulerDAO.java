@@ -25,5 +25,6 @@ public interface SchedulerDAO<T> {
 
     int existColumns(String column) throws SQLException;
     int alterTable(String column) throws SQLException;
+    int showIndexes(String column) throws SQLException;
     int makeColumnUnique(String column) throws SQLException;
 }

@@ -114,7 +114,7 @@ public class ContactDaoImpl implements ContactDAO {
                 " Contact_Name = ?," +
                 " Email = ?," +
                 " Active = ?" +
-                " WHERE (Contact_ID = ?) AND (Contact_ID > 3)";
+                " WHERE (Contact_ID = ?)"; // AND (Contact_ID > 3)";
 
         // Build the preparedStatement.
         try {
@@ -197,7 +197,8 @@ public class ContactDaoImpl implements ContactDAO {
         catch(SQLException e)  {
             e.printStackTrace();
         }
-        return rowsAffected;    }
+        return rowsAffected;
+    }
 
     @Override
     public int alterTable(String column) throws SQLException {
@@ -213,7 +214,6 @@ public class ContactDaoImpl implements ContactDAO {
 
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
-
             rowsAffected = DBUtils.doDDL(prepStmt, sqlStmt);
         }
         catch(SQLException e) {
@@ -223,9 +223,33 @@ public class ContactDaoImpl implements ContactDAO {
     }
 
     @Override
+    public int showIndexes(String column) throws SQLException {
+        String sqlStmt = "SHOW INDEXES FROM contacts WHERE Column_name = '" +
+                column +
+                "'";
+
+        try{
+            prepStmt = useConnection().prepareStatement(sqlStmt);
+            DBUtils.doDMLv2(prepStmt, sqlStmt);
+            ResultSet rs = DBUtils.getResult();
+
+            // Make column unique if it's not already
+            if (!rs.next()) {
+                makeColumnUnique(column);
+            }
+            else {
+                System.out.println("Column " + column + " already UNIQUE");
+            }
+        }
+        catch(SQLException e)  {
+            e.printStackTrace();
+        }
+        return rowsAffected;    }
+
+    @Override
     public int makeColumnUnique(String column) throws SQLException {
         String sqlStmt = "ALTER TABLE contacts" +
-                " ADD CONSTRAINT UNIQUE (" +
+                " ADD UNIQUE (" +
                 column +
                 ")";
 
@@ -243,8 +267,8 @@ public class ContactDaoImpl implements ContactDAO {
     public int setActivationStatus(int active, int id) {
         String sqlStmt = "UPDATE contacts SET" +
                 " Active = ?" +
-                " WHERE (Contact_ID = ?)" +
-                " AND (Contact_ID > 3)";
+                " WHERE (Contact_ID = ?)";
+                // + " AND (Contact_ID > 3)";
         try{
             prepStmt = useConnection().prepareStatement(sqlStmt);
             prepStmt.setInt(1, active);

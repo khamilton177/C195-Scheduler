@@ -209,6 +209,11 @@ public class AppointmentDaoImpl implements AppointmentDAO {
     }
 
     @Override
+    public int showIndexes(String column) throws SQLException {
+        return 0;
+    }
+
+    @Override
     public int makeColumnUnique(String column) throws SQLException {
         return 0;
     }

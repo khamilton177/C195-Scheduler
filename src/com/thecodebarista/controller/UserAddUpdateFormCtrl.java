@@ -61,18 +61,14 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
         pwd_PwdFld.setText(String.valueOf(selectedUser.getPassword()));
 
         if (static_AddUpdateLabel.getText().equals("Update User")) {
-            Boolean isAdmin = false;
-            Boolean isActive = true;
 
-            if (selectedUser.getIs_Admin() == 1) {
-                isAdmin = true;
+            if (selectedUser.getIs_Admin() > 0) {
+                admin_ChkBox.setSelected(true);
             }
-            admin_ChkBox.setSelected(isAdmin);
 
-            if (selectedUser.getActive() == 0) {
-                isActive = false;
+            if (selectedUser.getActive() > 1) {
+                user_Active_ChkBox.setSelected(true);
             }
-            user_Active_ChkBox.setSelected(isActive);
         }
     }
 

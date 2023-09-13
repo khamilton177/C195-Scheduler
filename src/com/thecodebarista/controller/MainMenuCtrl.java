@@ -611,6 +611,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
     @javafx.fxml.FXML
     protected TableColumn<User, Integer> UserActiveCol;
 
+    /**
+     * User ID column on the UserTblView.
+     */
+    @javafx.fxml.FXML
+    protected TableColumn<User, Integer> UserLoginCol;
+
     /*
     --- End of User Tab FXML controls ---
      */
@@ -1065,6 +1071,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         UserPwdCol.setCellValueFactory(new PropertyValueFactory<>("password"));
         UserAdminCol.setCellValueFactory(new PropertyValueFactory<>("is_Admin"));
         UserActiveCol.setCellValueFactory(new PropertyValueFactory<>("active"));
+        UserLoginCol.setCellValueFactory(new PropertyValueFactory<>("last_Login"));
     }
 
     /**
@@ -1844,14 +1851,17 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             selectedUser = UserTblView.getSelectionModel().getSelectedItem();
             if (selectedUser.getUser_ID() < 3) {
                 errorMsg = String.format("You do not have privileges to modify Legacy User: '%s'", selectedUser.getUser_Name());
-
+                alert = buildAlert(Alert.AlertType.ERROR, btnTxt, errorMsg);
+                confirm = alert.showAndWait();
             }
-            static_AddUpdateLabel.setText("Update User");
-            modelCtrl.showAdminOnlyFlds();
-            modelCtrl.sendUserModifyData(selectedUser);
-            stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(scene));
-            stage.show();
+            else {
+                static_AddUpdateLabel.setText("Update User");
+                modelCtrl.showAdminOnlyFlds();
+                modelCtrl.sendUserModifyData(selectedUser);
+                stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(scene));
+                stage.show();
+            }
         }
         catch(NullPointerException e){
             System.out.println(e.getMessage());
@@ -1912,8 +1922,8 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             scene = loader.load();
             UserAddUpdateFormCtrl modelCtrl = loader.getController();
             static_AddUpdateLabel.setText("User Info");
-            modelCtrl.showAdminOnlyFlds();
             modelCtrl.sendUserModifyData(sessionUser);
+            modelCtrl.showAdminOnlyFlds();
             stage = (Stage)((Button)event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(scene));
             System.out.println("Made it here 2");
@@ -1993,10 +2003,10 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             scene = loader.load();
             CntAddUpdateFormCtrl modelCtrl = loader.getController();
             selectedCnt = CntTblView.getSelectionModel().getSelectedItem();
-            if (selectedCnt.getContact_ID() < 4) {
+/*            if (selectedCnt.getContact_ID() < 4) {
                 errorMsg = String.format("You do not have privileges to modify Legacy Contact: '%s'", selectedCnt.getContact_Name());
 
-            }
+            }*/
             static_AddUpdateLabel.setText("Update Contact");
             modelCtrl.sendCntModifyData(selectedCnt);
             modelCtrl.showAdminOnlyFlds();
