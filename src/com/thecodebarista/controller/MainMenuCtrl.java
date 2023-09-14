@@ -2456,7 +2456,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
         try{
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/com/thecodebarista//view/login-form.fxml"));
+            loader.setLocation(getClass().getResource("/com/thecodebarista/view/login-form.fxml"));
             scene = loader.load();
 
             // Cast window to stage

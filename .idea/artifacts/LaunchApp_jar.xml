@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="C195-Scheduler:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/C195_Scheduler_jar</output-path>
+  <artifact type="jar" name="LaunchApp:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/LaunchApp_jar</output-path>
     <root id="archive" name="C195-Scheduler.jar">
       <element id="module-output" name="C195-Scheduler" />
       <element id="extracted-dir" path="$PATH_TO_FX$/javafx-swt.jar" path-in-jar="/" />
