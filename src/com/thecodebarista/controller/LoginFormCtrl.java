@@ -230,7 +230,6 @@ public class LoginFormCtrl implements Initializable {
 
     private void auditLogin(int sessionUserId) {
         LocalDateTime ldt = LocalDateTime.now();
-        // System.out.println("Raw Now- : " + ldt);
         Timestamp loginDate = Timestamp.valueOf(ldt.withSecond(0).withNano(0));
 
         try{
@@ -354,6 +353,5 @@ public class LoginFormCtrl implements Initializable {
 
         // Get the locale information and direct application to use the foreign messages for the Login Form.
         setLoginLanguage();
-        //System.out.println("Are we using foreign error messages? " + useLocale);
     }
 }

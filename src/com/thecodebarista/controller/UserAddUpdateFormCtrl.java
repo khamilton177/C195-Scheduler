@@ -19,8 +19,6 @@ import java.util.ResourceBundle;
  */
 public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable {
 
-    UserDAO userDao = new UserDaoImpl();
-
     /**
      * Label holds the text for New/Update button selected on the Appointments New/Update form.
      */
@@ -54,21 +52,23 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
      * @throws SQLException
      */
     protected void sendUserModifyData(User selectedUser) throws SQLException {
-        selectedUser = userDao.extract(selectedUser.getUser_ID());
-
         user_ID_TxtFld.setText(String.valueOf(selectedUser.getUser_ID()));
         user_Name_TxtFld.setText(String.valueOf(selectedUser.getUser_Name()));
         pwd_PwdFld.setText(String.valueOf(selectedUser.getPassword()));
 
-        if (static_AddUpdateLabel.getText().equals("Update User")) {
+        if (!static_AddUpdateLabel.getText().equals("Add User")) {
+            Boolean isAdmin = false;
+            Boolean isActive = true;
 
-            if (selectedUser.getIs_Admin() > 0) {
-                admin_ChkBox.setSelected(true);
+            if (selectedUser.getIs_Admin() == 1) {
+                isAdmin = true;
             }
+            admin_ChkBox.setSelected(isAdmin);
 
-            if (selectedUser.getActive() > 1) {
-                user_Active_ChkBox.setSelected(true);
+            if (selectedUser.getActive() == 0) {
+                isActive = false;
             }
+            user_Active_ChkBox.setSelected(isActive);
         }
     }
 
@@ -153,7 +153,6 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                     formController.setCurrentUserViewAccess(sessionUserAccess);
                 }
                 stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-                // scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                 stage.setTitle("C195-Global Consulting Scheduler");
                 stage.setScene(new Scene(scene));
                 stage.show();
@@ -184,7 +183,6 @@ public class UserAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
 
             // Cast window to stage
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
             stage.setTitle("C195-Global Consulting Scheduler");
             stage.setScene(new Scene(scene));
             stage.show();

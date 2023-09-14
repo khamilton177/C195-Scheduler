@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.ResourceBundle;
@@ -130,8 +129,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
      * Fills the StartTimeMins ComboBox with the minutes intervals for Appointments.
      */
     private void buildMinutes() {
-        int d = 0;
-        DecimalFormat decF = new DecimalFormat("00");
         minutes.addAll(0, 15, 30, 45);
         StartTimeMins.setItems(minutes);
     }
@@ -456,7 +453,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                 && ((ApptStart_DatePick.getValue().isBefore(LocalDateTime.now().toLocalDate())))) {
             String validateMsg = "Selected date has past.";
             alert = buildAlert(Alert.AlertType.ERROR, btnTxt, buildMessage(validateMsg, false));
-            //alert = buildAlert(Alert.AlertType.ERROR, btnTxt.replace("_", " ").concat("er"), buildMessage(validateMsg, false));
             confirm = alert.showAndWait();
             if (confirm.isPresent() && confirm.get() == ButtonType.OK) {
                 ApptStart_DatePick.setValue(dpPrevDate);
@@ -520,13 +516,9 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
             System.out.println("Duration Updated #3");
             try {
                 Boolean doCalc = canCalcDuration(btnTxt);
-                System.out.println("Check doCalc: " + doCalc);
 
                 if (doCalc) {
-                    System.out.println("In doCalc #3.1");
                     calculateEndLdt();
-                    System.out.println("In doCalc #3.2" );
-                    // System.out.println("This is end time: " + EndTime);
                 } else {
                     if (confirm.isPresent() && confirm.get() == ButtonType.OK) {
                     }
@@ -566,7 +558,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                         formController.setCurrentUserViewAccess(sessionUserAccess);
                     }
                     stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-                    //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                     stage.setTitle("C195-Global Consulting Scheduler");
                     stage.setScene(new Scene(scene));
                     stage.show();
@@ -599,7 +590,6 @@ public class ApptAddUpdateFormCtrl extends MainMenuCtrl implements Initializable
                 formController.setCurrentUserViewAccess(sessionUserAccess);
             }
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
             stage.setTitle("C195-Global Consulting Scheduler");
             stage.setScene(new Scene(scene));
             stage.show();

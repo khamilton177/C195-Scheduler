@@ -490,8 +490,8 @@
                                  <children>
                                     <TableView fx:id="CntTblView" layoutY="31.0" prefHeight="721.0" prefWidth="1080.0">
                                        <columns>
-                                          <TableColumn fx:id="CntIdCol" editable="false" prefWidth="100.0" text="ContactID" />
-                                          <TableColumn fx:id="CntNameCol" minWidth="0.0" prefWidth="154.0" text="ContactName" />
+                                          <TableColumn fx:id="CntIdCol" editable="false" prefWidth="100.0" text="Contact ID" />
+                                          <TableColumn fx:id="CntNameCol" minWidth="0.0" prefWidth="154.0" text="Contact Name" />
                                           <TableColumn fx:id="CntEmailCol" prefWidth="132.0" text="Email" />
                                           <TableColumn fx:id="CntActiveCol" prefWidth="132.0" text="Active?" />
                                        </columns>

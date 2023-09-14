@@ -963,19 +963,12 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
 
     protected void setCurrentUserViewAccess(int sessionUserAccess) {
         System.out.println("Access Level: " + sessionUserAccess);
-        if (sessionUserAccess < 1) {
 
-            int count = (int) MainTabPane.getTabs().stream().filter((p) -> p.getId().contains("Admin")).count();
-            for (int i = 0; i < count; i++) {
-                ObservableList<Tab> adminTabs = MainTabPane.getTabs();
-                System.out.println("Tab List Count: " + adminTabs.size());
-                for (Tab tab : adminTabs) {
-                    if (tab.getId().contains("Admin")) {
-                        adminTabs.remove(tab);
-                        break;
-                    }
-                }
-            }
+        if (sessionUserAccess < 1) {
+            ObservableList<Tab> nonAdminTabs = MainTabPane.getTabs().stream()
+                    .filter(p -> !(p.getId().contains("Admin")))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+            MainTabPane.getTabs().setAll(nonAdminTabs);
         }
     }
 
@@ -1268,9 +1261,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         else {
             formFields = new TextField[]{title_TxtFld, description_TxtFld, location_TxtFld, type_TxtFld, start_TxtFld, end_TxtFld};
             startTxtFld = start_TxtFld.getText();
-            //System.out.println("Invisible Start Text Field: " + start);
             endTxtFld = end_TxtFld.getText();
-            //System.out.println("On Save End Text Field: " + end);
 
             if (ApptStart_DatePick.getValue() == null) {
                 validateMsg = "Please select a valid Start Date";
@@ -1414,7 +1405,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         result = cstApptDaoDel.deleteAllCstAppt(selectedCst.getCustomer_ID());
 
         if(result > -1) {
-            result = -1;
             CustomerDAO cstDaoDel = new CustomerDaoImpl();
             Customer cstDel = cstDaoDel.extract(selectedCst.getCustomer_ID());
             result = cstDaoDel.delete(cstDel);
@@ -1748,13 +1738,11 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             scene = loader.load();
             CstAddUpdateFormCtrl modelCtrl = loader.getController();
             selectedCst = CstTblView.getSelectionModel().getSelectedItem();
-            System.out.println("Made it here 1");
             modelCtrl.sendCstModifyData(selectedCst);
 
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(scene));
             static_AddUpdateLabel.setText("Update Customer");
-            System.out.println("Made it here 2");
             stage.show();
         }
         catch(NullPointerException e){
@@ -1820,7 +1808,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             scene = loader.load();
 
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            // stage.setTitle("New User");
             stage.setScene(new Scene(scene));
             stage.show();
         }
@@ -1841,7 +1828,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
         System.out.println("Update User Button Clicked: " + ((Button)actionEvent.getSource()).getId());
         String errorMsg = "Error: No User Selected!";
-        // onTabChange();
 
         try{
             FXMLLoader loader = new FXMLLoader();
@@ -1995,7 +1981,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         String btnTxt = ((Button)actionEvent.getSource()).getId().replace("Btn", "");
         System.out.println("Update Contact Button Clicked: " + ((Button)actionEvent.getSource()).getId());
         String errorMsg = "Error: No Contact Selected!";
-        // onTabChange();
 
         try{
             FXMLLoader loader = new FXMLLoader();
@@ -2003,10 +1988,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             scene = loader.load();
             CntAddUpdateFormCtrl modelCtrl = loader.getController();
             selectedCnt = CntTblView.getSelectionModel().getSelectedItem();
-/*            if (selectedCnt.getContact_ID() < 4) {
-                errorMsg = String.format("You do not have privileges to modify Legacy Contact: '%s'", selectedCnt.getContact_Name());
-
-            }*/
             static_AddUpdateLabel.setText("Update Contact");
             modelCtrl.sendCntModifyData(selectedCnt);
             modelCtrl.showAdminOnlyFlds();
@@ -2279,7 +2260,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
         System.out.println("Button Clicked: " + event.getSource().toString());
         String btnTxt = "";
         btnTxt = ((RadioButton) event.getSource()).getId();
-        // CntApptPeriodRadioGrp.getSelectedToggle();
         try {
             displayApptTblViewData(btnTxt);
         }
@@ -2431,7 +2411,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
                     String wcContact = String.valueOf(CntScheduleSearchCB.getValue().getContact_ID());
                     if(CntApptPeriodRadioGrp.getSelectedToggle() != null) {
                         CntScheduleTblView.getItems().clear();
-                        //wcPeriod = CntApptPeriodRadioGrp.getSelectedToggle().toString();
                         wc = ((CntScheduleMoRadio.isSelected()) ? 1 : 0);
                         System.out.println(String.format("Selected radio- '%s' and assoc wc #%d ",wcPeriod, wc));
                     }
@@ -2514,7 +2493,6 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             // For seed data testing. TODO: Don't forget to comment out.
             // appointmentSeed();
             displayApptTblViewData();
-            //displayCstTblViewData(); //not currently used.
             displayCstWithCoInfo();
             displayUserTblViewData("Active", null);
             displayCntTblViewData("Active", null);
