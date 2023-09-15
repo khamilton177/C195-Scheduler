@@ -322,6 +322,9 @@ public class LoginFormCtrl implements Initializable {
                         // Cast window to stage
                         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
                         stage.setScene(new Scene(scene));
+                        stage.setTitle("C195-Global Consulting Scheduler");
+                        stage.setMaxHeight(1000);
+                        stage.setMaxWidth(1250);
                         stage.show();
 
                         System.out.println("This is session user: " + LoginFormCtrl.sessionUserId);

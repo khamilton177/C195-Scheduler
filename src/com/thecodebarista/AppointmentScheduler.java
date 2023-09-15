@@ -41,9 +41,7 @@ public class AppointmentScheduler extends Application {
 
         try{
             Parent root = FXMLLoader.load(getClass().getResource("view/login-form.fxml"));
-            if(Locale.getDefault().getLanguage().equals("fr")) {
-                stage.setTitle(ResourceBundle.getBundle("Lang").getString("Title"));
-            }
+            stage.setTitle(ResourceBundle.getBundle("Lang").getString("Title"));
             stage.setScene(new Scene(root));
             stage.show();
         }
@@ -55,13 +53,11 @@ public class AppointmentScheduler extends Application {
 
     /**
      * Connect application to Database and start Logger on Application Launch.
-     * @param args
-     * @throws SQLException
+     * @param args - used to pass to FX
+     * @throws SQLException - caught in called method
      */
     public static void main(String[] args) throws SQLException {
-        // DBConnection.establishConnection();
         LoginFormCtrl.loginLogger();
-
         launch(args);
         DBConnection.closeConnection();
     }
