@@ -123,7 +123,6 @@ public class CstAddUpdateFormCtrl extends MainMenuCtrl implements Initializable 
                     formController.setCurrentUserViewAccess(sessionUserAccess);
                 }
                 stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-                //scene = FXMLLoader.load(getClass().getResource("/com/thecodebarista/view/main-menu.fxml"));
                 stage.setTitle("C195-Global Consulting Scheduler");
                 stage.setScene(new Scene(scene));
                 stage.show();

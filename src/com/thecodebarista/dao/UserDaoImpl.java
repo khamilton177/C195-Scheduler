@@ -329,7 +329,7 @@ public class UserDaoImpl implements UserDAO{
                     ", Last_Login" +
                     ", DATEDIFF(now(), DATE(Last_Login)) as Days" +
                     " FROM users" +
-                    " WHERE DATE(Last_Login) <= CURDATE()+90" +
+                    " WHERE DATE(Last_Login) <= CURDATE()-90" +
                     " HAVING Days >= 1" +
                     " ORDER BY Last_Login DESC";
             prepStmt = useConnection().prepareStatement(sqlStmt);

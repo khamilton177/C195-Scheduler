@@ -1711,7 +1711,7 @@ public class MainMenuCtrl extends LoginFormCtrl implements Initializable, TimeMa
             scene = loader.load();
 
             stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            stage.setTitle("New Customer");
+            stage.setTitle("C195-Global Consulting Scheduler");
             stage.setScene(new Scene(scene));
             stage.show();
         }
