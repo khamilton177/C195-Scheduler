@@ -39,6 +39,8 @@ Application Directions:
 
 			Total Appointment Duration Average- Menu selection of this report immediately returns the query results.
 
+            Aged Logins- Shows User logins greater than 90 days.
+
         Users- List all 'active' users in a table view.
 
         Contacts- List all 'active' contacts in a table view.
@@ -63,6 +65,8 @@ Application Directions:
                 Contacts Search Filter Pane-
 
                     Contact Name- Filter by contact name, full or partial.
+
+                    Email-  Wildcard search on all characters entered.
 
                     Active?- Leave empty for all users; select 'Active' or Inactive' for specific active status.
 
